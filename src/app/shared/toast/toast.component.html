@@ -1,0 +1,5 @@
+@if (toast.current()) {
+  <div class="toast" [class]="'toast--' + toast.current()!.type">
+    {{ toast.current()!.text }}
+  </div>
+}

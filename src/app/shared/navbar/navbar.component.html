@@ -1,0 +1,34 @@
+<nav class="navbar">
+  <a routerLink="/home" class="navbar__brand">🥒 Bhavani Pickles</a>
+
+  <div class="navbar__links">
+    <a routerLink="/products" routerLinkActive="active">Products</a>
+
+    @if (authService.isLoggedIn()) {
+      <a routerLink="/cart" class="cart-link">
+        🛒
+        @if (cartService.itemCount() > 0) {
+          <span class="cart-badge">{{ cartService.itemCount() }}</span>
+        }
+      </a>
+
+      <div class="dropdown">
+        <button class="btn btn--ghost" (click)="toggleMenu()">
+          {{ authService.user()?.name }} ▾
+        </button>
+        @if (menuOpen) {
+          <div class="dropdown__menu" (click)="closeMenu()">
+            <a routerLink="/orders">My Orders</a>
+            @if (authService.isAdmin()) {
+              <a routerLink="/admin">Admin Panel</a>
+            }
+            <button (click)="authService.logout()">Logout</button>
+          </div>
+        }
+      </div>
+    } @else {
+      <a routerLink="/auth/login" class="btn btn--ghost">Login</a>
+      <a routerLink="/auth/register" class="btn btn--primary">Register</a>
+    }
+  </div>
+</nav>

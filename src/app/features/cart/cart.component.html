@@ -1,0 +1,45 @@
+<h1>Shopping Cart</h1>
+
+@if (cartService.cart()?.items?.length) {
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Subtotal</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of cartService.cart()!.items; track item.product._id) {
+        <tr>
+          <td>{{ item.product.name }}</td>
+          <td>₹{{ item.price }}</td>
+          <td>
+            <div class="qty-ctrl">
+              <button class="btn btn--icon btn--sm" (click)="decrement(item)">−</button>
+              <span>{{ item.quantity }}</span>
+              <button class="btn btn--icon btn--sm" (click)="increment(item)">+</button>
+            </div>
+          </td>
+          <td>₹{{ item.price * item.quantity }}</td>
+          <td>
+            <button class="btn btn--icon btn--danger btn--sm" (click)="remove(item)" title="Remove">✕</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <div class="cart-summary">
+    <h2>Total: ₹{{ cartService.cart()!.totalAmount }}</h2>
+    <a routerLink="/checkout" class="btn btn--primary">Proceed to Checkout →</a>
+  </div>
+} @else {
+  <div class="empty-state">
+    <div class="empty-state__icon">🛒</div>
+    <p class="empty-state__text">Your cart is empty</p>
+    <a routerLink="/products" class="btn btn--primary">Shop Now</a>
+  </div>
+}

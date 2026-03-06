@@ -1,0 +1,17 @@
+.qty-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  span { min-width: 24px; text-align: center; font-weight: 600; }
+}
+
+.cart-summary {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 24px;
+  padding: 20px 0;
+
+  h2 { margin: 0; }
+}
