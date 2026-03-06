@@ -1,51 +1,51 @@
-@if (product()) {
+@if (product(); as p) {
   <div class="detail-layout">
     <div class="images">
-      @if (product().images.length) {
-        <img [src]="product().images[0]" [alt]="product().name" class="main-image">
+      @if (p.images.length) {
+        <img [src]="p.images[0]" [alt]="p.name" class="main-image">
       } @else {
         <div class="img-placeholder">No image</div>
       }
     </div>
 
     <div class="info">
-      <p class="breadcrumb"><a routerLink="/products">Products</a> / {{ product().name }}</p>
-      <h1>{{ product().name }}</h1>
-      <p class="category-label">{{ product().category.name }}</p>
+      <p class="breadcrumb"><a routerLink="/products">Products</a> / {{ p.name }}</p>
+      <h1>{{ p.name }}</h1>
+      <p class="category-label">{{ p.category.name }}</p>
 
       <div class="price-block">
-        @if (product().discountPrice) {
-          <span class="price-original">₹{{ product().price }}</span>
-          <span class="price">₹{{ product().discountPrice }}</span>
-          <span class="price-discount">{{ getDiscount(product()!) }}% OFF</span>
+        @if (p.discountPrice) {
+          <span class="price-original">₹{{ p.price }}</span>
+          <span class="price">₹{{ p.discountPrice }}</span>
+          <span class="price-discount">{{ getDiscount(p) }}% OFF</span>
         } @else {
-          <span class="price">₹{{ product().price }}</span>
+          <span class="price">₹{{ p.price }}</span>
         }
       </div>
 
-      @if (product().weight) { <p class="meta">Weight: {{ product().weight }}</p> }
+      @if (p.weight) { <p class="meta">Weight: {{ p.weight }}</p> }
 
-      <p class="stock" [class.stock--out]="product().stock === 0">
-        {{ product().stock > 0 ? 'In Stock (' + product().stock + ' available)' : 'Out of Stock' }}
+      <p class="stock" [class.stock--out]="p.stock === 0">
+        {{ p.stock > 0 ? 'In Stock (' + p.stock + ' available)' : 'Out of Stock' }}
       </p>
 
-      <button class="btn btn--primary btn--lg" (click)="addToCart()" [disabled]="product().stock === 0">
+      <button class="btn btn--primary btn--lg" (click)="addToCart()" [disabled]="p.stock === 0">
         Add to Cart
       </button>
 
       <hr>
 
       <h3>Description</h3>
-      <p>{{ product().description }}</p>
+      <p>{{ p.description }}</p>
 
-      @if (product().ingredients) {
+      @if (p.ingredients) {
         <h3>Ingredients</h3>
-        <p>{{ product().ingredients }}</p>
+        <p>{{ p.ingredients }}</p>
       }
 
-      @if (product().tags.length) {
+      @if (p.tags.length) {
         <div class="tags">
-          @for (tag of product().tags; track tag) {
+          @for (tag of p.tags; track tag) {
             <span class="badge">{{ tag }}</span>
           }
         </div>
