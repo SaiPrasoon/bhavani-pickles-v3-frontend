@@ -1,0 +1,32 @@
+<h1>Admin Dashboard</h1>
+<div class="stats-grid">
+  <div class="stat-card card">
+    <div class="card__body">
+      <div class="stat-icon">📦</div>
+      <h2>{{ totalProducts }}</h2>
+      <p>Products</p>
+    </div>
+    <div class="card__footer">
+      <a routerLink="/admin/products" class="btn btn--sm btn--outline">Manage</a>
+    </div>
+  </div>
+  <div class="stat-card card">
+    <div class="card__body">
+      <div class="stat-icon">🧾</div>
+      <h2>{{ totalOrders }}</h2>
+      <p>Orders</p>
+    </div>
+    <div class="card__footer">
+      <a routerLink="/admin/orders" class="btn btn--sm btn--outline">Manage</a>
+    </div>
+  </div>
+  <div class="stat-card card">
+    <div class="card__body">
+      <div class="stat-icon">🗂️</div>
+      <p>Categories</p>
+    </div>
+    <div class="card__footer">
+      <a routerLink="/admin/categories" class="btn btn--sm btn--outline">Manage</a>
+    </div>
+  </div>
+</div>

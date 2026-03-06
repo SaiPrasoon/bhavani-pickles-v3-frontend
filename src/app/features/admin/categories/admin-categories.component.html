@@ -1,0 +1,36 @@
+<div class="layout">
+  <div>
+    <h1>Categories</h1>
+    <table class="table">
+      <thead>
+        <tr><th>Name</th><th>Description</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (cat of categories; track cat._id) {
+          <tr>
+            <td>{{ cat.name }}</td>
+            <td>{{ cat.description }}</td>
+            <td><button class="btn btn--sm btn--danger" (click)="delete(cat)">Delete</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="add-panel card">
+    <div class="card__body">
+      <h3>Add Category</h3>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input class="form-control" formControlName="name" placeholder="Category name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" formControlName="description" rows="3"></textarea>
+        </div>
+        <button class="btn btn--primary" type="submit" [disabled]="form.invalid">Add Category</button>
+      </form>
+    </div>
+  </div>
+</div>

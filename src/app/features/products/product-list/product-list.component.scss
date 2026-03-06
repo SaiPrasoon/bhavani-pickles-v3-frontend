@@ -1,0 +1,10 @@
+.filters {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  .form-group { margin-bottom: 0; min-width: 200px; }
+}
+.stock { font-size: 0.82rem; color: #4caf50; }
+.stock--low { color: #ff9800; }
+.stock--out { color: #f44336; }

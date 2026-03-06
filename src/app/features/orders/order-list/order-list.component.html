@@ -1,0 +1,29 @@
+<h1>My Orders</h1>
+
+@if (orders.length) {
+  <div class="orders-list">
+    @for (order of orders; track order._id) {
+      <div class="card order-card">
+        <div class="card__body">
+          <div class="order-header">
+            <div>
+              <p class="card__title">Order #{{ order._id.slice(-8).toUpperCase() }}</p>
+              <p class="card__subtitle">{{ order.createdAt | date:'medium' }}</p>
+            </div>
+            <span class="badge badge--{{ order.status }}">{{ order.status | titlecase }}</span>
+          </div>
+          <p>{{ order.items.length }} item(s) &nbsp;|&nbsp; <strong>₹{{ order.totalAmount }}</strong></p>
+        </div>
+        <div class="card__footer">
+          <a [routerLink]="['/orders', order._id]" class="btn btn--sm btn--outline">View Details</a>
+        </div>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="empty-state">
+    <div class="empty-state__icon">📦</div>
+    <p class="empty-state__text">No orders yet.</p>
+    <a routerLink="/products" class="btn btn--primary">Start Shopping</a>
+  </div>
+}

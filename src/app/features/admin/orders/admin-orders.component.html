@@ -1,0 +1,23 @@
+<h1>Orders</h1>
+<table class="table">
+  <thead>
+    <tr><th>Order</th><th>Customer</th><th>Total</th><th>Date</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    @for (order of orders; track order._id) {
+      <tr>
+        <td>#{{ order._id.slice(-8).toUpperCase() }}</td>
+        <td>{{ getUserName(order) }}</td>
+        <td>₹{{ order.totalAmount }}</td>
+        <td>{{ order.createdAt | date:'short' }}</td>
+        <td>
+          <select class="form-control status-select" [(ngModel)]="order.status" (ngModelChange)="updateStatus(order)">
+            @for (s of statuses; track s) {
+              <option [value]="s">{{ s | titlecase }}</option>
+            }
+          </select>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>

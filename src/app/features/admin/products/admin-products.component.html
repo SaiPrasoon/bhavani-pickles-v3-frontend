@@ -1,0 +1,17 @@
+<div class="page-header"><h1>Products</h1></div>
+<table class="table">
+  <thead>
+    <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
+  </thead>
+  <tbody>
+    @for (product of products; track product._id) {
+      <tr>
+        <td>{{ product.name }}</td>
+        <td>{{ product.category?.name }}</td>
+        <td>₹{{ product.price }}</td>
+        <td>{{ product.stock }}</td>
+        <td><button class="btn btn--sm btn--danger" (click)="delete(product)">Delete</button></td>
+      </tr>
+    }
+  </tbody>
+</table>

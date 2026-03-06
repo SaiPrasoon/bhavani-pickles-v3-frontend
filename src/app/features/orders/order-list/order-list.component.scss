@@ -1,0 +1,8 @@
+.orders-list { display: flex; flex-direction: column; gap: 16px; }
+.order-card:hover { transform: none; }
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
