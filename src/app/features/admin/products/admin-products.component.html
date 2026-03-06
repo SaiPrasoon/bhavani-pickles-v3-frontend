@@ -7,7 +7,7 @@
     @for (product of products; track product._id) {
       <tr>
         <td>{{ product.name }}</td>
-        <td>{{ product.category?.name }}</td>
+        <td>{{ product?.category?.name }}</td>
         <td>₹{{ product.price }}</td>
         <td>{{ product.stock }}</td>
         <td><button class="btn btn--sm btn--danger" (click)="delete(product)">Delete</button></td>
