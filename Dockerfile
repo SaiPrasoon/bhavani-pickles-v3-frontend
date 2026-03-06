@@ -5,10 +5,10 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM nginx:alpine AS production
-COPY --from=builder /app/dist/frontend/browser /usr/share/nginx/html
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+FROM node:20-alpine AS production
+WORKDIR /app
+RUN npm install -g serve
+COPY --from=builder /app/dist/frontend/browser ./dist
 ENV PORT=8080
 EXPOSE 8080
-CMD ["/entrypoint.sh"]
+CMD ["sh", "-c", "serve -s dist -p $PORT"]
