@@ -1,14 +1,14 @@
-@if (order) {
+@if (order()) {
   <div class="page-header">
-    <h1>Order #{{ order._id.slice(-8).toUpperCase() }}</h1>
-    <span class="badge badge--{{ order.status }}">{{ order.status | titlecase }}</span>
+    <h1>Order #{{ order()._id.slice(-8).toUpperCase() }}</h1>
+    <span class="badge badge--{{ order().status }}">{{ order().status | titlecase }}</span>
   </div>
 
   <div class="order-layout">
     <div class="card">
       <div class="card__body">
-        <p><strong>Date:</strong> {{ order.createdAt | date:'medium' }}</p>
-        <p><strong>Total:</strong> ₹{{ order.totalAmount }}</p>
+        <p><strong>Date:</strong> {{ order().createdAt | date:'medium' }}</p>
+        <p><strong>Total:</strong> ₹{{ order().totalAmount }}</p>
         <hr>
         <h3>Items</h3>
         <table class="table">
@@ -16,7 +16,7 @@
             <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
           </thead>
           <tbody>
-            @for (item of order.items; track item.name) {
+            @for (item of order().items; track item.name) {
               <tr>
                 <td>{{ item.name }}</td>
                 <td>{{ item.quantity }}</td>
@@ -32,10 +32,10 @@
     <div class="card">
       <div class="card__body">
         <h3>Shipping Address</h3>
-        <p>{{ order.shippingAddress.street }}</p>
-        <p>{{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} – {{ order.shippingAddress.pincode }}</p>
-        @if (order.shippingAddress.phone) { <p>{{ order.shippingAddress.phone }}</p> }
-        @if (order.notes) { <hr><p><strong>Notes:</strong> {{ order.notes }}</p> }
+        <p>{{ order().shippingAddress.street }}</p>
+        <p>{{ order().shippingAddress.city }}, {{ order().shippingAddress.state }} – {{ order().shippingAddress.pincode }}</p>
+        @if (order().shippingAddress.phone) { <p>{{ order().shippingAddress.phone }}</p> }
+        @if (order().notes) { <hr><p><strong>Notes:</strong> {{ order().notes }}</p> }
       </div>
     </div>
   </div>

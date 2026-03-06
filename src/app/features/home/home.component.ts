@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ProductsService } from '../../core/services/products.service';
 import { CategoriesService } from '../../core/services/categories.service';
@@ -15,11 +15,11 @@ export class HomeComponent implements OnInit {
   private productsService = inject(ProductsService);
   private categoriesService = inject(CategoriesService);
 
-  categories: Category[] = [];
-  featuredProducts: Product[] = [];
+  categories = signal<Category[]>([]);
+  featuredProducts = signal<Product[]>([]);
 
   ngOnInit(): void {
-    this.categoriesService.getAll().subscribe(cats => this.categories = cats);
-    this.productsService.getAll({ limit: 8 }).subscribe(res => this.featuredProducts = res.items);
+    this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
+    this.productsService.getAll({ limit: 8 }).subscribe(res => this.featuredProducts.set(res.items));
   }
 }

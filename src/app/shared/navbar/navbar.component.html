@@ -16,7 +16,7 @@
         <button class="btn btn--ghost" (click)="toggleMenu()">
           {{ authService.user()?.name }} ▾
         </button>
-        @if (menuOpen) {
+        @if (menuOpen()) {
           <div class="dropdown__menu" (click)="closeMenu()">
             <a routerLink="/orders">My Orders</a>
             @if (authService.isAdmin()) {

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ProductsService } from '../../../core/services/products.service';
 import { OrdersService } from '../../../core/services/orders.service';
@@ -13,11 +13,11 @@ import { OrdersService } from '../../../core/services/orders.service';
 export class DashboardComponent implements OnInit {
   private productsService = inject(ProductsService);
   private ordersService = inject(OrdersService);
-  totalProducts = 0;
-  totalOrders = 0;
+  totalProducts = signal(0);
+  totalOrders = signal(0);
 
   ngOnInit(): void {
-    this.productsService.getAll().subscribe(res => this.totalProducts = res.total);
-    this.ordersService.getAll().subscribe(orders => this.totalOrders = orders.length);
+    this.productsService.getAll().subscribe(res => this.totalProducts.set(res.total));
+    this.ordersService.getAll().subscribe(orders => this.totalOrders.set(orders.length));
   }
 }

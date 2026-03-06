@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CartService } from '../../core/services/cart.service';
@@ -19,7 +19,7 @@ export class CheckoutComponent implements OnInit {
   private toast = inject(ToastService);
   cartService = inject(CartService);
 
-  loading = false;
+  loading = signal(false);
   form = this.fb.group({
     street:  ['', Validators.required],
     city:    ['', Validators.required],
@@ -35,7 +35,7 @@ export class CheckoutComponent implements OnInit {
 
   placeOrder(): void {
     if (this.form.invalid) return;
-    this.loading = true;
+    this.loading.set(true);
     const { notes, ...address } = this.form.value;
     this.ordersService.create(address as any, notes || undefined).subscribe({
       next: (order) => {
@@ -44,7 +44,7 @@ export class CheckoutComponent implements OnInit {
       },
       error: (err) => {
         this.toast.error(err.error?.message || 'Failed to place order');
-        this.loading = false;
+        this.loading.set(false);
       },
     });
   }

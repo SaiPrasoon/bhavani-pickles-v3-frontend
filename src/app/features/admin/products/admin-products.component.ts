@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ProductsService } from '../../../core/services/products.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Product } from '../../../core/models/product.model';
@@ -13,16 +13,16 @@ import { Product } from '../../../core/models/product.model';
 export class AdminProductsComponent implements OnInit {
   private productsService = inject(ProductsService);
   private toast = inject(ToastService);
-  products: Product[] = [];
+  products = signal<Product[]>([]);
 
   ngOnInit(): void {
-    this.productsService.getAll({ limit: 100 }).subscribe(res => this.products = res.items);
+    this.productsService.getAll({ limit: 100 }).subscribe(res => this.products.set(res.items));
   }
 
   delete(product: Product): void {
     if (!confirm(`Delete "${product.name}"?`)) return;
     this.productsService.delete(product._id).subscribe(() => {
-      this.products = this.products.filter(p => p._id !== product._id);
+      this.products.update(ps => ps.filter(p => p._id !== product._id));
       this.toast.success('Product deleted');
     });
   }

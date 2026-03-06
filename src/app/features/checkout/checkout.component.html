@@ -32,8 +32,8 @@
         <label class="form-label">Notes (optional)</label>
         <textarea class="form-control" formControlName="notes" rows="3" placeholder="Delivery instructions…"></textarea>
       </div>
-      <button class="btn btn--primary full-width" type="submit" [disabled]="form.invalid || loading">
-        {{ loading ? 'Placing Order…' : 'Place Order — ₹' + (cartService.cart()?.totalAmount || 0) }}
+      <button class="btn btn--primary full-width" type="submit" [disabled]="form.invalid || loading()">
+        {{ loading() ? 'Placing Order…' : 'Place Order — ₹' + (cartService.cart()?.totalAmount || 0) }}
       </button>
     </form>
   </div>

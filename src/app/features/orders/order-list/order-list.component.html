@@ -1,8 +1,8 @@
 <h1>My Orders</h1>
 
-@if (orders.length) {
+@if (orders().length) {
   <div class="orders-list">
-    @for (order of orders; track order._id) {
+    @for (order of orders(); track order._id) {
       <div class="card order-card">
         <div class="card__body">
           <div class="order-header">

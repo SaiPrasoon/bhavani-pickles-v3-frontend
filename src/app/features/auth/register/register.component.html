@@ -18,8 +18,8 @@
         <label class="form-label">Phone (optional)</label>
         <input class="form-control" type="tel" formControlName="phone" placeholder="+91 XXXXX XXXXX">
       </div>
-      <button class="btn btn--primary full-width" type="submit" [disabled]="form.invalid || loading">
-        {{ loading ? 'Creating…' : 'Register' }}
+      <button class="btn btn--primary full-width" type="submit" [disabled]="form.invalid || loading()">
+        {{ loading() ? 'Creating…' : 'Register' }}
       </button>
     </form>
     <p class="auth-footer">Already have an account? <a routerLink="/auth/login">Login</a></p>

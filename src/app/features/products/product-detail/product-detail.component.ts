@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductsService } from '../../../core/services/products.service';
 import { CartService } from '../../../core/services/cart.service';
@@ -21,11 +21,11 @@ export class ProductDetailComponent implements OnInit {
   private authService = inject(AuthService);
   private toast = inject(ToastService);
 
-  product: Product | null = null;
+  product = signal<Product | null>(null);
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
-    this.productsService.getOne(id).subscribe(p => this.product = p);
+    this.productsService.getOne(id).subscribe(p => this.product.set(p));
   }
 
   getDiscount(product: Product): number {
@@ -38,7 +38,7 @@ export class ProductDetailComponent implements OnInit {
       this.router.navigate(['/auth/login']);
       return;
     }
-    this.cartService.addItem(this.product!._id, 1).subscribe(() => {
+    this.cartService.addItem(this.product()!._id, 1).subscribe(() => {
       this.toast.success('Added to cart!');
     });
   }

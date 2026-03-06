@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
@@ -13,13 +13,13 @@ import { CartService } from '../../core/services/cart.service';
 export class NavbarComponent {
   authService = inject(AuthService);
   cartService = inject(CartService);
-  menuOpen = false;
+  menuOpen = signal(false);
 
   toggleMenu(): void {
-    this.menuOpen = !this.menuOpen;
+    this.menuOpen.update(v => !v);
   }
 
   closeMenu(): void {
-    this.menuOpen = false;
+    this.menuOpen.set(false);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { OrdersService } from '../../../core/services/orders.service';
@@ -15,11 +15,11 @@ import { Order, OrderStatus } from '../../../core/models/order.model';
 export class AdminOrdersComponent implements OnInit {
   private ordersService = inject(OrdersService);
   private toast = inject(ToastService);
-  orders: Order[] = [];
+  orders = signal<Order[]>([]);
   statuses: OrderStatus[] = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
 
   ngOnInit(): void {
-    this.ordersService.getAll().subscribe(orders => this.orders = orders);
+    this.ordersService.getAll().subscribe(orders => this.orders.set(orders));
   }
 
   getUserName(order: Order): string {

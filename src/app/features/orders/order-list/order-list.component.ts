@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { OrdersService } from '../../../core/services/orders.service';
@@ -13,9 +13,9 @@ import { Order } from '../../../core/models/order.model';
 })
 export class OrderListComponent implements OnInit {
   private ordersService = inject(OrdersService);
-  orders: Order[] = [];
+  orders = signal<Order[]>([]);
 
   ngOnInit(): void {
-    this.ordersService.getMyOrders().subscribe(orders => this.orders = orders);
+    this.ordersService.getMyOrders().subscribe(orders => this.orders.set(orders));
   }
 }

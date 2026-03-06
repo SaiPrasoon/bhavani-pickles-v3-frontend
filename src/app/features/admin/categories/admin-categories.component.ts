@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { ToastService } from '../../../core/services/toast.service';
@@ -15,7 +15,7 @@ export class AdminCategoriesComponent implements OnInit {
   private categoriesService = inject(CategoriesService);
   private fb = inject(FormBuilder);
   private toast = inject(ToastService);
-  categories: Category[] = [];
+  categories = signal<Category[]>([]);
   form = this.fb.group({
     name: ['', Validators.required],
     description: [''],
@@ -24,7 +24,7 @@ export class AdminCategoriesComponent implements OnInit {
   ngOnInit(): void { this.load(); }
 
   load(): void {
-    this.categoriesService.getAll().subscribe(cats => this.categories = cats);
+    this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
   }
 
   submit(): void {
