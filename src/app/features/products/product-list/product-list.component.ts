@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../../core/services/products.service';
@@ -23,39 +23,39 @@ export class ProductListComponent implements OnInit {
   private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
 
-  products: Product[] = [];
-  categories: Category[] = [];
-  total = 0;
-  page = 1;
-  limit = 12;
-  search = '';
-  selectedCategory = '';
+  products = signal<Product[]>([]);
+  categories = signal<Category[]>([]);
+  total = signal(0);
+  page = signal(1);
+  limit = signal(12);
+  search = signal('');
+  selectedCategory = signal('');
 
-  get totalPages(): number { return Math.ceil(this.total / this.limit); }
+  get totalPages(): number { return Math.ceil(this.total() / this.limit()); }
 
   ngOnInit(): void {
-    this.categoriesService.getAll().subscribe(cats => this.categories = cats);
+    this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
     this.route.queryParams.subscribe(params => {
-      if (params['category']) this.selectedCategory = params['category'];
+      if (params['category']) this.selectedCategory.set(params['category']);
       this.load();
     });
   }
 
   load(): void {
     this.productsService.getAll({
-      search: this.search,
-      category: this.selectedCategory,
-      page: this.page,
-      limit: this.limit,
+      search: this.search(),
+      category: this.selectedCategory(),
+      page: this.page(),
+      limit: this.limit(),
     }).subscribe(res => {
-      this.products = res.items;
-      this.total = res.total;
+      this.products.set(res.items);
+      this.total.set(res.total);
     });
   }
 
-  onFilter(): void { this.page = 1; this.load(); }
-  prevPage(): void { if (this.page > 1) { this.page--; this.load(); } }
-  nextPage(): void { if (this.page < this.totalPages) { this.page++; this.load(); } }
+  onFilter(): void { this.page.set(1); this.load(); }
+  prevPage(): void { if (this.page() > 1) { this.page.update(p => p - 1); this.load(); } }
+  nextPage(): void { if (this.page() < this.totalPages) { this.page.update(p => p + 1); this.load(); } }
 
   addToCart(product: Product): void {
     if (!this.authService.isLoggedIn()) {
