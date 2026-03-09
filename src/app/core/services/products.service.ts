@@ -30,11 +30,11 @@ export class ProductsService {
     return this.http.get<Product>(`${this.base}/${id}`);
   }
 
-  create(data: Partial<Product>) {
+  create(data: object) {
     return this.http.post<Product>(this.base, data);
   }
 
-  update(id: string, data: Partial<Product>) {
+  update(id: string, data: object) {
     return this.http.patch<Product>(`${this.base}/${id}`, data);
   }
 

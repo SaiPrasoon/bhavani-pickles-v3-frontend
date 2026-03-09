@@ -2,9 +2,11 @@
   <div class="detail-layout">
     <div class="images">
       @if (p.images.length) {
-        <img [src]="p.images[0]" [alt]="p.name" class="main-image">
+        <img [src]="p.images[0]" [alt]="p.name" class="main-image" />
       } @else {
-        <div class="img-placeholder">No image</div>
+        <div class="img-placeholder">
+          <span class="material-symbols-rounded">image</span>
+        </div>
       }
     </div>
 
@@ -13,43 +15,47 @@
       <h1>{{ p.name }}</h1>
       <p class="category-label">{{ p.category.name }}</p>
 
-      <div class="price-block">
-        @if (p.discountPrice) {
-          <span class="price-original">₹{{ p.price }}</span>
-          <span class="price">₹{{ p.discountPrice }}</span>
-          <span class="price-discount">{{ getDiscount(p) }}% OFF</span>
-        } @else {
-          <span class="price">₹{{ p.price }}</span>
-        }
-      </div>
-
-      @if (p.weight) { <p class="meta">Weight: {{ p.weight }}</p> }
-
-      <p class="stock" [class.stock--out]="p.stock === 0">
-        {{ p.stock > 0 ? 'In Stock (' + p.stock + ' available)' : 'Out of Stock' }}
-      </p>
-
-      <button class="btn btn--primary btn--lg" (click)="addToCart()" [disabled]="p.stock === 0">
-        Add to Cart
-      </button>
-
-      <hr>
-
-      <h3>Description</h3>
-      <p>{{ p.description }}</p>
-
-      @if (p.ingredients) {
-        <h3>Ingredients</h3>
-        <p>{{ p.ingredients }}</p>
-      }
-
-      @if (p.tags.length) {
-        <div class="tags">
-          @for (tag of p.tags; track tag) {
-            <span class="badge">{{ tag }}</span>
+      <!-- Variant selector -->
+      @if (p.variants.length) {
+        <div class="variant-selector">
+          @for (v of p.variants; track v.weight; let i = $index) {
+            <button
+              type="button"
+              class="variant-btn"
+              [class.variant-btn--active]="selectedVariantIdx() === i"
+              (click)="selectVariant(i)"
+            >
+              <span class="variant-btn__weight">{{ v.weight }}</span>
+              <span class="variant-btn__qty">Qty: {{ v.quantity }}</span>
+            </button>
           }
         </div>
+
+        @if (selectedVariant(); as v) {
+          <div class="price-block">
+            @if (v.discountedPrice) {
+              <span class="price-original">₹{{ v.price }}</span>
+              <span class="price">₹{{ v.discountedPrice }}</span>
+              <span class="price-discount">{{ getDiscount(v.price, v.discountedPrice) }}% OFF</span>
+            } @else {
+              <span class="price">₹{{ v.price }}</span>
+            }
+          </div>
+
+          <p class="stock" [class.stock--out]="v.stock === 0">
+            {{ v.stock > 0 ? 'In Stock (' + v.stock + ' available)' : 'Out of Stock' }}
+          </p>
+
+          <button class="btn btn--primary btn--lg" (click)="addToCart()" [disabled]="v.stock === 0">
+            Add to Cart
+          </button>
+        }
       }
     </div>
   </div>
+
+  <hr />
+
+  <h3>Description</h3>
+  <p>{{ p.description }}</p>
 }

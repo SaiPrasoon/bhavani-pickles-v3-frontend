@@ -62,7 +62,9 @@ export class ProductListComponent implements OnInit {
       this.toast.info('Please login to add items to cart');
       return;
     }
-    this.cartService.addItem(product._id, 1).subscribe(() => {
+    const weight = product.variants[0]?.weight;
+    if (!weight) return;
+    this.cartService.addItem(product._id, weight, 1).subscribe(() => {
       this.toast.success(`${product.name} added to cart!`);
     });
   }

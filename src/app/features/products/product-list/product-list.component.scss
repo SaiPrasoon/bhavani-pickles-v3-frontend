@@ -8,3 +8,15 @@
 .stock { font-size: 0.82rem; color: #81c784; }
 .stock--low { color: #ffb74d; }
 .stock--out { color: #ef9a9a; }
+
+.product-grid > .card {
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: calc(50% - 8px);
+  }
+
+  @media (min-width: 1200px) {
+    width: calc(25% - 12px);
+  }
+}

@@ -14,7 +14,12 @@
     <tbody>
       @for (item of cartService.cart()!.items; track item.product._id) {
         <tr>
-          <td>{{ item.product.name }}</td>
+          <td>
+            {{ item.product.name }}
+            @if (item.weight) {
+              <span class="cart-variant">{{ item.weight }}</span>
+            }
+          </td>
           <td>₹{{ item.price }}</td>
           <td>
             <div class="qty-ctrl">

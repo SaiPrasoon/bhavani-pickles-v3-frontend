@@ -44,14 +44,11 @@
           <div class="card__body">
             <p class="card__title">{{ product.name }}</p>
             <p class="card__subtitle">{{ product.category.name }}</p>
-            <p>
-              @if (product.discountPrice) {
-                <span class="price-original">₹{{ product.price }}</span>
-                <span class="price">₹{{ product.discountPrice }}</span>
-              } @else {
-                <span class="price">₹{{ product.price }}</span>
-              }
-            </p>
+            @if (product.variants.length) {
+              <p>
+                <span class="price">₹{{ product.variants[0].price }} onwards</span>
+              </p>
+            }
           </div>
           <div class="card__footer">
             <a [routerLink]="['/products', product._id]" class="btn btn--outline btn--sm"

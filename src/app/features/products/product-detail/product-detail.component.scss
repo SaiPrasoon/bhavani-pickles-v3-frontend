@@ -14,12 +14,54 @@
   justify-content: center;
   border-radius: 8px;
   color: var(--c-text-faint);
+  .material-symbols-rounded { font-size: 48px; }
 }
 .breadcrumb { font-size: 0.85rem; color: var(--c-text-muted); margin-bottom: 12px; a { color: var(--c-amber); } }
 .category-label { color: var(--c-text-muted); margin-bottom: 12px; }
 .price-block { display: flex; align-items: center; gap: 10px; margin: 16px 0; }
-.meta { color: var(--c-text-muted); font-size: 0.9rem; }
 .stock { color: #81c784; margin-bottom: 20px; font-size: 0.9rem; }
 .stock--out { color: #ef9a9a; }
 .btn--lg { padding: 12px 28px; font-size: 1rem; margin-bottom: 24px; }
-.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+// ─── Variant selector ──────────────────────────────────────────────────────────
+.variant-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.variant-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 14px;
+  background: rgba(240, 235, 224, 0.06);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  color: var(--c-text-muted);
+
+  &:hover {
+    border-color: var(--c-amber);
+    color: var(--c-text);
+  }
+
+  &--active {
+    border-color: var(--c-amber);
+    background: rgba(200, 135, 10, 0.14);
+    color: var(--c-text);
+  }
+
+  &__weight {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  &__qty {
+    font-size: 0.72rem;
+    color: var(--c-text-faint);
+  }
+}

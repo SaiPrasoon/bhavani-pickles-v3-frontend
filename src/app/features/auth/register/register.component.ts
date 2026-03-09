@@ -2,7 +2,6 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
-import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +14,6 @@ export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
-  private toast = inject(ToastService);
 
   loading = signal(false);
   form = this.fb.group({
@@ -30,10 +28,7 @@ export class RegisterComponent {
     this.loading.set(true);
     this.authService.register(this.form.value as any).subscribe({
       next: () => this.router.navigate(['/']),
-      error: (err) => {
-        this.toast.error(err.error?.message || 'Registration failed');
-        this.loading.set(false);
-      },
+      error: () => this.loading.set(false),
     });
   }
 }

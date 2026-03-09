@@ -2,7 +2,7 @@
   <section class="table-header">
     <div class="table-title">
       <button class="btn btn--icon back-icon" (click)="goBack()">
-        <span class="material-symbols-rounded"> arrow_back </span>
+        <span class="material-symbols-rounded">arrow_back</span>
       </button>
       <h1 class="m-0">Products</h1>
     </div>
@@ -15,10 +15,10 @@
   <table class="table">
     <thead>
       <tr>
+        <th>Image</th>
         <th>Name</th>
         <th>Category</th>
-        <th>Price</th>
-        <th>Stock</th>
+        <th>Variants</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
@@ -26,19 +26,33 @@
     <tbody>
       @for (product of products(); track product._id) {
         <tr>
-          <td>{{ product.name }}</td>
-          <td>{{ product?.category?.name }}</td>
           <td>
-            @if (product.discountPrice) {
-              <span class="price-original">₹{{ product.price }}</span>
-              <span class="price-discounted">₹{{ product.discountPrice }}</span>
+            @if (product.images.length) {
+              <img class="prod-thumb" [src]="product.images[0]" [alt]="product.name">
             } @else {
-              ₹{{ product.price }}
+              <div class="prod-thumb prod-thumb--empty">
+                <span class="material-symbols-rounded">image</span>
+              </div>
             }
           </td>
-          <td>{{ product.stock }}</td>
+          <td>{{ product.name }}</td>
+          <td>{{ product.category.name }}</td>
           <td>
-            <span class="badge" [class.badge--active]="product.isActive" [class.badge--inactive]="!product.isActive">
+            @if (product.variants.length) {
+              <div class="variant-pills">
+                @for (v of product.variants; track v.weight) {
+                  <span class="variant-pill">
+                    {{ v.weight }} · ₹{{ v.discountedPrice ?? v.price }}
+                    <span class="variant-pill__stock">{{ v.stock }} left</span>
+                  </span>
+                }
+              </div>
+            } @else {
+              <span class="text-muted">—</span>
+            }
+          </td>
+          <td>
+            <span class="badge" [class.badge--shipped]="product.isActive" [class.badge--cancelled]="!product.isActive">
               {{ product.isActive ? 'Active' : 'Inactive' }}
             </span>
           </td>

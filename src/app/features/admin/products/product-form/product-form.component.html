@@ -1,8 +1,9 @@
 <form [formGroup]="form" (ngSubmit)="submit()">
+  <!-- ── Basic info ─────────────────────────────────────────────── -->
   <div class="form-row">
     <div class="form-group">
       <label class="form-label">Name *</label>
-      <input class="form-control" formControlName="name" placeholder="Product name">
+      <input class="form-control" formControlName="name" placeholder="Product name" />
     </div>
 
     <div class="form-group">
@@ -18,55 +19,161 @@
 
   <div class="form-group">
     <label class="form-label">Description *</label>
-    <textarea class="form-control" formControlName="description" rows="3" placeholder="Product description"></textarea>
+    <textarea
+      class="form-control"
+      formControlName="description"
+      rows="3"
+      placeholder="Product description"
+    ></textarea>
   </div>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">Price (₹) *</label>
-      <input class="form-control" type="number" formControlName="price" placeholder="0" min="0">
+  <!-- ── Variants ───────────────────────────────────────────────── -->
+  <div class="variants-section">
+    <div class="variants-header">
+      <span class="form-label">Price Variants *</span>
+      <button type="button" class="btn btn--sm btn--outline" (click)="addVariant()">
+        <span class="material-symbols-rounded">add</span> Add Variant
+      </button>
     </div>
 
-    <div class="form-group">
-      <label class="form-label">Discount Price (₹)</label>
-      <input class="form-control" type="number" formControlName="discountPrice" placeholder="Optional" min="0">
-    </div>
+    <div formArrayName="variants" class="variants-list">
+      @for (vg of variantsArray.controls; track $index) {
+        <div class="variant-card" [formGroupName]="$index">
+          <div class="variant-card__header">
+            <span class="variant-card__label">Variant {{ $index + 1 }}</span>
+            @if (variantsArray.length > 1) {
+              <button
+                type="button"
+                class="btn btn--icon btn--sm variant-card__remove"
+                (click)="removeVariant($index)"
+              >
+                <span class="material-symbols-rounded">close</span>
+              </button>
+            }
+          </div>
 
-    <div class="form-group">
-      <label class="form-label">Stock *</label>
-      <input class="form-control" type="number" formControlName="stock" placeholder="0" min="0">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Weight *</label>
+              <select class="form-control" formControlName="weight">
+                <option value="" disabled>Select weight</option>
+                <option value="100gms">100gms</option>
+                <option value="200gms">200gms</option>
+                <option value="250gms">250gms</option>
+                <option value="500gms">500gms</option>
+                <option value="1Kg">1Kg</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Quantity *</label>
+              <input
+                class="form-control"
+                type="number"
+                formControlName="quantity"
+                placeholder="1"
+                min="1"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Price (₹) *</label>
+              <input
+                class="form-control"
+                type="number"
+                formControlName="price"
+                placeholder="0"
+                min="0"
+              />
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Stock *</label>
+              <input
+                class="form-control"
+                type="number"
+                formControlName="stock"
+                placeholder="0"
+                min="0"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Discounted Price (₹)</label>
+              <input
+                class="form-control"
+                type="number"
+                formControlName="discountedPrice"
+                placeholder="Optional"
+                min="0"
+              />
+            </div>
+          </div>
+        </div>
+      }
     </div>
   </div>
 
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">Weight</label>
-      <input class="form-control" formControlName="weight" placeholder="e.g. 250g">
-    </div>
-
-    <div class="form-group">
-      <label class="form-label">Tags</label>
-      <input class="form-control" formControlName="tags" placeholder="spicy, bestseller (comma-separated)">
-    </div>
-  </div>
-
+  <!-- ── Images ─────────────────────────────────────────────────── -->
   <div class="form-group">
-    <label class="form-label">Ingredients</label>
-    <textarea class="form-control" formControlName="ingredients" rows="2" placeholder="List of ingredients"></textarea>
+    <label class="form-label">Images</label>
+
+    <div class="images-grid">
+      <!-- Existing images (when editing) -->
+      @for (url of existingImages(); track url) {
+        <div class="img-thumb">
+          <img [src]="url" alt="Product image" />
+          <button type="button" class="img-thumb__remove" (click)="removeExistingImage($index)">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+      }
+
+      <!-- New image previews -->
+      @for (url of previewUrls(); track $index) {
+        <div class="img-thumb img-thumb--new">
+          <img [src]="url" alt="New image" />
+          <button type="button" class="img-thumb__remove" (click)="removeNewImage($index)">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+      }
+
+      <!-- Upload trigger -->
+      <label class="img-add-btn" for="product-images">
+        <span class="material-symbols-rounded">add_photo_alternate</span>
+        <span>Add Image</span>
+      </label>
+    </div>
+
+    <input
+      id="product-images"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      multiple
+      class="file-input"
+      (change)="onFilesChange($event)"
+    />
+    <span class="form-hint">JPEG, PNG or WebP · max 5 MB each</span>
   </div>
 
+  <!-- ── Status ─────────────────────────────────────────────────── -->
   <div class="form-group form-group--inline">
     <label class="toggle">
-      <input type="checkbox" formControlName="isActive">
+      <input type="checkbox" formControlName="isActive" />
       <span class="toggle__track"></span>
       <span class="toggle__label">Active (visible to customers)</span>
     </label>
   </div>
 
+  <!-- ── Actions ────────────────────────────────────────────────── -->
   <div class="form-actions">
     <button class="btn btn--ghost" type="button" (click)="cancel()">Cancel</button>
-    <button class="btn btn--primary" type="submit" [disabled]="form.invalid || saving()">
-      {{ saving() ? 'Saving…' : (product() ? 'Update Product' : 'Add Product') }}
+    <button
+      class="btn btn--primary"
+      type="submit"
+      [disabled]="form.invalid || saving() || uploading()"
+    >
+      {{ saving() || uploading() ? 'Saving…' : product() ? 'Update Product' : 'Add Product' }}
     </button>
   </div>
 </form>

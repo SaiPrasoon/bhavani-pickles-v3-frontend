@@ -42,10 +42,7 @@ export class CheckoutComponent implements OnInit {
         this.toast.success('Order placed successfully!');
         this.router.navigate(['/orders', order._id]);
       },
-      error: (err) => {
-        this.toast.error(err.error?.message || 'Failed to place order');
-        this.loading.set(false);
-      },
+      error: () => this.loading.set(false),
     });
   }
 }

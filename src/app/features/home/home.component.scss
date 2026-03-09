@@ -26,15 +26,38 @@
 }
 
 .category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 16px;
+  width: 100%;
 }
 
 .cat-card {
   cursor: pointer;
   text-decoration: none;
   color: inherit;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: calc(50% - 8px);
+  }
+
+  @media (min-width: 1200px) {
+    width: calc(25% - 12px);
+  }
+}
+
+.product-grid > .card {
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: calc(50% - 8px);
+  }
+
+  @media (min-width: 1200px) {
+    width: calc(25% - 12px);
+  }
 }
 
 .card__body {

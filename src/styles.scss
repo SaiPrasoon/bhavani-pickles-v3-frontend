@@ -32,6 +32,9 @@ body {
   background: #1a1208; // warm dark base, shows beneath image
   color: var(--c-text);
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
 
   // Background image at 50% opacity via pseudo-element
   &::before {
@@ -326,9 +329,11 @@ p {
 
 // ─── Grid helpers ────────────────────────────────────────────────────────────
 .product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 16px;
+  width: 100%;
 }
 .two-col {
   display: grid;

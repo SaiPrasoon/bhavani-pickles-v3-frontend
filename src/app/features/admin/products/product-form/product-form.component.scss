@@ -9,6 +9,142 @@
   align-items: center;
 }
 
+.form-hint {
+  font-size: 0.76rem;
+  color: var(--c-text-faint);
+  margin-top: 4px;
+  display: block;
+}
+
+// ─── Variants ─────────────────────────────────────────────────────────────────
+.variants-section {
+  margin-bottom: 16px;
+}
+
+.variants-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.variants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.variant-card {
+  background: rgba(240, 235, 224, 0.04);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 12px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  &__label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__remove {
+    width: 24px;
+    height: 24px;
+    min-width: unset;
+    padding: 2px;
+    color: var(--c-text-faint);
+
+    &:hover { color: #ef9a9a; }
+
+    .material-symbols-rounded { font-size: 16px; }
+  }
+
+  // Tighten spacing inside variant card
+  .form-group { margin-bottom: 0; }
+  .form-row { gap: 8px; }
+}
+
+// ─── Images grid ──────────────────────────────────────────────────────────────
+.file-input { display: none; }
+
+.images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.img-thumb {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--c-border);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &--new { border-color: var(--c-amber); }
+
+  &__remove {
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.15s;
+
+    &:hover { background: rgba(0, 0, 0, 0.85); }
+
+    .material-symbols-rounded { font-size: 13px; }
+  }
+}
+
+.img-add-btn {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed rgba(240, 235, 224, 0.2);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--c-text-faint);
+  font-size: 0.7rem;
+  transition: border-color 0.2s, color 0.2s;
+
+  &:hover {
+    border-color: var(--c-amber);
+    color: var(--c-amber);
+  }
+
+  .material-symbols-rounded { font-size: 24px; }
+}
+
 // ─── Toggle ───────────────────────────────────────────────────────────────────
 .toggle {
   display: flex;

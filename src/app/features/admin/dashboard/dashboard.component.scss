@@ -1,21 +1,73 @@
+// ── Stat cards ────────────────────────────────────────────────────────────────
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 16px;
+  margin-bottom: 32px;
 }
+
 .stat-card {
   text-align: center;
+
   .stat-icon {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     margin-bottom: 8px;
     color: var(--c-amber);
+    display: block;
   }
+
   h2 {
-    font-size: 2.2rem;
+    font-size: 2rem;
     color: var(--c-amber);
     margin: 4px 0;
   }
+
   p {
     color: var(--c-text-muted);
+    margin: 0;
+    font-size: 0.88rem;
+  }
+}
+
+// ── Chart layout ──────────────────────────────────────────────────────────────
+.charts-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+
+  &--single {
+    grid-template-columns: minmax(0, 480px);
+    justify-content: center;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+
+    &--single { grid-template-columns: 1fr; }
+  }
+}
+
+.chart-card {
+  min-width: 0; // prevent grid blowout
+}
+
+.chart-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--c-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+
+.chart-wrap {
+  position: relative;
+  height: 240px;
+
+  &--doughnut {
+    height: 280px;
+    max-width: 380px;
+    margin: 0 auto;
   }
 }

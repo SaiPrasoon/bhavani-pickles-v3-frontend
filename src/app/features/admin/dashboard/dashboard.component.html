@@ -1,8 +1,10 @@
 <h1>Admin Dashboard</h1>
+
+<!-- ── Stat cards ──────────────────────────────────────────────────────────── -->
 <div class="stats-grid">
   <div class="stat-card card">
     <div class="card__body">
-      <div class="stat-icon">📦</div>
+      <span class="stat-icon material-symbols-rounded">inventory_2</span>
       <h2>{{ totalProducts() }}</h2>
       <p>Products</p>
     </div>
@@ -10,9 +12,10 @@
       <a routerLink="/admin/products" class="btn btn--sm btn--outline">Manage</a>
     </div>
   </div>
+
   <div class="stat-card card">
     <div class="card__body">
-      <div class="stat-icon">🧾</div>
+      <span class="stat-icon material-symbols-rounded">receipt_long</span>
       <h2>{{ totalOrders() }}</h2>
       <p>Orders</p>
     </div>
@@ -20,13 +23,97 @@
       <a routerLink="/admin/orders" class="btn btn--sm btn--outline">Manage</a>
     </div>
   </div>
+
   <div class="stat-card card">
     <div class="card__body">
-      <div class="stat-icon">🗂️</div>
+      <span class="stat-icon material-symbols-rounded">account_balance_wallet</span>
+      <h2>₹{{ totalRevenue() | number }}</h2>
+      <p>Total Revenue</p>
+    </div>
+  </div>
+
+  <div class="stat-card card">
+    <div class="card__body">
+      <span class="stat-icon material-symbols-rounded">category</span>
+      <h2>{{ totalCategories() }}</h2>
       <p>Categories</p>
     </div>
     <div class="card__footer">
       <a routerLink="/admin/categories" class="btn btn--sm btn--outline">Manage</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── Charts row 1 ────────────────────────────────────────────────────────── -->
+<div class="charts-row">
+  <div class="chart-card card">
+    <div class="card__body">
+      <h3 class="chart-title">Orders — Last 7 Days</h3>
+      <div class="chart-wrap">
+        <canvas baseChart
+          [data]="ordersLineData()"
+          [options]="ordersLineOptions"
+          type="line">
+        </canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card card">
+    <div class="card__body">
+      <h3 class="chart-title">Revenue — Last 7 Days</h3>
+      <div class="chart-wrap">
+        <canvas baseChart
+          [data]="revenueBarData()"
+          [options]="revenueBarOptions"
+          type="bar">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Charts row 2 ────────────────────────────────────────────────────────── -->
+<div class="charts-row">
+  <div class="chart-card card">
+    <div class="card__body">
+      <h3 class="chart-title">Products by Category</h3>
+      <div class="chart-wrap">
+        <canvas baseChart
+          [data]="productsCatData()"
+          [options]="productsCatOptions"
+          type="bar">
+        </canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card card">
+    <div class="card__body">
+      <h3 class="chart-title">Orders by Category</h3>
+      <div class="chart-wrap">
+        <canvas baseChart
+          [data]="ordersCatData()"
+          [options]="ordersCatOptions"
+          type="pie">
+        </canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Charts row 3 ────────────────────────────────────────────────────────── -->
+<div class="charts-row charts-row--single">
+  <div class="chart-card chart-card--sm card">
+    <div class="card__body">
+      <h3 class="chart-title">Orders by Status</h3>
+      <div class="chart-wrap chart-wrap--doughnut">
+        <canvas baseChart
+          [data]="statusDoughnutData()"
+          [options]="statusDoughnutOptions"
+          type="doughnut">
+        </canvas>
+      </div>
     </div>
   </div>
 </div>

@@ -1,3 +1,14 @@
+.cart-variant {
+  display: inline-block;
+  font-size: 0.75rem;
+  color: var(--c-amber);
+  background: rgba(200, 135, 10, 0.12);
+  border: 1px solid rgba(200, 135, 10, 0.25);
+  border-radius: 4px;
+  padding: 1px 6px;
+  margin-left: 6px;
+}
+
 .qty-ctrl {
   display: flex;
   align-items: center;

@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ProductsService } from '../../../core/services/products.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Product } from '../../../core/models/product.model';
-import { ProductFormComponent } from './product-form/product-form.component';
+import { ProductFormComponent, ProductSubmitPayload } from './product-form/product-form.component';
 
 @Component({
   selector: 'app-admin-products',
@@ -43,7 +43,7 @@ export class AdminProductsComponent implements OnInit {
     this.editingProduct.set(null);
   }
 
-  onFormSubmitted(data: Partial<Product>): void {
+  onFormSubmitted(data: ProductSubmitPayload): void {
     this.saving.set(true);
     const product = this.editingProduct();
     const request$ = product

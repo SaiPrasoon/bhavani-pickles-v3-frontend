@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ProductsService } from '../../../core/services/products.service';
 import { CartService } from '../../../core/services/cart.service';
@@ -22,15 +22,24 @@ export class ProductDetailComponent implements OnInit {
   private toast = inject(ToastService);
 
   product = signal<Product | null>(null);
+  selectedVariantIdx = signal(0);
+
+  selectedVariant = computed(() => {
+    const p = this.product();
+    return p?.variants?.[this.selectedVariantIdx()] ?? null;
+  });
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.productsService.getOne(id).subscribe(p => this.product.set(p));
   }
 
-  getDiscount(product: Product): number {
-    if (!product.discountPrice) return 0;
-    return Math.round(((product.price - product.discountPrice) / product.price) * 100);
+  selectVariant(idx: number): void {
+    this.selectedVariantIdx.set(idx);
+  }
+
+  getDiscount(price: number, discountedPrice: number): number {
+    return Math.round(((price - discountedPrice) / price) * 100);
   }
 
   addToCart(): void {
@@ -38,7 +47,9 @@ export class ProductDetailComponent implements OnInit {
       this.router.navigate(['/auth/login']);
       return;
     }
-    this.cartService.addItem(this.product()!._id, 1).subscribe(() => {
+    const variant = this.selectedVariant();
+    if (!variant?.weight) return;
+    this.cartService.addItem(this.product()!._id, variant.weight, 1).subscribe(() => {
       this.toast.success('Added to cart!');
     });
   }
