@@ -7,12 +7,16 @@
 .auth-card {
   width: 100%;
   max-width: 420px;
-  background: #fff;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
   border-radius: 10px;
   padding: 32px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
 
-  h2 { margin-bottom: 24px; }
+  h2 {
+    margin-bottom: 24px;
+    color: var(--c-text);
+  }
 }
 
 .full-width { width: 100%; justify-content: center; }
@@ -21,7 +25,7 @@
   text-align: center;
   margin-top: 20px;
   font-size: 0.9rem;
-  color: #666;
+  color: var(--c-text-muted);
 
-  a { color: #2e7d32; font-weight: 500; }
+  a { color: var(--c-amber); font-weight: 500; }
 }

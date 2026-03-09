@@ -10,7 +10,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   animation: slide-in 0.2s ease;
 
-  &--success { background: #2e7d32; }
+  &--success { background: var(--c-primary); }
   &--error   { background: #c62828; }
   &--info    { background: #1565c0; }
 }

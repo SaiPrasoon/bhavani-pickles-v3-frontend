@@ -1,2 +1,21 @@
-.stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-.stat-card { text-align: center; .stat-icon { font-size: 2.5rem; margin-bottom: 8px; } h2 { font-size: 2.2rem; color: #2e7d32; margin: 4px 0; } }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.stat-card {
+  text-align: center;
+  .stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 8px;
+    color: var(--c-amber);
+  }
+  h2 {
+    font-size: 2.2rem;
+    color: var(--c-amber);
+    margin: 4px 0;
+  }
+  p {
+    color: var(--c-text-muted);
+  }
+}

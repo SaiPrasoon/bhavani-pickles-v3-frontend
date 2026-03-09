@@ -1,89 +1,269 @@
-.navbar {
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-  height: 60px;
-  background: #2e7d32;
+// ─── Sidebar Overlay ─────────────────────────────────────────────────────────
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  background: var(--c-primary-dkr);
   color: #fff;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  z-index: 201;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  &--open { transform: translateX(0); }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 12px;
+    background: rgba(0, 0, 0, 0.2);
+
+    .sidebar__user-icon { font-size: 36px; opacity: 0.85; }
+
+    .sidebar__user-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  &__brand {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  &__nav {
+    padding: 6px 0;
+    display: flex;
+    flex-direction: column;
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 20px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.92rem;
+      transition: background 0.15s;
+      position: relative;
+
+      &:hover,
+      &.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      .material-symbols-rounded { font-size: 20px; flex-shrink: 0; }
+    }
+  }
+
+  &__nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 20px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .material-symbols-rounded { font-size: 20px; flex-shrink: 0; }
+  }
+
+  &__badge {
+    margin-left: auto;
+    background: var(--c-primary);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  &__divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 6px 0;
+  }
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 8px;
+  height: 60px;
   position: sticky;
   top: 0;
   z-index: 100;
 
-  &__brand {
-    font-size: 1.1rem;
-    font-weight: 700;
+  background: transparent;
+  color: var(--c-text);
+  box-shadow: none;
+  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+
+  &--scrolled {
+    background: var(--c-primary);
     color: #fff;
-    text-decoration: none;
-    margin-right: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+
+    .icon-btn:hover { background: rgba(255, 255, 255, 0.15); }
   }
 
-  &__links {
+  &__left {
     display: flex;
     align-items: center;
-    gap: 8px;
+  }
 
-    a {
-      color: rgba(255,255,255,0.9);
-      text-decoration: none;
-      padding: 6px 10px;
-      border-radius: 4px;
-      transition: background 0.15s;
+  &__logo {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: currentColor;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+  }
 
-      &:hover, &.active { background: rgba(255,255,255,0.15); }
-    }
+  &__right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 2px;
+
+    // Hide on mobile — use sidebar instead
+    @media (max-width: 767px) { display: none; }
   }
 }
 
-.cart-link {
-  position: relative;
-  font-size: 1.2rem;
+// ─── Icon Button ─────────────────────────────────────────────────────────────
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: currentColor;
   cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.15s;
+  text-decoration: none;
+
+  &:hover { background: rgba(240, 235, 224, 0.12); }
+
+  .material-symbols-rounded { font-size: 24px; }
 }
+
+// ─── Cart Badge ───────────────────────────────────────────────────────────────
+.cart-btn { position: relative; }
 
 .cart-badge {
   position: absolute;
-  top: -6px;
-  right: -6px;
+  top: 4px;
+  right: 4px;
   background: #ff7043;
   color: #fff;
   border-radius: 50%;
-  font-size: 0.65rem;
-  width: 18px;
-  height: 18px;
+  font-size: 0.6rem;
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
+  pointer-events: none;
 }
 
-.dropdown {
+// ─── User Menu ────────────────────────────────────────────────────────────────
+.user-menu {
   position: relative;
 
-  button { color: rgba(255,255,255,0.9); }
-
-  &__menu {
+  &__dropdown {
     position: absolute;
     right: 0;
     top: calc(100% + 8px);
-    background: #fff;
+    background: rgba(28, 20, 12, 0.96);
+    border: 1px solid var(--c-border);
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
     min-width: 160px;
     overflow: hidden;
+    animation: fadeIn 0.15s ease;
 
-    a, button {
+    hr { margin: 0; border: none; border-top: 1px solid var(--c-border); }
+
+    a,
+    button {
       display: block;
       width: 100%;
       padding: 10px 16px;
       text-align: left;
-      color: #333 !important;
+      color: var(--c-text);
       background: transparent;
       border: none;
       cursor: pointer;
       font-size: 0.9rem;
+      text-decoration: none;
+      box-sizing: border-box;
 
-      &:hover { background: #f5f5f5; }
+      &:hover { background: rgba(240, 235, 224, 0.07); }
     }
   }
+
+  &__name {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+// ─── Animations ───────────────────────────────────────────────────────────────
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

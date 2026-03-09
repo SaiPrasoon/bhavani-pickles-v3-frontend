@@ -1,34 +1,117 @@
-<nav class="navbar">
-  <a routerLink="/home" class="navbar__brand">🥒 Bhavani Pickles</a>
+@if (sidebarOpen()) {
+  <div class="sidebar-overlay" (click)="closeSidebar()"></div>
+}
 
-  <div class="navbar__links">
-    <a routerLink="/products" routerLinkActive="active">Products</a>
+<aside class="sidebar" [class.sidebar--open]="sidebarOpen()">
+  <!-- User info (logged in) -->
+  @if (authService.isLoggedIn()) {
+    <div class="sidebar__user">
+      <span class="material-symbols-rounded sidebar__user-icon">account_circle</span>
+      <span class="sidebar__user-name">{{ authService.user()?.name }}</span>
+    </div>
+  }
+
+  <div class="sidebar__header">
+    <span class="sidebar__brand">Bhavani Pickles</span>
+    <button class="icon-btn" (click)="closeSidebar()" aria-label="Close menu">
+      <span class="material-symbols-rounded">close</span>
+    </button>
+  </div>
+
+  <nav class="sidebar__nav">
+    <a routerLink="/products" routerLinkActive="active" (click)="closeSidebar()">
+      <span class="material-symbols-rounded">store</span>
+      Products
+    </a>
+    <a routerLink="/wishlist" routerLinkActive="active" (click)="closeSidebar()">
+      <span class="material-symbols-rounded">favorite</span>
+      Wishlist
+    </a>
 
     @if (authService.isLoggedIn()) {
-      <a routerLink="/cart" class="cart-link">
-        🛒
+      <a routerLink="/cart" routerLinkActive="active" (click)="closeSidebar()">
+        <span class="material-symbols-rounded">shopping_cart</span>
+        Cart
         @if (cartService.itemCount() > 0) {
-          <span class="cart-badge">{{ cartService.itemCount() }}</span>
+          <span class="sidebar__badge">{{ cartService.itemCount() }}</span>
         }
       </a>
+      <a routerLink="/orders" routerLinkActive="active" (click)="closeSidebar()">
+        <span class="material-symbols-rounded">receipt_long</span>
+        My Orders
+      </a>
+      @if (authService.isAdmin()) {
+        <a routerLink="/admin" routerLinkActive="active" (click)="closeSidebar()">
+          <span class="material-symbols-rounded">admin_panel_settings</span>
+          Admin Panel
+        </a>
+      }
 
-      <div class="dropdown">
-        <button class="btn btn--ghost" (click)="toggleMenu()">
-          {{ authService.user()?.name }} ▾
-        </button>
-        @if (menuOpen()) {
-          <div class="dropdown__menu" (click)="closeMenu()">
+      <div class="sidebar__divider"></div>
+
+      <button class="sidebar__nav-btn" (click)="logout()">
+        <span class="material-symbols-rounded">logout</span>
+        Logout
+      </button>
+    } @else {
+      <div class="sidebar__divider"></div>
+
+      <a routerLink="/auth/login" routerLinkActive="active" (click)="closeSidebar()">
+        <span class="material-symbols-rounded">login</span>
+        Login
+      </a>
+      <a routerLink="/auth/register" routerLinkActive="active" (click)="closeSidebar()">
+        <span class="material-symbols-rounded">person_add</span>
+        Register
+      </a>
+    }
+  </nav>
+</aside>
+
+<header class="header" [class.header--scrolled]="scrolled()">
+  <div class="header__left">
+    <button class="icon-btn" (click)="toggleSidebar()" aria-label="Open menu">
+      <span class="material-symbols-rounded">menu</span>
+    </button>
+  </div>
+
+  <a routerLink="/" class="header__logo">
+    <img src="bhavani-pickles-logo.svg" alt="Bhavani Pickles Logo" height="40" width="40" />
+  </a>
+
+  <div class="header__right">
+    <a routerLink="/wishlist" class="icon-btn" aria-label="Wishlist">
+      <span class="material-symbols-rounded">favorite</span>
+    </a>
+
+    <a routerLink="/cart" class="icon-btn cart-btn" aria-label="Cart">
+      <span class="material-symbols-rounded">shopping_cart</span>
+      @if (cartService.itemCount() > 0) {
+        <span class="cart-badge">{{ cartService.itemCount() }}</span>
+      }
+    </a>
+
+    <div class="user-menu">
+      <button class="icon-btn" (click)="toggleUserMenu()" aria-label="User account">
+        <span class="material-symbols-rounded">person</span>
+      </button>
+
+      @if (userMenuOpen()) {
+        <div class="user-menu__dropdown" (click)="closeUserMenu()">
+          @if (authService.isLoggedIn()) {
+            <div class="user-menu__name">{{ authService.user()?.name }}</div>
+            <hr />
             <a routerLink="/orders">My Orders</a>
             @if (authService.isAdmin()) {
               <a routerLink="/admin">Admin Panel</a>
             }
             <button (click)="authService.logout()">Logout</button>
-          </div>
-        }
-      </div>
-    } @else {
-      <a routerLink="/auth/login" class="btn btn--ghost">Login</a>
-      <a routerLink="/auth/register" class="btn btn--primary">Register</a>
-    }
+          } @else {
+            <a routerLink="/auth/login">Login</a>
+            <a routerLink="/auth/register">Register</a>
+          }
+        </div>
+      }
+    </div>
   </div>
-</nav>
+</header>

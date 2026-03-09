@@ -1,17 +1,80 @@
-<div class="page-header"><h1>Products</h1></div>
-<table class="table">
-  <thead>
-    <tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr>
-  </thead>
-  <tbody>
-    @for (product of products(); track product._id) {
+<div class="layout">
+  <section class="table-header">
+    <div class="table-title">
+      <button class="btn btn--icon back-icon" (click)="goBack()">
+        <span class="material-symbols-rounded"> arrow_back </span>
+      </button>
+      <h1 class="m-0">Products</h1>
+    </div>
+    <button class="btn btn--primary" (click)="openAddModal()">
+      <span class="material-symbols-rounded">add</span>
+      Add Product
+    </button>
+  </section>
+
+  <table class="table">
+    <thead>
       <tr>
-        <td>{{ product.name }}</td>
-        <td>{{ product?.category?.name }}</td>
-        <td>₹{{ product.price }}</td>
-        <td>{{ product.stock }}</td>
-        <td><button class="btn btn--sm btn--danger" (click)="delete(product)">Delete</button></td>
+        <th>Name</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Stock</th>
+        <th>Status</th>
+        <th>Actions</th>
       </tr>
-    }
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      @for (product of products(); track product._id) {
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>{{ product?.category?.name }}</td>
+          <td>
+            @if (product.discountPrice) {
+              <span class="price-original">₹{{ product.price }}</span>
+              <span class="price-discounted">₹{{ product.discountPrice }}</span>
+            } @else {
+              ₹{{ product.price }}
+            }
+          </td>
+          <td>{{ product.stock }}</td>
+          <td>
+            <span class="badge" [class.badge--active]="product.isActive" [class.badge--inactive]="!product.isActive">
+              {{ product.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn btn--icon" (click)="openEditModal(product)">
+                <span class="material-symbols-rounded">edit</span>
+              </button>
+              <button class="btn btn--icon btn--danger" (click)="delete(product)">
+                <span class="material-symbols-rounded">delete</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+@if (showModal()) {
+  <div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal card" (click)="$event.stopPropagation()">
+      <div class="modal__header">
+        <h3>{{ editingProduct() ? 'Edit Product' : 'Add Product' }}</h3>
+        <button class="modal__close" type="button" (click)="closeModal()">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div class="card__body">
+        <app-product-form
+          [product]="editingProduct()"
+          [saving]="saving()"
+          (submitted)="onFormSubmitted($event)"
+          (cancelled)="closeModal()"
+        />
+      </div>
+    </div>
+  </div>
+}

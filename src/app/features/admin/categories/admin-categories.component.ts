@@ -1,38 +1,63 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Category } from '../../../core/models/product.model';
+import { CategoryFormComponent } from './category-form/category-form.component';
 
 @Component({
   selector: 'app-admin-categories',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CategoryFormComponent],
   templateUrl: './admin-categories.component.html',
   styleUrl: './admin-categories.component.scss',
 })
 export class AdminCategoriesComponent implements OnInit {
   private categoriesService = inject(CategoriesService);
-  private fb = inject(FormBuilder);
   private toast = inject(ToastService);
+
   categories = signal<Category[]>([]);
-  form = this.fb.group({
-    name: ['', Validators.required],
-    description: [''],
-  });
+  saving = signal(false);
+  showModal = signal(false);
+  editingCategory = signal<Category | null>(null);
 
-  ngOnInit(): void { this.load(); }
-
-  load(): void {
-    this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
+  ngOnInit(): void {
+    this.load();
   }
 
-  submit(): void {
-    if (this.form.invalid) return;
-    this.categoriesService.create(this.form.value as any).subscribe(() => {
-      this.toast.success('Category added!');
-      this.form.reset();
-      this.load();
+  load(): void {
+    this.categoriesService.getAll().subscribe((cats) => this.categories.set(cats));
+  }
+
+  openAddModal(): void {
+    this.editingCategory.set(null);
+    this.showModal.set(true);
+  }
+
+  openEditModal(cat: Category): void {
+    this.editingCategory.set(cat);
+    this.showModal.set(true);
+  }
+
+  closeModal(): void {
+    this.showModal.set(false);
+    this.editingCategory.set(null);
+  }
+
+  onFormSubmitted(fd: FormData): void {
+    this.saving.set(true);
+    const cat = this.editingCategory();
+    const request$ = cat
+      ? this.categoriesService.update(cat._id, fd)
+      : this.categoriesService.create(fd);
+
+    request$.subscribe({
+      next: () => {
+        this.toast.success(cat ? 'Category updated!' : 'Category added!');
+        this.closeModal();
+        this.load();
+      },
+      error: () => this.saving.set(false),
+      complete: () => this.saving.set(false),
     });
   }
 
@@ -42,5 +67,9 @@ export class AdminCategoriesComponent implements OnInit {
       this.toast.success('Category deleted');
       this.load();
     });
+  }
+
+  goBack(): void {
+    window.history.back();
   }
 }

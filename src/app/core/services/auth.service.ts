@@ -1,6 +1,7 @@
 import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { User, AuthResponse } from '../models/user.model';
@@ -36,6 +37,17 @@ export class AuthService {
 
   getToken(): string | null {
     return localStorage.getItem('accessToken');
+  }
+
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refreshToken');
+  }
+
+  refreshAccessToken(): Observable<{ accessToken: string }> {
+    const refreshToken = this.getRefreshToken();
+    return this.http
+      .post<{ accessToken: string }>(`${environment.apiUrl}/auth/refresh`, { refreshToken })
+      .pipe(tap(res => localStorage.setItem('accessToken', res.accessToken)));
   }
 
   private storeSession(res: AuthResponse) {

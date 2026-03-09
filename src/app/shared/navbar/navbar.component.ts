@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
@@ -13,13 +13,23 @@ import { CartService } from '../../core/services/cart.service';
 export class NavbarComponent {
   authService = inject(AuthService);
   cartService = inject(CartService);
-  menuOpen = signal(false);
 
-  toggleMenu(): void {
-    this.menuOpen.update(v => !v);
+  sidebarOpen = signal(false);
+  userMenuOpen = signal(false);
+  scrolled = signal(false);
+
+  @HostListener('window:scroll')
+  onScroll(): void {
+    this.scrolled.set(window.scrollY > 10);
   }
 
-  closeMenu(): void {
-    this.menuOpen.set(false);
+  toggleSidebar(): void { this.sidebarOpen.update(v => !v); }
+  closeSidebar(): void { this.sidebarOpen.set(false); }
+  toggleUserMenu(): void { this.userMenuOpen.update(v => !v); }
+  closeUserMenu(): void { this.userMenuOpen.set(false); }
+
+  logout(): void {
+    this.closeSidebar();
+    this.authService.logout();
   }
 }

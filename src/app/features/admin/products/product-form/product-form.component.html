@@ -1,0 +1,72 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Name *</label>
+      <input class="form-control" formControlName="name" placeholder="Product name">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Category *</label>
+      <select class="form-control" formControlName="category">
+        <option value="" disabled>Select a category</option>
+        @for (cat of categories(); track cat._id) {
+          <option [value]="cat._id">{{ cat.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Description *</label>
+    <textarea class="form-control" formControlName="description" rows="3" placeholder="Product description"></textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Price (₹) *</label>
+      <input class="form-control" type="number" formControlName="price" placeholder="0" min="0">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Discount Price (₹)</label>
+      <input class="form-control" type="number" formControlName="discountPrice" placeholder="Optional" min="0">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Stock *</label>
+      <input class="form-control" type="number" formControlName="stock" placeholder="0" min="0">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">Weight</label>
+      <input class="form-control" formControlName="weight" placeholder="e.g. 250g">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tags</label>
+      <input class="form-control" formControlName="tags" placeholder="spicy, bestseller (comma-separated)">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">Ingredients</label>
+    <textarea class="form-control" formControlName="ingredients" rows="2" placeholder="List of ingredients"></textarea>
+  </div>
+
+  <div class="form-group form-group--inline">
+    <label class="toggle">
+      <input type="checkbox" formControlName="isActive">
+      <span class="toggle__track"></span>
+      <span class="toggle__label">Active (visible to customers)</span>
+    </label>
+  </div>
+
+  <div class="form-actions">
+    <button class="btn btn--ghost" type="button" (click)="cancel()">Cancel</button>
+    <button class="btn btn--primary" type="submit" [disabled]="form.invalid || saving()">
+      {{ saving() ? 'Saving…' : (product() ? 'Update Product' : 'Add Product') }}
+    </button>
+  </div>
+</form>

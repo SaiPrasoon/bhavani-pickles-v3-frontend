@@ -11,7 +11,7 @@ export class CategoriesService {
 
   getAll() { return this.http.get<Category[]>(this.base); }
   getOne(id: string) { return this.http.get<Category>(`${this.base}/${id}`); }
-  create(data: Partial<Category>) { return this.http.post<Category>(this.base, data); }
-  update(id: string, data: Partial<Category>) { return this.http.patch<Category>(`${this.base}/${id}`, data); }
+  create(formData: FormData) { return this.http.post<Category>(this.base, formData); }
+  update(id: string, data: FormData) { return this.http.patch<Category>(`${this.base}/${id}`, data); }
   delete(id: string) { return this.http.delete(`${this.base}/${id}`); }
 }

@@ -1,0 +1,70 @@
+// ─── Upload area ─────────────────────────────────────────────────────────────
+.file-input { display: none; }
+
+.upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 24px 16px;
+  border: 2px dashed rgba(240, 235, 224, 0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--c-text-faint);
+  transition: border-color 0.2s, color 0.2s;
+  text-align: center;
+
+  &:hover {
+    border-color: var(--c-amber);
+    color: var(--c-amber);
+  }
+
+  .material-symbols-rounded { font-size: 32px; }
+
+  span { font-size: 0.85rem; }
+
+  &__hint { font-size: 0.75rem; color: var(--c-text-faint); }
+}
+
+// ─── Image preview ────────────────────────────────────────────────────────────
+.img-preview {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &:hover { background: rgba(0, 0, 0, 0.85); }
+
+    .material-symbols-rounded { font-size: 16px; }
+  }
+}
+
+// ─── Actions ─────────────────────────────────────────────────────────────────
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
