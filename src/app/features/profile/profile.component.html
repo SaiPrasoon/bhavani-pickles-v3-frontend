@@ -1,0 +1,183 @@
+<div class="profile-page">
+  <h1 class="profile-title">My Profile</h1>
+
+  <!-- Tabs -->
+  <div class="profile-tabs">
+    <button
+      class="profile-tab"
+      [class.profile-tab--active]="activeTab() === 'info'"
+      (click)="setTab('info')"
+    >Personal Info</button>
+    <button
+      class="profile-tab"
+      [class.profile-tab--active]="activeTab() === 'addresses'"
+      (click)="setTab('addresses')"
+    >Addresses</button>
+    <button
+      class="profile-tab"
+      [class.profile-tab--active]="activeTab() === 'security'"
+      (click)="setTab('security')"
+    >Security</button>
+  </div>
+
+  <!-- Personal Info -->
+  @if (activeTab() === 'info') {
+    <div class="profile-card">
+      <h2 class="profile-card__title">Personal Information</h2>
+      @if (user()) {
+        <form [formGroup]="infoForm" (ngSubmit)="saveInfo()" class="profile-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input class="form-control" formControlName="name" placeholder="Your name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-control form-control--readonly" [value]="user()!.email" readonly />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input class="form-control" formControlName="phone" placeholder="10-digit mobile number" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Member Since</label>
+              <input class="form-control form-control--readonly" [value]="user()!.createdAt | date:'mediumDate'" readonly />
+            </div>
+          </div>
+          <div class="profile-form__actions">
+            <button type="submit" class="btn btn--primary" [disabled]="infoForm.invalid || savingInfo()">
+              {{ savingInfo() ? 'Saving…' : 'Save Changes' }}
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  }
+
+  <!-- Addresses -->
+  @if (activeTab() === 'addresses') {
+    <div class="profile-card">
+      <div class="profile-card__header">
+        <h2 class="profile-card__title">Saved Addresses</h2>
+        <button class="btn btn--primary btn--sm" (click)="showAddressForm.set(!showAddressForm())">
+          {{ showAddressForm() ? 'Cancel' : '+ Add Address' }}
+        </button>
+      </div>
+
+      @if (showAddressForm()) {
+        <form [formGroup]="addressForm" (ngSubmit)="submitAddress()" class="address-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Label</label>
+              <select class="form-control" formControlName="label">
+                <option>Home</option>
+                <option>Work</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone (optional)</label>
+              <input class="form-control" formControlName="phone" placeholder="Alternate phone" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Address Line 1</label>
+            <input class="form-control" formControlName="line1" placeholder="House / Flat / Street" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Address Line 2 (optional)</label>
+            <input class="form-control" formControlName="line2" placeholder="Area / Locality" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input class="form-control" formControlName="city" placeholder="City" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <input class="form-control" formControlName="state" placeholder="State" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pincode</label>
+              <input class="form-control" formControlName="pincode" placeholder="6-digit pincode" maxlength="6" />
+            </div>
+          </div>
+          <div class="form-check">
+            <input type="checkbox" id="isDefault" formControlName="isDefault" class="form-check__input" />
+            <label for="isDefault" class="form-check__label">Set as default address</label>
+          </div>
+          <div class="profile-form__actions">
+            <button type="submit" class="btn btn--primary" [disabled]="addressForm.invalid || savingAddress()">
+              {{ savingAddress() ? 'Saving…' : 'Save Address' }}
+            </button>
+          </div>
+        </form>
+      }
+
+      @if (user()?.addresses?.length) {
+        <div class="address-list">
+          @for (addr of user()!.addresses; track addr._id) {
+            <div class="address-card" [class.address-card--default]="addr.isDefault">
+              <div class="address-card__header">
+                <span class="address-label">{{ addr.label }}</span>
+                @if (addr.isDefault) {
+                  <span class="badge badge--success">Default</span>
+                }
+              </div>
+              <p class="address-card__text">{{ addr.line1 }}</p>
+              @if (addr.line2) {
+                <p class="address-card__text">{{ addr.line2 }}</p>
+              }
+              <p class="address-card__text">{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+              @if (addr.phone) {
+                <p class="address-card__text address-card__phone">{{ addr.phone }}</p>
+              }
+              <div class="address-card__actions">
+                @if (!addr.isDefault) {
+                  <button class="btn btn--ghost btn--sm" (click)="setDefault(addr._id!)">Set Default</button>
+                }
+                <button class="btn btn--danger btn--sm" (click)="deleteAddress(addr._id!)">Remove</button>
+              </div>
+            </div>
+          }
+        </div>
+      } @else if (!showAddressForm()) {
+        <div class="empty-state">
+          <div class="empty-state__icon">📍</div>
+          <p class="empty-state__text">No saved addresses yet</p>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Security -->
+  @if (activeTab() === 'security') {
+    <div class="profile-card">
+      <h2 class="profile-card__title">Change Password</h2>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="profile-form">
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <input class="form-control" type="password" formControlName="currentPassword" placeholder="Enter current password" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input class="form-control" type="password" formControlName="newPassword" placeholder="Minimum 6 characters" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input class="form-control" type="password" formControlName="confirmPassword" placeholder="Repeat new password" />
+          @if (passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.dirty) {
+            <span class="form-error">Passwords do not match</span>
+          }
+        </div>
+        <div class="profile-form__actions">
+          <button type="submit" class="btn btn--primary" [disabled]="passwordForm.invalid || savingPassword()">
+            {{ savingPassword() ? 'Updating…' : 'Update Password' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

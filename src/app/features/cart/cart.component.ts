@@ -18,18 +18,18 @@ export class CartComponent implements OnInit {
   }
 
   increment(item: CartItem): void {
-    this.cartService.updateItem(item.product._id, item.quantity + 1).subscribe();
+    this.cartService.updateItem(item.product._id, item.weight, item.quantity + 1).subscribe();
   }
 
   decrement(item: CartItem): void {
     if (item.quantity > 1) {
-      this.cartService.updateItem(item.product._id, item.quantity - 1).subscribe();
+      this.cartService.updateItem(item.product._id, item.weight, item.quantity - 1).subscribe();
     } else {
       this.remove(item);
     }
   }
 
   remove(item: CartItem): void {
-    this.cartService.removeItem(item.product._id).subscribe();
+    this.cartService.removeItem(item.product._id, item.weight).subscribe();
   }
 }

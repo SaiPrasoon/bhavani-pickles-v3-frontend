@@ -20,6 +20,7 @@
         <th>Category</th>
         <th>Variants</th>
         <th>Status</th>
+        <th>Out of Stock</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -43,7 +44,7 @@
                 @for (v of product.variants; track v.weight) {
                   <span class="variant-pill">
                     {{ v.weight }} · ₹{{ v.discountedPrice ?? v.price }}
-                    <span class="variant-pill__stock">{{ v.stock }} left</span>
+                    <span class="variant-pill__stock">{{ v.leftoverStock }} left</span>
                   </span>
                 }
               </div>
@@ -52,16 +53,29 @@
             }
           </td>
           <td>
-            <span class="badge" [class.badge--shipped]="product.isActive" [class.badge--cancelled]="!product.isActive">
-              {{ product.isActive ? 'Active' : 'Inactive' }}
-            </span>
+            @if (product.isOutOfStock) {
+              <span class="badge badge--out-of-stock">Out of Stock</span>
+            } @else {
+              <span class="badge" [class.badge--shipped]="product.isActive" [class.badge--cancelled]="!product.isActive">
+                {{ product.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            }
+          </td>
+          <td>
+            <label class="toggle-switch" [title]="product.isOutOfStock ? 'Mark as In Stock' : 'Mark as Out of Stock'">
+              <input type="checkbox" [checked]="product.isOutOfStock" (change)="toggleOutOfStock(product)" />
+              <span class="toggle-switch__track"></span>
+            </label>
           </td>
           <td>
             <div class="actions-cell">
-              <button class="btn btn--icon" (click)="openEditModal(product)">
+              <button class="btn btn--icon" title="Update Stock" (click)="openStockDrawer(product)">
+                <span class="material-symbols-rounded">inventory_2</span>
+              </button>
+              <button class="btn btn--icon" title="Edit" (click)="openEditModal(product)">
                 <span class="material-symbols-rounded">edit</span>
               </button>
-              <button class="btn btn--icon btn--danger" (click)="delete(product)">
+              <button class="btn btn--icon btn--danger" title="Delete" (click)="delete(product)">
                 <span class="material-symbols-rounded">delete</span>
               </button>
             </div>
@@ -72,6 +86,7 @@
   </table>
 </div>
 
+<!-- Product add / edit modal -->
 @if (showModal()) {
   <div class="modal-backdrop" (click)="closeModal()">
     <div class="modal card" (click)="$event.stopPropagation()">
@@ -91,4 +106,75 @@
       </div>
     </div>
   </div>
+}
+
+<!-- Stock drawer -->
+@if (stockProduct()) {
+  <div class="drawer-backdrop" (click)="closeStockDrawer()"></div>
+  <aside class="stock-drawer" (click)="$event.stopPropagation()">
+    <div class="stock-drawer__header">
+      <div>
+        <h3 class="stock-drawer__title">Update Stock</h3>
+        <p class="stock-drawer__sub">{{ stockProduct()!.name }}</p>
+      </div>
+      <button class="modal__close" type="button" (click)="closeStockDrawer()">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+
+    <form [formGroup]="variantsForm" (ngSubmit)="saveStock()" class="stock-drawer__form">
+      <div class="stock-drawer__body">
+        <div formArrayName="variants" class="variant-rows">
+          @for (row of variantsArray.controls; track $index; let i = $index) {
+            <div [formGroupName]="i" class="variant-row">
+              <div class="variant-row__head">
+                <span class="variant-row__index">Variant {{ i + 1 }}</span>
+                @if (variantsArray.length > 1) {
+                  <button type="button" class="btn btn--icon btn--danger btn--xs" (click)="removeVariantRow(i)" title="Remove">
+                    <span class="material-symbols-rounded">remove_circle</span>
+                  </button>
+                }
+              </div>
+
+              <div class="variant-row__grid">
+                <div class="form-group">
+                  <label class="form-label">Weight</label>
+                  <select class="form-control" formControlName="weight">
+                    <option value="">Select weight</option>
+                    @for (w of weightOptions; track w) {
+                      <option [value]="w">{{ w }}</option>
+                    }
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Stock</label>
+                  <input class="form-control" type="number" min="0" formControlName="stock" placeholder="0">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Price (₹)</label>
+                  <input class="form-control" type="number" min="0" formControlName="price" placeholder="0">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Discounted Price (₹)</label>
+                  <input class="form-control" type="number" min="0" formControlName="discountedPrice" placeholder="Optional">
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <button type="button" class="btn btn--ghost add-variant-btn" (click)="addVariantRow()">
+          <span class="material-symbols-rounded">add</span>
+          Add Variant
+        </button>
+      </div>
+
+      <div class="stock-drawer__footer">
+        <button type="button" class="btn btn--ghost" (click)="closeStockDrawer()">Cancel</button>
+        <button type="submit" class="btn btn--primary" [disabled]="variantsForm.invalid || savingStock()">
+          {{ savingStock() ? 'Saving…' : 'Save Changes' }}
+        </button>
+      </div>
+    </form>
+  </aside>
 }

@@ -23,10 +23,17 @@
               type="button"
               class="variant-btn"
               [class.variant-btn--active]="selectedVariantIdx() === i"
+              [class.variant-btn--in-cart]="cartQtyForWeight()(v.weight) > 0 && selectedVariantIdx() !== i"
               (click)="selectVariant(i)"
             >
+            <div class="flex flex-col gap-2"> 
               <span class="variant-btn__weight">{{ v.weight }}</span>
-              <span class="variant-btn__qty">Qty: {{ v.quantity }}</span>
+              
+              @if (cartQtyForWeight()(v.weight) > 0) {
+                <span class="variant-btn__cart-badge">{{ cartQtyForWeight()(v.weight) }} in cart</span>
+              }
+            </div>
+
             </button>
           }
         </div>
@@ -42,13 +49,26 @@
             }
           </div>
 
-          <p class="stock" [class.stock--out]="v.stock === 0">
-            {{ v.stock > 0 ? 'In Stock (' + v.stock + ' available)' : 'Out of Stock' }}
+          <p class="stock" [class.stock--out]="v.leftoverStock === 0 || p.isOutOfStock">
+            {{ (v.leftoverStock > 0 && !p.isOutOfStock) ? 'In Stock (' + v.leftoverStock + ' available)' : 'Out of Stock' }}
           </p>
 
-          <button class="btn btn--primary btn--lg" (click)="addToCart()" [disabled]="v.stock === 0">
-            Add to Cart
-          </button>
+          <!-- CTA: qty stepper if in cart, else Add to Cart -->
+          @if (cartItem(); as item) {
+            <div class="cart-ctrl">
+              <div class="cart-ctrl__stepper">
+                <button class="cart-ctrl__btn" type="button" (click)="decrementCart()">−</button>
+                <span class="cart-ctrl__qty">{{ item.quantity }}</span>
+                <button class="cart-ctrl__btn" type="button" (click)="incrementCart()" [disabled]="item.quantity >= v.leftoverStock">+</button>
+              </div>
+              <a routerLink="/cart" class="btn btn--outline">View Cart →</a>
+            </div>
+            <p class="cart-ctrl__hint">{{ item.quantity }} × ₹{{ v.discountedPrice ?? v.price }} = ₹{{ item.quantity * (v.discountedPrice ?? v.price) }} in cart</p>
+          } @else {
+            <button class="btn btn--primary btn--lg" (click)="addToCart()" [disabled]="v.leftoverStock === 0 || p.isOutOfStock">
+              Add to Cart
+            </button>
+          }
         }
       }
     </div>

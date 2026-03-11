@@ -30,8 +30,8 @@ export class CartService {
     );
   }
 
-  updateItem(productId: string, quantity: number) {
-    return this.http.patch<Cart>(`${this.base}/items/${productId}`, { quantity }).pipe(
+  updateItem(productId: string, weight: string, quantity: number) {
+    return this.http.patch<Cart>(`${this.base}/items/${productId}/${encodeURIComponent(weight)}`, { quantity }).pipe(
       tap((cart) => {
         this.cart.set(cart);
         this.itemCount.set(cart.items.length);
@@ -39,8 +39,8 @@ export class CartService {
     );
   }
 
-  removeItem(productId: string) {
-    return this.http.delete<Cart>(`${this.base}/items/${productId}`).pipe(
+  removeItem(productId: string, weight: string) {
+    return this.http.delete<Cart>(`${this.base}/items/${productId}/${encodeURIComponent(weight)}`).pipe(
       tap((cart) => {
         this.cart.set(cart);
         this.itemCount.set(cart.items.length);
@@ -55,5 +55,10 @@ export class CartService {
         this.itemCount.set(0);
       }),
     );
+  }
+
+  clearLocal(): void {
+    this.cart.set(null);
+    this.itemCount.set(0);
   }
 }

@@ -7,10 +7,10 @@ export interface Category {
 
 export interface ProductVariant {
   weight: string;
-  quantity: number;
   price: number;
   discountedPrice?: number;
   stock: number;
+  leftoverStock: number;
 }
 
 export interface Product {
@@ -23,6 +23,7 @@ export interface Product {
   rating: number;
   reviewCount: number;
   isActive: boolean;
+  isOutOfStock: boolean;
   createdAt: string;
 }
 

@@ -1,3 +1,4 @@
+@import './tailwind.css';
 // ─── Colour Palette ───────────────────────────────────────────────────────────
 // Primary: #950220 (deep crimson) | Amber: #c8870a | Cream: #f0ebe0
 :root {
@@ -10,7 +11,7 @@
   // Warm dark theme (derived from background image)
   --c-amber: #c8870a; // jar lid gold
   --c-text: #f0ebe0; // warm cream — main text
-  --c-text-muted: #b0a090; // secondary / label text
+  --c-text-muted: #d4c8b8; // secondary / label text
   --c-text-faint: #7a6d62; // placeholder / hint text
   --c-surface: rgba(30, 22, 14, 0.84); // card / panel bg
   --c-surface-dk: rgba(18, 13, 8, 0.9); // table header / darker panel

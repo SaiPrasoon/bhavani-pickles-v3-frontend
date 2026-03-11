@@ -36,6 +36,10 @@
           <span class="sidebar__badge">{{ cartService.itemCount() }}</span>
         }
       </a>
+      <a routerLink="/profile" routerLinkActive="active" (click)="closeSidebar()">
+        <span class="material-symbols-rounded">manage_accounts</span>
+        My Profile
+      </a>
       <a routerLink="/orders" routerLinkActive="active" (click)="closeSidebar()">
         <span class="material-symbols-rounded">receipt_long</span>
         My Orders
@@ -101,6 +105,7 @@
           @if (authService.isLoggedIn()) {
             <div class="user-menu__name">{{ authService.user()?.name }}</div>
             <hr />
+            <a routerLink="/profile">My Profile</a>
             <a routerLink="/orders">My Orders</a>
             @if (authService.isAdmin()) {
               <a routerLink="/admin">Admin Panel</a>

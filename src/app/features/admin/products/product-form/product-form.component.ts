@@ -9,7 +9,7 @@ export interface ProductSubmitPayload {
   name: string;
   description: string;
   category: string;
-  variants: { weight: string; quantity: number; price: number; discountedPrice?: number; stock: number }[];
+  variants: { weight: string; price: number; discountedPrice?: number; stock: number }[];
   images: string[];
   isActive: boolean;
 }
@@ -64,7 +64,6 @@ export class ProductFormComponent implements OnInit {
       variants.forEach(v => {
         this.variantsArray.push(this.fb.group({
           weight: [v?.weight ?? '', Validators.required],
-          quantity: [v?.quantity ?? null as number | null, [Validators.required, Validators.min(1)]],
           price: [v?.price ?? null as number | null, [Validators.required, Validators.min(0)]],
           discountedPrice: [v?.discountedPrice ?? null as number | null],
           stock: [v?.stock ?? null as number | null, [Validators.required, Validators.min(0)]],
@@ -89,7 +88,6 @@ export class ProductFormComponent implements OnInit {
   newVariantGroup() {
     return this.fb.group({
       weight: ['', Validators.required],
-      quantity: [null as number | null, [Validators.required, Validators.min(1)]],
       price: [null as number | null, [Validators.required, Validators.min(0)]],
       discountedPrice: [null as number | null],
       stock: [null as number | null, [Validators.required, Validators.min(0)]],
@@ -147,7 +145,6 @@ export class ProductFormComponent implements OnInit {
           isActive: v.isActive ?? true,
           variants: (v.variants ?? []).map(vr => ({
             weight: (vr as any).weight,
-            quantity: (vr as any).quantity,
             price: (vr as any).price,
             discountedPrice: (vr as any).discountedPrice ?? undefined,
             stock: (vr as any).stock,

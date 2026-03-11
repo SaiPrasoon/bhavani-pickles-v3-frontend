@@ -3,36 +3,77 @@
 <div class="checkout-layout">
   <div class="checkout-form">
     <h3>Shipping Address</h3>
+
+    <!-- Saved addresses -->
+    @if (savedAddresses().length) {
+      <div class="addr-list">
+        @for (addr of savedAddresses(); track addr._id) {
+          <button
+            type="button"
+            class="addr-card"
+            [class.addr-card--selected]="selectedAddressId() === addr._id && !useNewAddress()"
+            (click)="selectSavedAddress(addr._id!)"
+          >
+            <div class="addr-card__top">
+              <span class="addr-label">{{ addr.label }}</span>
+              @if (addr.isDefault) { <span class="badge badge--success">Default</span> }
+            </div>
+            <p class="addr-card__line">{{ addr.line1 }}@if (addr.line2) {, {{ addr.line2 }}}</p>
+            <p class="addr-card__line">{{ addr.city }}, {{ addr.state }} – {{ addr.pincode }}</p>
+            @if (addr.phone) { <p class="addr-card__line addr-card__phone">{{ addr.phone }}</p> }
+          </button>
+        }
+
+        <!-- Use new address toggle -->
+        <button
+          type="button"
+          class="addr-card addr-card--new"
+          [class.addr-card--selected]="useNewAddress()"
+          (click)="switchToNew()"
+        >
+          <span class="addr-new-icon">＋</span>
+          <span>Use a different address</span>
+        </button>
+      </div>
+    }
+
+    <!-- New address form -->
+    @if (useNewAddress() || !savedAddresses().length) {
+      <form [formGroup]="form" class="addr-form">
+        <div class="form-group">
+          <label class="form-label">Street</label>
+          <input class="form-control" formControlName="street" placeholder="House no, Street, Area">
+        </div>
+        <div class="two-col">
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input class="form-control" formControlName="city">
+          </div>
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <input class="form-control" formControlName="state">
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="form-group">
+            <label class="form-label">Pincode</label>
+            <input class="form-control" formControlName="pincode">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input class="form-control" type="tel" formControlName="phone">
+          </div>
+        </div>
+      </form>
+    }
+
+    <!-- Notes always visible -->
     <form [formGroup]="form" (ngSubmit)="placeOrder()">
-      <div class="form-group">
-        <label class="form-label">Street</label>
-        <input class="form-control" formControlName="street" placeholder="House no, Street, Area">
-      </div>
-      <div class="two-col">
-        <div class="form-group">
-          <label class="form-label">City</label>
-          <input class="form-control" formControlName="city">
-        </div>
-        <div class="form-group">
-          <label class="form-label">State</label>
-          <input class="form-control" formControlName="state">
-        </div>
-      </div>
-      <div class="two-col">
-        <div class="form-group">
-          <label class="form-label">Pincode</label>
-          <input class="form-control" formControlName="pincode">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Phone</label>
-          <input class="form-control" type="tel" formControlName="phone">
-        </div>
-      </div>
-      <div class="form-group">
+      <div class="form-group notes-group">
         <label class="form-label">Notes (optional)</label>
         <textarea class="form-control" formControlName="notes" rows="3" placeholder="Delivery instructions…"></textarea>
       </div>
-      <button class="btn btn--primary full-width" type="submit" [disabled]="form.invalid || loading()">
+      <button class="btn btn--primary full-width" type="submit" [disabled]="!canPlace">
         {{ loading() ? 'Placing Order…' : 'Place Order — ₹' + (cartService.cart()?.totalAmount || 0) }}
       </button>
     </form>
@@ -42,7 +83,7 @@
     <h3>Order Summary</h3>
     @for (item of cartService.cart()?.items; track item.product._id) {
       <div class="summary-row">
-        <span>{{ item.product.name }} × {{ item.quantity }}</span>
+        <span>{{ item.product.name }}@if (item.weight) { <span class="item-weight">{{ item.weight }}</span> } × {{ item.quantity }}</span>
         <span>₹{{ item.price * item.quantity }}</span>
       </div>
     }

@@ -64,4 +64,66 @@
     font-size: 0.72rem;
     color: var(--c-text-faint);
   }
+
+  &--in-cart {
+    border-color: rgba(74, 222, 128, 0.5);
+    background: rgba(74, 222, 128, 0.08);
+  }
+
+  &__cart-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #4ade80;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+}
+
+// ─── Cart quantity controls ────────────────────────────────────────────────────
+.cart-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+
+  &__stepper {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--c-amber);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  &__btn {
+    width: 40px;
+    height: 44px;
+    background: rgba(200, 135, 10, 0.12);
+    border: none;
+    color: var(--c-amber);
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover:not(:disabled) { background: rgba(200, 135, 10, 0.25); }
+    &:disabled { opacity: 0.4; cursor: not-allowed; }
+  }
+
+  &__qty {
+    min-width: 44px;
+    text-align: center;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--c-text);
+    padding: 0 4px;
+  }
+}
+
+.cart-ctrl__hint {
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+  margin: 0 0 24px;
 }

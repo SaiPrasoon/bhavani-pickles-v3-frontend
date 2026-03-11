@@ -40,13 +40,13 @@
           </p>
           <p
             class="stock"
-            [class.stock--low]="product.variants[0].stock < 10 && product.variants[0].stock > 0"
-            [class.stock--out]="product.variants[0].stock === 0"
+            [class.stock--low]="product.variants[0].leftoverStock < 10 && product.variants[0].leftoverStock > 0"
+            [class.stock--out]="product.variants[0].leftoverStock === 0 || product.isOutOfStock"
           >
             {{
-              product.variants[0].stock > 0
-                ? product.variants[0].stock < 10
-                  ? 'Only ' + product.variants[0].stock + ' left'
+              (!product.isOutOfStock && product.variants[0].leftoverStock > 0)
+                ? product.variants[0].leftoverStock < 10
+                  ? 'Only ' + product.variants[0].leftoverStock + ' left'
                   : 'In Stock'
                 : 'Out of Stock'
             }}
@@ -57,8 +57,8 @@
         <a [routerLink]="['/products', product._id]" class="btn btn--sm btn--outline">Details</a>
         <button
           class="btn btn--sm btn--primary"
-          (click)="addToCart(product)"
-          [disabled]="!product.variants.length || product.variants[0].stock === 0"
+          (click)="openPicker(product)"
+          [disabled]="!product.variants.length || product.variants[0].leftoverStock === 0 || product.isOutOfStock"
         >
           + Cart
         </button>
@@ -74,5 +74,70 @@
     <button class="btn btn--sm" (click)="nextPage()" [disabled]="page() >= totalPages">
       Next →
     </button>
+  </div>
+}
+
+<!-- Variant picker popup -->
+@if (pickerProduct(); as product) {
+  <div class="picker-backdrop" (click)="closePicker()">
+    <div class="picker" (click)="$event.stopPropagation()">
+      <div class="picker__header">
+        <div>
+          <h3 class="picker__title">{{ product.name }}</h3>
+          <p class="picker__sub">{{ product.category.name }}</p>
+        </div>
+        <button class="picker__close" type="button" (click)="closePicker()">✕</button>
+      </div>
+
+      <!-- Variant selection -->
+      <p class="picker__label">Select Weight</p>
+      <div class="picker__variants">
+        @for (v of product.variants; track v.weight) {
+          <button
+            type="button"
+            class="variant-chip"
+            [class.variant-chip--selected]="pickerWeight() === v.weight"
+            [class.variant-chip--out]="v.leftoverStock === 0"
+            [disabled]="v.leftoverStock === 0"
+            (click)="pickerWeight.set(v.weight); pickerQty.set(1)"
+          >
+            <span class="variant-chip__weight">{{ v.weight }}</span>
+            <span class="variant-chip__price">
+              @if (v.discountedPrice) {
+                <s>₹{{ v.price }}</s> ₹{{ v.discountedPrice }}
+              } @else {
+                ₹{{ v.price }}
+              }
+            </span>
+            <span class="variant-chip__stock" [class.variant-chip__stock--low]="v.leftoverStock < 10">
+              {{ v.leftoverStock === 0 ? 'Out of stock' : v.leftoverStock < 10 ? 'Only ' + v.leftoverStock + ' left' : v.leftoverStock + ' available' }}
+            </span>
+          </button>
+        }
+      </div>
+
+      <!-- Quantity selector -->
+      <p class="picker__label">Quantity</p>
+      <div class="picker__qty">
+        <button class="qty-btn" type="button" (click)="decrementQty()" [disabled]="pickerQty() <= 1">−</button>
+        <span class="qty-val">{{ pickerQty() }}</span>
+        <button class="qty-btn" type="button" (click)="incrementQty()" [disabled]="pickerQty() >= (pickerVariant()?.leftoverStock ?? 1)">+</button>
+      </div>
+
+      <!-- Total -->
+      @if (pickerVariant()) {
+        <p class="picker__total">
+          Total: <strong>₹{{ (pickerVariant()!.discountedPrice ?? pickerVariant()!.price) * pickerQty() }}</strong>
+        </p>
+      }
+
+      <button
+        class="btn btn--primary picker__cta"
+        [disabled]="!pickerVariant() || pickerVariant()!.leftoverStock === 0"
+        (click)="confirmAddToCart()"
+      >
+        Add to Cart
+      </button>
+    </div>
   </div>
 }
