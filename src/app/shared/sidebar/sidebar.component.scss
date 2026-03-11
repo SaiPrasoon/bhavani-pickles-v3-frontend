@@ -1,0 +1,153 @@
+// ─── Sidebar Overlay ─────────────────────────────────────────────────────────
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 200;
+  animation: fadeIn 0.2s ease;
+}
+
+// ─── Sidebar ──────────────────────────────────────────────────────────────────
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 280px;
+  background: var(--c-primary-dkr);
+  color: #fff;
+  z-index: 201;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  &--open { transform: translateX(0); }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 20px 20px 12px;
+    background: rgba(0, 0, 0, 0.2);
+
+    .sidebar__user-icon { font-size: 36px; opacity: 0.85; }
+
+    .sidebar__user-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  &__brand {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  &__nav {
+    padding: 6px 0;
+    display: flex;
+    flex-direction: column;
+
+    a {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 20px;
+      color: rgba(255, 255, 255, 0.85);
+      text-decoration: none;
+      font-size: 0.92rem;
+      transition: background 0.15s;
+      position: relative;
+
+      &:hover,
+      &.active {
+        background: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
+
+      .material-symbols-rounded { font-size: 20px; flex-shrink: 0; }
+    }
+  }
+
+  &__nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 20px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .material-symbols-rounded { font-size: 20px; flex-shrink: 0; }
+  }
+
+  &__badge {
+    margin-left: auto;
+    background: var(--c-primary);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+  }
+
+  &__divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 6px 0;
+  }
+}
+
+// ─── Icon Button ─────────────────────────────────────────────────────────────
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  color: currentColor;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.15s;
+  text-decoration: none;
+
+  &:hover { background: rgba(240, 235, 224, 0.12); }
+
+  .material-symbols-rounded { font-size: 24px; }
+}
+
+// ─── Animations ───────────────────────────────────────────────────────────────
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

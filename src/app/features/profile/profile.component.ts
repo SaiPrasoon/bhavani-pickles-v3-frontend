@@ -132,4 +132,6 @@ export class ProfileComponent implements OnInit {
     const confirm = g.get('confirmPassword')?.value;
     return pw === confirm ? null : { mismatch: true };
   }
+
+  goBack(): void { window.history.back(); }
 }

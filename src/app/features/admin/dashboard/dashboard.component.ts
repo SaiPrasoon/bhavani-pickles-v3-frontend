@@ -113,6 +113,8 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  goBack(): void { window.history.back(); }
+
   private buildCharts(orders: Order[], products: Product[]): void {
     this.totalOrders.set(orders.length);
     this.totalRevenue.set(orders.reduce((sum, o) => sum + o.totalAmount, 0));

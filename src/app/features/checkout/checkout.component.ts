@@ -102,4 +102,6 @@ export class CheckoutComponent implements OnInit {
     if (!this.useNewAddress()) return !!this.selectedAddressId();
     return this.form.valid;
   }
+
+  goBack(): void { window.history.back(); }
 }

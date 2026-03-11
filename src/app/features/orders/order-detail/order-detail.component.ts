@@ -20,4 +20,6 @@ export class OrderDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.ordersService.getOne(id).subscribe(o => this.order.set(o));
   }
+
+  goBack(): void { window.history.back(); }
 }

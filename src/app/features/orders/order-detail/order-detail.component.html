@@ -1,6 +1,11 @@
 @if (order(); as o) {
   <div class="page-header">
-    <h1>Order #{{ o._id.slice(-8).toUpperCase() }}</h1>
+    <div class="table-title">
+      <button class="btn btn--icon back-icon" (click)="goBack()">
+        <span class="material-symbols-rounded">arrow_back</span>
+      </button>
+      <h1>Order #{{ o._id.slice(-8).toUpperCase() }}</h1>
+    </div>
     <span class="badge badge--{{ o.status }}">{{ o.status | titlecase }}</span>
   </div>
 

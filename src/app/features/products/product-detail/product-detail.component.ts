@@ -100,4 +100,6 @@ export class ProductDetailComponent implements OnInit {
       this.cartService.updateItem((item.product as any)._id, item.weight, item.quantity - 1).subscribe();
     }
   }
+
+  goBack(): void { window.history.back(); }
 }

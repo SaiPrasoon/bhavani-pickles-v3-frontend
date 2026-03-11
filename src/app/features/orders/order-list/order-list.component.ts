@@ -18,4 +18,6 @@ export class OrderListComponent implements OnInit {
   ngOnInit(): void {
     this.ordersService.getMyOrders().subscribe(orders => this.orders.set(orders));
   }
+
+  goBack(): void { window.history.back(); }
 }

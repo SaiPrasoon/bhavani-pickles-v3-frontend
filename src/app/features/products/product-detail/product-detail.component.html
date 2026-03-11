@@ -1,4 +1,7 @@
 @if (product(); as p) {
+  <button class="btn btn--icon back-icon mb-2" (click)="goBack()">
+    <span class="material-symbols-rounded">arrow_back</span>
+  </button>
   <div class="detail-layout">
     <div class="images">
       @if (p.images.length) {
@@ -11,7 +14,9 @@
     </div>
 
     <div class="info">
-      <p class="breadcrumb"><a routerLink="/products">Products</a> / {{ p.name }}</p>
+      <div class="breadcrumb-row">
+        <p class="breadcrumb"><a routerLink="/products">Products</a> / {{ p.name }}</p>
+      </div>
       <h1>{{ p.name }}</h1>
       <p class="category-label">{{ p.category.name }}</p>
 
@@ -23,17 +28,20 @@
               type="button"
               class="variant-btn"
               [class.variant-btn--active]="selectedVariantIdx() === i"
-              [class.variant-btn--in-cart]="cartQtyForWeight()(v.weight) > 0 && selectedVariantIdx() !== i"
+              [class.variant-btn--in-cart]="
+                cartQtyForWeight()(v.weight) > 0 && selectedVariantIdx() !== i
+              "
               (click)="selectVariant(i)"
             >
-            <div class="flex flex-col gap-2"> 
-              <span class="variant-btn__weight">{{ v.weight }}</span>
-              
-              @if (cartQtyForWeight()(v.weight) > 0) {
-                <span class="variant-btn__cart-badge">{{ cartQtyForWeight()(v.weight) }} in cart</span>
-              }
-            </div>
+              <div class="flex flex-col gap-2">
+                <span class="variant-btn__weight">{{ v.weight }}</span>
 
+                @if (cartQtyForWeight()(v.weight) > 0) {
+                  <span class="variant-btn__cart-badge"
+                    >{{ cartQtyForWeight()(v.weight) }} in cart</span
+                  >
+                }
+              </div>
             </button>
           }
         </div>
@@ -50,7 +58,11 @@
           </div>
 
           <p class="stock" [class.stock--out]="v.leftoverStock === 0 || p.isOutOfStock">
-            {{ (v.leftoverStock > 0 && !p.isOutOfStock) ? 'In Stock (' + v.leftoverStock + ' available)' : 'Out of Stock' }}
+            {{
+              v.leftoverStock > 0 && !p.isOutOfStock
+                ? 'In Stock (' + v.leftoverStock + ' available)'
+                : 'Out of Stock'
+            }}
           </p>
 
           <!-- CTA: qty stepper if in cart, else Add to Cart -->
@@ -59,13 +71,29 @@
               <div class="cart-ctrl__stepper">
                 <button class="cart-ctrl__btn" type="button" (click)="decrementCart()">−</button>
                 <span class="cart-ctrl__qty">{{ item.quantity }}</span>
-                <button class="cart-ctrl__btn" type="button" (click)="incrementCart()" [disabled]="item.quantity >= v.leftoverStock">+</button>
+                <button
+                  class="cart-ctrl__btn"
+                  type="button"
+                  (click)="incrementCart()"
+                  [disabled]="item.quantity >= v.leftoverStock"
+                >
+                  +
+                </button>
               </div>
               <a routerLink="/cart" class="btn btn--outline">View Cart →</a>
             </div>
-            <p class="cart-ctrl__hint">{{ item.quantity }} × ₹{{ v.discountedPrice ?? v.price }} = ₹{{ item.quantity * (v.discountedPrice ?? v.price) }} in cart</p>
+            <p class="cart-ctrl__hint">
+              {{ item.quantity }} × ₹{{ v.discountedPrice ?? v.price }} = ₹{{
+                item.quantity * (v.discountedPrice ?? v.price)
+              }}
+              in cart
+            </p>
           } @else {
-            <button class="btn btn--primary btn--lg" (click)="addToCart()" [disabled]="v.leftoverStock === 0 || p.isOutOfStock">
+            <button
+              class="btn btn--primary btn--lg"
+              (click)="addToCart()"
+              [disabled]="v.leftoverStock === 0 || p.isOutOfStock"
+            >
               Add to Cart
             </button>
           }

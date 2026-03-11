@@ -101,4 +101,6 @@ export class ProductListComponent implements OnInit {
       this.closePicker();
     });
   }
+
+  goBack(): void { window.history.back(); }
 }

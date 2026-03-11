@@ -1,4 +1,11 @@
-<h1>Shopping Cart</h1>
+<div class="page-header">
+  <div class="table-title">
+    <button class="btn btn--icon back-icon" (click)="goBack()">
+      <span class="material-symbols-rounded">arrow_back</span>
+    </button>
+    <h1>Shopping Cart</h1>
+  </div>
+</div>
 
 @if (cartService.cart()?.items?.length) {
   <table class="table">

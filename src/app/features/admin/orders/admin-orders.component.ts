@@ -32,4 +32,6 @@ export class AdminOrdersComponent implements OnInit {
       this.toast.success('Status updated');
     });
   }
+
+  goBack(): void { window.history.back(); }
 }

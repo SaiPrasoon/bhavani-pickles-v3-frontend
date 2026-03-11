@@ -32,4 +32,6 @@ export class CartComponent implements OnInit {
   remove(item: CartItem): void {
     this.cartService.removeItem(item.product._id, item.weight).subscribe();
   }
+
+  goBack(): void { window.history.back(); }
 }

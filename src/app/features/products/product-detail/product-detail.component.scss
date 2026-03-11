@@ -2,9 +2,14 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 40px;
-  @media (max-width: 768px) { grid-template-columns: 1fr; }
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 }
-.main-image { width: 100%; border-radius: 8px; }
+.main-image {
+  width: 100%;
+  border-radius: 8px;
+}
 .img-placeholder {
   height: 300px;
   background: rgba(15, 10, 5, 0.55);
@@ -14,14 +19,48 @@
   justify-content: center;
   border-radius: 8px;
   color: var(--c-text-faint);
-  .material-symbols-rounded { font-size: 48px; }
+  .material-symbols-rounded {
+    font-size: 48px;
+  }
 }
-.breadcrumb { font-size: 0.85rem; color: var(--c-text-muted); margin-bottom: 12px; a { color: var(--c-amber); } }
-.category-label { color: var(--c-text-muted); margin-bottom: 12px; }
-.price-block { display: flex; align-items: center; gap: 10px; margin: 16px 0; }
-.stock { color: #81c784; margin-bottom: 20px; font-size: 0.9rem; }
-.stock--out { color: #ef9a9a; }
-.btn--lg { padding: 12px 28px; font-size: 1rem; margin-bottom: 24px; }
+.breadcrumb-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.breadcrumb {
+  font-size: 0.85rem;
+  color: var(--c-text-muted);
+  margin: 0;
+  a {
+    color: var(--c-amber);
+    font-weight: 600;
+  }
+}
+.category-label {
+  color: var(--c-text-muted);
+  margin-bottom: 12px;
+}
+.price-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 16px 0;
+}
+.stock {
+  color: #81c784;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+.stock--out {
+  color: #ef9a9a;
+}
+.btn--lg {
+  padding: 12px 28px;
+  font-size: 1rem;
+  margin-bottom: 24px;
+}
 
 // ─── Variant selector ──────────────────────────────────────────────────────────
 .variant-selector {
@@ -41,7 +80,9 @@
   border: 1px solid var(--c-border);
   border-radius: 8px;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
   color: var(--c-text-muted);
 
   &:hover {
@@ -108,8 +149,13 @@
     align-items: center;
     justify-content: center;
 
-    &:hover:not(:disabled) { background: rgba(200, 135, 10, 0.25); }
-    &:disabled { opacity: 0.4; cursor: not-allowed; }
+    &:hover:not(:disabled) {
+      background: rgba(200, 135, 10, 0.25);
+    }
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
   }
 
   &__qty {

@@ -31,4 +31,6 @@ export class RegisterComponent {
       error: () => this.loading.set(false),
     });
   }
+
+  goBack(): void { window.history.back(); }
 }

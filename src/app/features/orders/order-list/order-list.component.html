@@ -1,4 +1,11 @@
-<h1>My Orders</h1>
+<div class="page-header">
+  <div class="table-title">
+    <button class="btn btn--icon back-icon" (click)="goBack()">
+      <span class="material-symbols-rounded">arrow_back</span>
+    </button>
+    <h1>My Orders</h1>
+  </div>
+</div>
 
 @if (orders().length) {
   <div class="orders-list">
