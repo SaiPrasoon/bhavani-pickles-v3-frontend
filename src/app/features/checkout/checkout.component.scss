@@ -108,6 +108,66 @@
   gap: 16px;
 }
 
+// Payment method selector
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.payment-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: var(--c-surface-dk);
+  border: 2px solid var(--c-border);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s;
+  width: 100%;
+
+  &:hover { border-color: rgba(200, 135, 10, 0.4); }
+
+  &--selected {
+    border-color: var(--c-amber);
+    background: rgba(200, 135, 10, 0.06);
+  }
+
+  &__icon {
+    font-size: 28px;
+    color: var(--c-amber);
+    flex-shrink: 0;
+  }
+
+  &__title {
+    margin: 0 0 2px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--c-text);
+  }
+
+  &__desc {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--c-text-muted);
+  }
+
+  &__check {
+    margin-left: auto;
+    font-size: 20px;
+    color: var(--c-border);
+    flex-shrink: 0;
+    transition: color 0.2s;
+  }
+
+  &--selected &__check {
+    color: var(--c-amber);
+  }
+}
+
 .notes-group { margin-bottom: 20px; }
 
 .item-weight {

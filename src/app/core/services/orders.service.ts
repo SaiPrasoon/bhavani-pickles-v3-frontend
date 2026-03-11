@@ -3,14 +3,32 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Order, ShippingAddress } from '../models/order.model';
 
+export interface InitiatePaymentResponse {
+  orderId: string;
+  paymentType: 'COD' | 'online';
+  razorpayOrderId?: string;
+  amount?: number;
+  currency?: string;
+}
+
+export interface VerifyPaymentPayload {
+  razorpayPaymentId: string;
+  razorpayOrderId: string;
+  razorpaySignature: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class OrdersService {
   private readonly base = `${environment.apiUrl}/orders`;
 
   constructor(private http: HttpClient) {}
 
-  create(shippingAddress: ShippingAddress, notes?: string) {
-    return this.http.post<Order>(this.base, { shippingAddress, notes });
+  initiatePayment(shippingAddress: ShippingAddress, paymentType: 'COD' | 'online', notes?: string) {
+    return this.http.post<InitiatePaymentResponse>(`${this.base}/initiate`, { shippingAddress, paymentType, notes });
+  }
+
+  verifyPayment(orderId: string, payload: VerifyPaymentPayload) {
+    return this.http.post<Order>(`${this.base}/${orderId}/verify-payment`, payload);
   }
 
   getMyOrders() { return this.http.get<Order[]>(`${this.base}/my`); }

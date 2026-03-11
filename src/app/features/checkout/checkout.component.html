@@ -74,6 +74,38 @@
       </form>
     }
 
+    <!-- Payment method -->
+    <h3>Payment Method</h3>
+    <div class="payment-options">
+      <button
+        type="button"
+        class="payment-card"
+        [class.payment-card--selected]="paymentType() === 'online'"
+        (click)="selectPaymentType('online')"
+      >
+        <span class="material-symbols-rounded payment-card__icon">credit_card</span>
+        <div>
+          <p class="payment-card__title">Online Payment</p>
+          <p class="payment-card__desc">UPI, Cards, Net Banking via Razorpay</p>
+        </div>
+        <span class="payment-card__check material-symbols-rounded">check_circle</span>
+      </button>
+
+      <button
+        type="button"
+        class="payment-card"
+        [class.payment-card--selected]="paymentType() === 'COD'"
+        (click)="selectPaymentType('COD')"
+      >
+        <span class="material-symbols-rounded payment-card__icon">payments</span>
+        <div>
+          <p class="payment-card__title">Cash on Delivery</p>
+          <p class="payment-card__desc">Pay when your order arrives</p>
+        </div>
+        <span class="payment-card__check material-symbols-rounded">check_circle</span>
+      </button>
+    </div>
+
     <!-- Notes always visible -->
     <form [formGroup]="form" (ngSubmit)="placeOrder()">
       <div class="form-group notes-group">
@@ -81,7 +113,13 @@
         <textarea class="form-control" formControlName="notes" rows="3" placeholder="Delivery instructions…"></textarea>
       </div>
       <button class="btn btn--primary full-width" type="submit" [disabled]="!canPlace">
-        {{ loading() ? 'Placing Order…' : 'Place Order — ₹' + (cartService.cart()?.totalAmount || 0) }}
+        @if (loading()) {
+          Placing Order…
+        } @else if (paymentType() === 'online') {
+          Pay ₹{{ cartService.cart()?.totalAmount || 0 }} Online
+        } @else {
+          Place Order — ₹{{ cartService.cart()?.totalAmount || 0 }} (COD)
+        }
       </button>
     </form>
   </div>
