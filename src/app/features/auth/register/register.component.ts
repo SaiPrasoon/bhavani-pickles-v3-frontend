@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { RouterLink, Router } from '@angular/router';
+import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   selector: 'app-register',
@@ -13,7 +14,9 @@ import { AuthService } from '../../../core/services/auth.service';
 export class RegisterComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private cartService = inject(CartService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   loading = signal(false);
   form = this.fb.group({
@@ -27,7 +30,10 @@ export class RegisterComponent {
     if (this.form.invalid) return;
     this.loading.set(true);
     this.authService.register(this.form.value as any).subscribe({
-      next: () => this.router.navigate(['/']),
+      next: () => {
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/';
+        this.cartService.mergeGuestCart().subscribe(() => this.router.navigateByUrl(returnUrl));
+      },
       error: () => this.loading.set(false),
     });
   }

@@ -1,0 +1,115 @@
+@if (order(); as o) {
+  <div class="layout">
+    <!-- Header -->
+    <section class="table-header">
+      <div class="table-title">
+        <button class="btn btn--icon back-icon" (click)="goBack()">
+          <span class="material-symbols-rounded">arrow_back</span>
+        </button>
+        <h1>Order #{{ o._id.slice(-8).toUpperCase() }}</h1>
+      </div>
+      <span class="badge badge--{{ o.status }}">{{ o.status | titlecase }}</span>
+    </section>
+
+    <div class="detail-grid">
+      <!-- Left column: items + address + notes -->
+      <div class="detail-main">
+        <div class="card">
+          <div class="card__body">
+            <div class="meta-row">
+              <span><strong class="pr-1">Customer:</strong> {{ getUserName(o) }}</span>
+              <span><strong class="pr-1">Date:</strong> {{ o.createdAt | date: 'medium' }}</span>
+              <span
+                ><strong class="pr-1">Total:</strong>
+                <span class="price">₹{{ o.totalAmount }}</span></span
+              >
+              <span>
+                <strong class="pr-1">Payment:</strong>
+                @if (o.isPaid) {
+                  <span class="badge badge--delivered">Paid</span>
+                } @else {
+                  <span class="badge badge--pending">{{
+                    o.paymentType === 'COD' ? 'COD' : 'Unpaid'
+                  }}</span>
+                }
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__body">
+            <h3>Items</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Weight</th>
+                  <th>Qty</th>
+                  <th>Unit Price</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of o.items; track item.name + item.weight) {
+                  <tr>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.weight }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.price }}</td>
+                    <td>₹{{ item.price * item.quantity }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__body">
+            <h3>Shipping Address</h3>
+            <p>{{ o.shippingAddress.street }}</p>
+            <p>
+              {{ o.shippingAddress.city }}, {{ o.shippingAddress.state }} –
+              {{ o.shippingAddress.pincode }}
+            </p>
+            @if (o.shippingAddress.phone) {
+              <p>{{ o.shippingAddress.phone }}</p>
+            }
+            @if (o.notes) {
+              <hr />
+              <p><strong>Notes:</strong> {{ o.notes }}</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column: status update -->
+      <div class="detail-side">
+        <div class="card status-card">
+          <div class="card__body">
+            <h3>Update Status</h3>
+            <p class="status-hint">
+              Current: <span class="badge badge--{{ o.status }}">{{ o.status | titlecase }}</span>
+            </p>
+            <div class="form-group">
+              <label class="form-label">New Status</label>
+              <select class="form-control" [(ngModel)]="updatedStatus">
+                @for (s of statuses; track s) {
+                  <option [value]="s">{{ s | titlecase }}</option>
+                }
+              </select>
+            </div>
+            <button
+              class="btn btn--primary full-width"
+              (click)="updateStatus()"
+              [disabled]="saving()"
+            >
+              {{ saving() ? 'Saving…' : 'Save Status' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

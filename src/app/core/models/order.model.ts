@@ -1,7 +1,13 @@
 import { Product } from './product.model';
 import { User } from './user.model';
 
-export type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled';
 
 export interface ShippingAddress {
   street: string;
@@ -14,6 +20,7 @@ export interface ShippingAddress {
 export interface OrderItem {
   product: Product;
   name: string;
+  weight: string;
   quantity: number;
   price: number;
 }
@@ -27,5 +34,6 @@ export interface Order {
   status: OrderStatus;
   notes?: string;
   isPaid: boolean;
+  paymentType?: 'COD' | 'online';
   createdAt: string;
 }

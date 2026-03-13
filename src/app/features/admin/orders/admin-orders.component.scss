@@ -1,1 +1,10 @@
 .status-select { padding: 4px 8px; font-size: 0.85rem; width: auto; }
+
+.order-id-link {
+  font-weight: 600;
+  color: var(--c-amber);
+  text-decoration: none;
+  font-family: monospace;
+  font-size: 0.9rem;
+  &:hover { text-decoration: underline; }
+}

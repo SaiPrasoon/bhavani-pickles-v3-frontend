@@ -9,6 +9,26 @@ export const routes: Routes = [
     loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent),
   },
 
+  {
+    path: 'about',
+    loadComponent: () => import('./features/about/about.component').then(m => m.AboutComponent),
+  },
+
+  {
+    path: 'privacy',
+    loadComponent: () => import('./features/privacy/privacy.component').then(m => m.PrivacyComponent),
+  },
+
+  {
+    path: 'terms',
+    loadComponent: () => import('./features/terms/terms.component').then(m => m.TermsComponent),
+  },
+
+  {
+    path: 'shipping',
+    loadComponent: () => import('./features/shipping/shipping.component').then(m => m.ShippingComponent),
+  },
+
   // Products
   {
     path: 'products',
@@ -19,16 +39,14 @@ export const routes: Routes = [
     loadComponent: () => import('./features/products/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
   },
 
-  // Cart & Checkout (auth required)
+  // Cart & Checkout
   {
     path: 'cart',
     loadComponent: () => import('./features/cart/cart.component').then(m => m.CartComponent),
-    canActivate: [authGuard],
   },
   {
     path: 'checkout',
     loadComponent: () => import('./features/checkout/checkout.component').then(m => m.CheckoutComponent),
-    canActivate: [authGuard],
   },
 
   // Orders (auth required)
@@ -79,6 +97,10 @@ export const routes: Routes = [
       {
         path: 'orders',
         loadComponent: () => import('./features/admin/orders/admin-orders.component').then(m => m.AdminOrdersComponent),
+      },
+      {
+        path: 'orders/:id',
+        loadComponent: () => import('./features/admin/orders/admin-order-detail/admin-order-detail.component').then(m => m.AdminOrderDetailComponent),
       },
       {
         path: 'categories',

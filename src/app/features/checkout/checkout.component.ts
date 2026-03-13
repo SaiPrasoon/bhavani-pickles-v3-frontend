@@ -21,7 +21,7 @@ export class CheckoutComponent implements OnInit {
   private ordersService = inject(OrdersService);
   private razorpayService = inject(RazorpayService);
   private userService = inject(UserService);
-  private authService = inject(AuthService);
+  readonly authService = inject(AuthService);
   private router = inject(Router);
   private toast = inject(ToastService);
   cartService = inject(CartService);
@@ -33,25 +33,41 @@ export class CheckoutComponent implements OnInit {
   paymentType = signal<'COD' | 'online'>('online');
 
   form = this.fb.group({
+    name:    ['', Validators.required],
+    email:   ['', [Validators.required, Validators.email]],
+    phone:   ['', Validators.required],
     street:  ['', Validators.required],
     city:    ['', Validators.required],
     state:   ['', Validators.required],
     pincode: ['', Validators.required],
-    phone:   [''],
     notes:   [''],
   });
 
   ngOnInit(): void {
     this.cartService.loadCart().subscribe();
-    this.userService.getProfile().subscribe(u => {
-      this.savedAddresses.set(u.addresses ?? []);
-      const def = u.addresses?.find(a => a.isDefault) ?? u.addresses?.[0];
-      if (def?._id) {
-        this.selectedAddressId.set(def._id);
-      } else {
-        this.useNewAddress.set(true);
-      }
-    });
+
+    const user = this.authService.user();
+    if (user) {
+      this.form.patchValue({
+        name: user.name,
+        email: user.email,
+        phone: user.phone ?? '',
+      });
+    }
+
+    if (this.authService.isLoggedIn()) {
+      this.userService.getProfile().subscribe(u => {
+        this.savedAddresses.set(u.addresses ?? []);
+        const def = u.addresses?.find(a => a.isDefault) ?? u.addresses?.[0];
+        if (def?._id) {
+          this.selectedAddressId.set(def._id);
+        } else {
+          this.useNewAddress.set(true);
+        }
+      });
+    } else {
+      this.useNewAddress.set(true);
+    }
   }
 
   selectSavedAddress(id: string): void {
@@ -73,20 +89,42 @@ export class CheckoutComponent implements OnInit {
     const shippingAddress = this.resolveShippingAddress();
     if (!shippingAddress) return;
 
-    this.loading.set(true);
+    const customer = {
+      customerName: this.form.value.name!,
+      customerEmail: this.form.value.email!,
+      customerPhone: this.form.value.phone || undefined,
+    };
 
-    this.ordersService.initiatePayment(shippingAddress, this.paymentType(), notes).subscribe({
-      next: (data) => {
-        if (data.paymentType === 'COD') {
-          this.cartService.clearLocal();
-          this.toast.success('Order placed! We will collect payment on delivery.');
-          this.router.navigate(['/orders', data.orderId]);
-        } else {
-          this.openRazorpay(data);
-        }
-      },
-      error: () => this.loading.set(false),
-    });
+    // For guests, pass the cart items in the request
+    const guestItems = !this.authService.isLoggedIn()
+      ? (this.cartService.cart()?.items ?? []).map(i => ({
+          productId: i.product._id,
+          name: i.product.name,
+          weight: i.weight,
+          quantity: i.quantity,
+          price: i.price,
+        }))
+      : undefined;
+
+    this.loading.set(true);
+    this.ordersService
+      .initiatePayment(shippingAddress, this.paymentType(), customer, notes, guestItems)
+      .subscribe({
+        next: (data) => {
+          if (data.paymentType === 'COD') {
+            this.cartService.clearLocal();
+            this.toast.success('Order placed! We will collect payment on delivery.');
+            if (this.authService.isLoggedIn()) {
+              this.router.navigate(['/orders', data.orderId]);
+            } else {
+              this.router.navigate(['/']);
+            }
+          } else {
+            this.openRazorpay(data);
+          }
+        },
+        error: () => this.loading.set(false),
+      });
   }
 
   private resolveShippingAddress() {
@@ -101,15 +139,29 @@ export class CheckoutComponent implements OnInit {
         phone: addr.phone,
       };
     }
-    if (this.form.invalid) return null;
-    const { notes: _notes, ...address } = this.form.value;
-    return address as any;
+    if (
+      !this.form.value.street ||
+      !this.form.value.city ||
+      !this.form.value.state ||
+      !this.form.value.pincode
+    ) return null;
+    return {
+      street: this.form.value.street!,
+      city: this.form.value.city!,
+      state: this.form.value.state!,
+      pincode: this.form.value.pincode!,
+      phone: this.form.value.phone || undefined,
+    };
   }
 
   private openRazorpay(data: InitiatePaymentResponse): void {
     const user = this.authService.user();
+    const name = user?.name ?? this.form.value.name ?? '';
+    const email = user?.email ?? this.form.value.email ?? '';
+    const phone = user?.phone ?? this.form.value.phone ?? '';
+
     this.razorpayService
-      .openCheckout(data as any, user?.name ?? '', user?.email ?? '', '')
+      .openCheckout(data as any, name, email, phone)
       .then((response) => {
         this.ordersService.verifyPayment(data.orderId, {
           razorpayPaymentId: response.razorpay_payment_id,
@@ -119,7 +171,11 @@ export class CheckoutComponent implements OnInit {
           next: (order) => {
             this.cartService.clearLocal();
             this.toast.success('Payment successful! Order confirmed.');
-            this.router.navigate(['/orders', order._id]);
+            if (this.authService.isLoggedIn()) {
+              this.router.navigate(['/orders', order._id]);
+            } else {
+              this.router.navigate(['/']);
+            }
           },
           error: () => {
             this.toast.error('Payment verification failed. Contact support.');
@@ -137,8 +193,10 @@ export class CheckoutComponent implements OnInit {
 
   get canPlace(): boolean {
     if (this.loading()) return false;
+    const v = this.form.value;
+    if (!v.name || !this.form.get('email')!.valid || !v.phone) return false;
     if (!this.useNewAddress()) return !!this.selectedAddressId();
-    return this.form.valid;
+    return !!(v.street && v.city && v.state && v.pincode);
   }
 
   goBack(): void { window.history.back(); }

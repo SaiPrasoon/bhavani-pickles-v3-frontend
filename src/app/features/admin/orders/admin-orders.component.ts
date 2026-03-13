@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { OrdersService } from '../../../core/services/orders.service';
@@ -8,7 +9,7 @@ import { Order, OrderStatus } from '../../../core/models/order.model';
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [FormsModule, DatePipe, TitleCasePipe],
+  imports: [RouterLink, FormsModule, DatePipe, TitleCasePipe],
   templateUrl: './admin-orders.component.html',
   styleUrl: './admin-orders.component.scss',
 })

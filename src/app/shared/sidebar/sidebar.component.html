@@ -24,19 +24,23 @@
       <span class="material-symbols-rounded">store</span>
       Products
     </a>
+    <a routerLink="/about" routerLinkActive="active" (click)="close()">
+      <span class="material-symbols-rounded">info</span>
+      About Us
+    </a>
     <a routerLink="/wishlist" routerLinkActive="active" (click)="close()">
       <span class="material-symbols-rounded">favorite</span>
       Wishlist
     </a>
+    <a routerLink="/cart" routerLinkActive="active" (click)="close()">
+      <span class="material-symbols-rounded">shopping_cart</span>
+      Cart
+      @if (cartService.itemCount() > 0) {
+        <span class="sidebar__badge">{{ cartService.itemCount() }}</span>
+      }
+    </a>
 
     @if (authService.isLoggedIn()) {
-      <a routerLink="/cart" routerLinkActive="active" (click)="close()">
-        <span class="material-symbols-rounded">shopping_cart</span>
-        Cart
-        @if (cartService.itemCount() > 0) {
-          <span class="sidebar__badge">{{ cartService.itemCount() }}</span>
-        }
-      </a>
       <a routerLink="/profile" routerLinkActive="active" (click)="close()">
         <span class="material-symbols-rounded">manage_accounts</span>
         My Profile

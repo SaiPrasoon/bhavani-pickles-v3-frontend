@@ -1,8 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductsService } from '../../../core/services/products.service';
 import { CartService } from '../../../core/services/cart.service';
-import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Product } from '../../../core/models/product.model';
 import { CartItem } from '../../../core/models/cart.model';
@@ -16,10 +15,8 @@ import { CartItem } from '../../../core/models/cart.model';
 })
 export class ProductDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
   private productsService = inject(ProductsService);
   readonly cartService = inject(CartService);
-  private authService = inject(AuthService);
   private toast = inject(ToastService);
 
   product = signal<Product | null>(null);
@@ -56,7 +53,7 @@ export class ProductDetailComponent implements OnInit {
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
     this.productsService.getOne(id).subscribe(p => this.product.set(p));
-    if (this.authService.isLoggedIn() && !this.cartService.cart()) {
+    if (!this.cartService.cart()) {
       this.cartService.loadCart().subscribe();
     }
   }
@@ -70,15 +67,17 @@ export class ProductDetailComponent implements OnInit {
   }
 
   addToCart(): void {
-    if (!this.authService.isLoggedIn()) {
-      this.router.navigate(['/auth/login']);
-      return;
-    }
+    const product = this.product();
     const variant = this.selectedVariant();
-    if (!variant?.weight) return;
-    this.cartService.addItem(this.product()!._id, variant.weight, 1).subscribe(() => {
-      this.toast.success('Added to cart!');
-    });
+    if (!product || !variant?.weight) return;
+    this.cartService
+      .addItem(product._id, variant.weight, 1, {
+        product,
+        price: variant.discountedPrice ?? variant.price,
+      })
+      .subscribe(() => {
+        this.toast.success('Added to cart!');
+      });
   }
 
   incrementCart(): void {

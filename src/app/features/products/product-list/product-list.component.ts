@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../../core/services/products.service';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { CartService } from '../../../core/services/cart.service';
-import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Product, Category, ProductVariant } from '../../../core/models/product.model';
 
@@ -19,7 +18,6 @@ export class ProductListComponent implements OnInit {
   private productsService = inject(ProductsService);
   private categoriesService = inject(CategoriesService);
   private cartService = inject(CartService);
-  private authService = inject(AuthService);
   private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
 
@@ -69,10 +67,6 @@ export class ProductListComponent implements OnInit {
   nextPage(): void { if (this.page() < this.totalPages) { this.page.update(p => p + 1); this.load(); } }
 
   openPicker(product: Product): void {
-    if (!this.authService.isLoggedIn()) {
-      this.toast.info('Please login to add items to cart');
-      return;
-    }
     const firstAvailable = product.variants.find(v => v.leftoverStock > 0) ?? product.variants[0];
     this.pickerProduct.set(product);
     this.pickerWeight.set(firstAvailable?.weight ?? '');
@@ -96,10 +90,15 @@ export class ProductListComponent implements OnInit {
     const product = this.pickerProduct();
     const variant = this.pickerVariant();
     if (!product || !variant) return;
-    this.cartService.addItem(product._id, variant.weight, this.pickerQty()).subscribe(() => {
-      this.toast.success(`${product.name} (${variant.weight}) added to cart!`);
-      this.closePicker();
-    });
+    this.cartService
+      .addItem(product._id, variant.weight, this.pickerQty(), {
+        product,
+        price: variant.discountedPrice ?? variant.price,
+      })
+      .subscribe(() => {
+        this.toast.success(`${product.name} (${variant.weight}) added to cart!`);
+        this.closePicker();
+      });
   }
 
   goBack(): void { window.history.back(); }

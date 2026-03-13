@@ -18,12 +18,13 @@
         <h3>Items</h3>
         <table class="table">
           <thead>
-            <tr><th>Product</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
+            <tr><th>Product</th><th>Weight</th><th>Qty</th><th>Price</th><th>Subtotal</th></tr>
           </thead>
           <tbody>
-            @for (item of o.items; track item.name) {
+            @for (item of o.items; track item.name + item.weight) {
               <tr>
                 <td>{{ item.name }}</td>
+                <td>{{ item.weight }}</td>
                 <td>{{ item.quantity }}</td>
                 <td>₹{{ item.price }}</td>
                 <td>₹{{ item.price * item.quantity }}</td>

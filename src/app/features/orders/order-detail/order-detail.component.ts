@@ -18,8 +18,10 @@ export class OrderDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
-    this.ordersService.getOne(id).subscribe(o => this.order.set(o));
+    this.ordersService.getOne(id).subscribe((o) => this.order.set(o));
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void {
+    window.history.back();
+  }
 }

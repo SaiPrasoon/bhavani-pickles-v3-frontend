@@ -9,6 +9,26 @@
 
 <div class="checkout-layout">
   <div class="checkout-form">
+    <!-- Customer Info -->
+    <h3>Your Details</h3>
+    <form [formGroup]="form" class="addr-form">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input class="form-control" formControlName="name" placeholder="Your full name">
+      </div>
+      <div class="two-col">
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-control" type="email" formControlName="email" placeholder="you@example.com"
+            [attr.readonly]="authService.isLoggedIn() ? true : null">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Mobile Number</label>
+          <input class="form-control" type="tel" formControlName="phone" placeholder="10-digit mobile">
+        </div>
+      </div>
+    </form>
+
     <h3>Shipping Address</h3>
 
     <!-- Saved addresses -->
@@ -61,15 +81,9 @@
             <input class="form-control" formControlName="state">
           </div>
         </div>
-        <div class="two-col">
-          <div class="form-group">
-            <label class="form-label">Pincode</label>
-            <input class="form-control" formControlName="pincode">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Phone</label>
-            <input class="form-control" type="tel" formControlName="phone">
-          </div>
+        <div class="form-group">
+          <label class="form-label">Pincode</label>
+          <input class="form-control" formControlName="pincode">
         </div>
       </form>
     }
