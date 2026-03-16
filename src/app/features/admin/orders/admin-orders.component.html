@@ -6,9 +6,16 @@
     <h1>Orders</h1>
   </div>
 </section>
+
 <table class="table">
   <thead>
-    <tr><th>Order</th><th>Customer</th><th>Total</th><th>Date</th><th>Status</th></tr>
+    <tr>
+      <th>Order</th>
+      <th>Customer</th>
+      <th>Total</th>
+      <th>Date</th>
+      <th>Status</th>
+    </tr>
   </thead>
   <tbody>
     @for (order of orders(); track order._id) {
@@ -22,13 +29,34 @@
         <td>₹{{ order.totalAmount }}</td>
         <td>{{ order.createdAt | date:'short' }}</td>
         <td>
-          <select class="form-control status-select" [(ngModel)]="order.status" (ngModelChange)="updateStatus(order)">
-            @for (s of statuses; track s) {
-              <option [value]="s">{{ s | titlecase }}</option>
-            }
-          </select>
+          @if (isTerminal(order)) {
+            <span class="badge badge--{{ order.status }}">{{ order.status | titlecase }}</span>
+          } @else {
+            <select
+              class="form-control status-select"
+              [value]="''"
+              (change)="onStatusChange(order, $event)"
+              [disabled]="saving()"
+            >
+              <option value="" disabled>{{ order.status | titlecase }}</option>
+              @for (s of allowedNextStatuses(order); track s) {
+                <option [value]="s">{{ s | titlecase }}</option>
+              }
+              @if (isCancellable(order)) {
+                <option value="cancelled">Cancel Order…</option>
+              }
+            </select>
+          }
         </td>
       </tr>
     }
   </tbody>
 </table>
+
+@if (showCancelModal()) {
+  <app-cancel-reason-modal
+    [loading]="saving()"
+    (confirmed)="onCancelConfirmed($event)"
+    (dismissed)="onCancelDismissed()"
+  />
+}

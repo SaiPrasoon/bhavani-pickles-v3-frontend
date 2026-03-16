@@ -36,4 +36,9 @@ export interface Order {
   isPaid: boolean;
   paymentType?: 'COD' | 'online';
   createdAt: string;
+  cancellationReason?: string;
+  cancelledAt?: string;
+  cancelledBy?: 'user' | 'admin';
 }
+
+export const CANCELLABLE_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing'];

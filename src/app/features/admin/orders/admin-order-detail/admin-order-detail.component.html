@@ -12,25 +12,20 @@
     </section>
 
     <div class="detail-grid">
-      <!-- Left column: items + address + notes -->
+      <!-- Left column -->
       <div class="detail-main">
         <div class="card">
           <div class="card__body">
             <div class="meta-row">
               <span><strong class="pr-1">Customer:</strong> {{ getUserName(o) }}</span>
               <span><strong class="pr-1">Date:</strong> {{ o.createdAt | date: 'medium' }}</span>
-              <span
-                ><strong class="pr-1">Total:</strong>
-                <span class="price">₹{{ o.totalAmount }}</span></span
-              >
+              <span><strong class="pr-1">Total:</strong> <span class="price">₹{{ o.totalAmount }}</span></span>
               <span>
                 <strong class="pr-1">Payment:</strong>
                 @if (o.isPaid) {
                   <span class="badge badge--delivered">Paid</span>
                 } @else {
-                  <span class="badge badge--pending">{{
-                    o.paymentType === 'COD' ? 'COD' : 'Unpaid'
-                  }}</span>
+                  <span class="badge badge--pending">{{ o.paymentType === 'COD' ? 'COD' : 'Unpaid' }}</span>
                 }
               </span>
             </div>
@@ -43,11 +38,7 @@
             <table class="table">
               <thead>
                 <tr>
-                  <th>Product</th>
-                  <th>Weight</th>
-                  <th>Qty</th>
-                  <th>Unit Price</th>
-                  <th>Subtotal</th>
+                  <th>Product</th><th>Weight</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th>
                 </tr>
               </thead>
               <tbody>
@@ -69,47 +60,112 @@
           <div class="card__body">
             <h3>Shipping Address</h3>
             <p>{{ o.shippingAddress.street }}</p>
-            <p>
-              {{ o.shippingAddress.city }}, {{ o.shippingAddress.state }} –
-              {{ o.shippingAddress.pincode }}
-            </p>
-            @if (o.shippingAddress.phone) {
-              <p>{{ o.shippingAddress.phone }}</p>
-            }
-            @if (o.notes) {
-              <hr />
-              <p><strong>Notes:</strong> {{ o.notes }}</p>
-            }
+            <p>{{ o.shippingAddress.city }}, {{ o.shippingAddress.state }} – {{ o.shippingAddress.pincode }}</p>
+            @if (o.shippingAddress.phone) { <p>{{ o.shippingAddress.phone }}</p> }
+            @if (o.notes) { <hr /><p><strong>Notes:</strong> {{ o.notes }}</p> }
           </div>
         </div>
+
+        <!-- Cancellation info -->
+        @if (o.status === 'cancelled') {
+          <div class="card">
+            <div class="card__body">
+              <p class="cancel-label">
+                <span class="material-symbols-rounded">cancel</span>
+                Cancelled by {{ o.cancelledBy ?? 'unknown' }}
+                @if (o.cancelledAt) { on {{ o.cancelledAt | date: 'mediumDate' }} }
+              </p>
+              @if (o.cancellationReason) {
+                <p class="cancel-reason"><strong>Reason:</strong> {{ o.cancellationReason }}</p>
+              }
+            </div>
+          </div>
+        }
       </div>
 
-      <!-- Right column: status update -->
+      <!-- Right column: status management -->
       <div class="detail-side">
         <div class="card status-card">
           <div class="card__body">
-            <h3>Update Status</h3>
-            <p class="status-hint">
-              Current: <span class="badge badge--{{ o.status }}">{{ o.status | titlecase }}</span>
-            </p>
-            <div class="form-group">
-              <label class="form-label">New Status</label>
-              <select class="form-control" [(ngModel)]="updatedStatus">
-                @for (s of statuses; track s) {
-                  <option [value]="s">{{ s | titlecase }}</option>
+            <h3>Order Progress</h3>
+
+            <!-- Status stepper -->
+            <div class="status-stepper">
+              @for (step of progression; track step) {
+                @if (o.paymentType !== 'COD' || step !== 'pending') {
+                  <div class="step step--{{ stepState(step) }}">
+                    <div class="step__dot">
+                      @if (stepState(step) === 'done') {
+                        <span class="material-symbols-rounded">check</span>
+                      }
+                    </div>
+                    <span class="step__label">{{ step | titlecase }}</span>
+                  </div>
                 }
-              </select>
+              }
+              @if (o.status === 'cancelled') {
+                <div class="step step--cancelled">
+                  <div class="step__dot">
+                    <span class="material-symbols-rounded">close</span>
+                  </div>
+                  <span class="step__label">Cancelled</span>
+                </div>
+              }
             </div>
-            <button
-              class="btn btn--primary full-width"
-              (click)="updateStatus()"
-              [disabled]="saving()"
-            >
-              {{ saving() ? 'Saving…' : 'Save Status' }}
-            </button>
+
+            <!-- Status update controls -->
+            @if (!isTerminal()) {
+              <div class="status-update">
+                <div class="form-group">
+                  <label class="form-label">Move to</label>
+                  <select class="form-control" [(ngModel)]="selectedStatus">
+                    @for (s of allowedNextStatuses(); track s) {
+                      <option [value]="s">{{ s | titlecase }}</option>
+                    }
+                  </select>
+                </div>
+                <button
+                  class="btn btn--primary full-width"
+                  (click)="saveStatus()"
+                  [disabled]="saving() || !selectedStatus()"
+                >
+                  {{ saving() ? 'Saving…' : 'Update Status' }}
+                </button>
+
+                @if (isCancellable()) {
+                  <button
+                    class="btn btn--danger btn--outline full-width cancel-btn"
+                    (click)="openCancelModal()"
+                    [disabled]="saving()"
+                  >
+                    <span class="material-symbols-rounded">cancel</span>
+                    Cancel Order
+                  </button>
+                }
+              </div>
+            } @else {
+              <p class="terminal-msg">
+                @if (o.status === 'delivered') {
+                  <span class="material-symbols-rounded">check_circle</span>
+                  Order delivered.
+                } @else {
+                  <span class="material-symbols-rounded">block</span>
+                  Order cancelled.
+                }
+              </p>
+            }
           </div>
         </div>
       </div>
     </div>
   </div>
+}
+
+<!-- Cancel reason modal -->
+@if (showCancelModal()) {
+  <app-cancel-reason-modal
+    [loading]="saving()"
+    (confirmed)="onCancelConfirmed($event)"
+    (dismissed)="onCancelDismissed()"
+  />
 }
