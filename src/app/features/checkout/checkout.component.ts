@@ -30,7 +30,7 @@ export class CheckoutComponent implements OnInit {
   savedAddresses = signal<Address[]>([]);
   selectedAddressId = signal<string | null>(null);
   useNewAddress = signal(false);
-  paymentType = signal<'COD' | 'online'>('online');
+  paymentType = signal<'COD' | 'online'>('COD');
 
   form = this.fb.group({
     name:    ['', Validators.required],

@@ -166,6 +166,24 @@
   &--selected &__check {
     color: var(--c-amber);
   }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    &:hover { border-color: var(--c-border); }
+  }
+
+  &__coming-soon {
+    margin-left: auto;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--c-text-muted);
+    background: var(--c-border);
+    border-radius: 4px;
+    padding: 2px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
 }
 
 .notes-group { margin-bottom: 20px; }

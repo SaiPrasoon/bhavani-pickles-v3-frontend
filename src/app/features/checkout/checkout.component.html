@@ -14,17 +14,27 @@
     <form [formGroup]="form" class="addr-form">
       <div class="form-group">
         <label class="form-label">Full Name</label>
-        <input class="form-control" formControlName="name" placeholder="Your full name">
+        <input class="form-control" formControlName="name" placeholder="Your full name" />
       </div>
       <div class="two-col">
         <div class="form-group">
           <label class="form-label">Email</label>
-          <input class="form-control" type="email" formControlName="email" placeholder="you@example.com"
-            [attr.readonly]="authService.isLoggedIn() ? true : null">
+          <input
+            class="form-control"
+            type="email"
+            formControlName="email"
+            placeholder="you@example.com"
+            [attr.readonly]="authService.isLoggedIn() ? true : null"
+          />
         </div>
         <div class="form-group">
           <label class="form-label">Mobile Number</label>
-          <input class="form-control" type="tel" formControlName="phone" placeholder="10-digit mobile">
+          <input
+            class="form-control"
+            type="tel"
+            formControlName="phone"
+            placeholder="10-digit mobile"
+          />
         </div>
       </div>
     </form>
@@ -43,11 +53,20 @@
           >
             <div class="addr-card__top">
               <span class="addr-label">{{ addr.label }}</span>
-              @if (addr.isDefault) { <span class="badge badge--success">Default</span> }
+              @if (addr.isDefault) {
+                <span class="badge badge--success">Default</span>
+              }
             </div>
-            <p class="addr-card__line">{{ addr.line1 }}@if (addr.line2) {, {{ addr.line2 }}}</p>
+            <p class="addr-card__line">
+              {{ addr.line1 }}
+              @if (addr.line2) {
+                , {{ addr.line2 }}
+              }
+            </p>
             <p class="addr-card__line">{{ addr.city }}, {{ addr.state }} – {{ addr.pincode }}</p>
-            @if (addr.phone) { <p class="addr-card__line addr-card__phone">{{ addr.phone }}</p> }
+            @if (addr.phone) {
+              <p class="addr-card__line addr-card__phone">{{ addr.phone }}</p>
+            }
           </button>
         }
 
@@ -69,21 +88,25 @@
       <form [formGroup]="form" class="addr-form">
         <div class="form-group">
           <label class="form-label">Street</label>
-          <input class="form-control" formControlName="street" placeholder="House no, Street, Area">
+          <input
+            class="form-control"
+            formControlName="street"
+            placeholder="House no, Street, Area"
+          />
         </div>
         <div class="two-col">
           <div class="form-group">
             <label class="form-label">City</label>
-            <input class="form-control" formControlName="city">
+            <input class="form-control" formControlName="city" />
           </div>
           <div class="form-group">
             <label class="form-label">State</label>
-            <input class="form-control" formControlName="state">
+            <input class="form-control" formControlName="state" />
           </div>
         </div>
         <div class="form-group">
           <label class="form-label">Pincode</label>
-          <input class="form-control" formControlName="pincode">
+          <input class="form-control" formControlName="pincode" />
         </div>
       </form>
     }
@@ -91,7 +114,7 @@
     <!-- Payment method -->
     <h3>Payment Method</h3>
     <div class="payment-options">
-      <button
+      <!-- <button
         type="button"
         class="payment-card"
         [class.payment-card--selected]="paymentType() === 'online'"
@@ -103,7 +126,7 @@
           <p class="payment-card__desc">UPI, Cards, Net Banking via Razorpay</p>
         </div>
         <span class="payment-card__check material-symbols-rounded">check_circle</span>
-      </button>
+      </button> -->
 
       <button
         type="button"
@@ -118,13 +141,27 @@
         </div>
         <span class="payment-card__check material-symbols-rounded">check_circle</span>
       </button>
+
+      <div class="payment-card payment-card--disabled">
+        <span class="material-symbols-rounded payment-card__icon">credit_card</span>
+        <div>
+          <p class="payment-card__title">Online Payment</p>
+          <p class="payment-card__desc">UPI, Cards, Net Banking via Razorpay</p>
+        </div>
+        <span class="payment-card__coming-soon">Coming Soon</span>
+      </div>
     </div>
 
     <!-- Notes always visible -->
     <form [formGroup]="form" (ngSubmit)="placeOrder()">
       <div class="form-group notes-group">
         <label class="form-label">Notes (optional)</label>
-        <textarea class="form-control" formControlName="notes" rows="3" placeholder="Delivery instructions…"></textarea>
+        <textarea
+          class="form-control"
+          formControlName="notes"
+          rows="3"
+          placeholder="Delivery instructions…"
+        ></textarea>
       </div>
       <button class="btn btn--primary full-width" type="submit" [disabled]="!canPlace">
         @if (loading()) {
@@ -142,11 +179,17 @@
     <h3>Order Summary</h3>
     @for (item of cartService.cart()?.items; track item.product._id) {
       <div class="summary-row">
-        <span>{{ item.product.name }}@if (item.weight) { <span class="item-weight">{{ item.weight }}</span> } × {{ item.quantity }}</span>
+        <span
+          >{{ item.product.name }}
+          @if (item.weight) {
+            <span class="item-weight">{{ item.weight }}</span>
+          }
+          × {{ item.quantity }}</span
+        >
         <span>₹{{ item.price * item.quantity }}</span>
       </div>
     }
-    <hr>
+    <hr />
     <div class="summary-row total">
       <strong>Total</strong>
       <strong>₹{{ cartService.cart()?.totalAmount }}</strong>
