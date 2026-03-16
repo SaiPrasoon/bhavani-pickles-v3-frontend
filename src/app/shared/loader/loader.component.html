@@ -1,0 +1,11 @@
+@if (loader.isLoading()) {
+  <div class="loader-backdrop" role="status" aria-live="polite">
+    <div class="loader-box">
+      <div class="spinner">
+        <div class="spinner__ring"></div>
+        <div class="spinner__ring spinner__ring--inner"></div>
+      </div>
+      <p class="loader-message">{{ loader.message() }}</p>
+    </div>
+  </div>
+}
