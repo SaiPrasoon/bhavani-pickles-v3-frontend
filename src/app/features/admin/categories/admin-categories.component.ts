@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { Category } from '../../../core/models/product.model';
 import { CategoryFormComponent } from './category-form/category-form.component';
 
@@ -14,6 +15,7 @@ import { CategoryFormComponent } from './category-form/category-form.component';
 export class AdminCategoriesComponent implements OnInit {
   private categoriesService = inject(CategoriesService);
   private toast = inject(ToastService);
+  private confirmService = inject(ConfirmService);
 
   categories = signal<Category[]>([]);
   saving = signal(false);
@@ -62,10 +64,17 @@ export class AdminCategoriesComponent implements OnInit {
   }
 
   delete(cat: Category): void {
-    if (!confirm(`Delete "${cat.name}"?`)) return;
-    this.categoriesService.delete(cat._id).subscribe(() => {
-      this.toast.success('Category deleted');
-      this.load();
+    this.confirmService.open({
+      title: 'Delete Category',
+      message: `Are you sure you want to delete "${cat.name}"?`,
+      confirmLabel: 'Delete',
+      danger: true,
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.categoriesService.delete(cat._id).subscribe(() => {
+        this.toast.success('Category deleted');
+        this.load();
+      });
     });
   }
 

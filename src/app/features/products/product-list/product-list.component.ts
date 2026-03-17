@@ -1,6 +1,8 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProductsService } from '../../../core/services/products.service';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { CartService } from '../../../core/services/cart.service';
@@ -14,7 +16,7 @@ import { Product, Category, ProductVariant } from '../../../core/models/product.
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss',
 })
-export class ProductListComponent implements OnInit {
+export class ProductListComponent implements OnInit, OnDestroy {
   private productsService = inject(ProductsService);
   private categoriesService = inject(CategoriesService);
   private cartService = inject(CartService);
@@ -28,6 +30,9 @@ export class ProductListComponent implements OnInit {
   limit = signal(12);
   search = signal('');
   selectedCategory = signal('');
+
+  private search$ = new Subject<string>();
+  private searchSub!: Subscription;
 
   // Variant picker popup
   pickerProduct = signal<Product | null>(null);
@@ -43,11 +48,20 @@ export class ProductListComponent implements OnInit {
   get totalPages(): number { return Math.ceil(this.total() / this.limit()); }
 
   ngOnInit(): void {
+    this.searchSub = this.search$.pipe(
+      debounceTime(400),
+      distinctUntilChanged(),
+    ).subscribe(() => { this.page.set(1); this.load(); });
+
     this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
     this.route.queryParams.subscribe(params => {
       if (params['category']) this.selectedCategory.set(params['category']);
       this.load();
     });
+  }
+
+  ngOnDestroy(): void {
+    this.searchSub?.unsubscribe();
   }
 
   load(): void {
@@ -62,7 +76,16 @@ export class ProductListComponent implements OnInit {
     });
   }
 
-  onFilter(): void { this.page.set(1); this.load(); }
+  onSearchInput(value: string): void {
+    this.search.set(value);
+    this.search$.next(value);
+  }
+
+  onCategoryChange(value: string): void {
+    this.selectedCategory.set(value);
+    this.page.set(1);
+    this.load();
+  }
   prevPage(): void { if (this.page() > 1) { this.page.update(p => p - 1); this.load(); } }
   nextPage(): void { if (this.page() < this.totalPages) { this.page.update(p => p + 1); this.load(); } }
 

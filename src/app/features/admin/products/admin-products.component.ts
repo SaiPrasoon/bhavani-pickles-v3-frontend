@@ -1,7 +1,10 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormArray, Validators } from '@angular/forms';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProductsService } from '../../../core/services/products.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { Product, ProductVariant } from '../../../core/models/product.model';
 import { ProductFormComponent, ProductSubmitPayload } from './product-form/product-form.component';
 
@@ -12,15 +15,20 @@ import { ProductFormComponent, ProductSubmitPayload } from './product-form/produ
   templateUrl: './admin-products.component.html',
   styleUrl: './admin-products.component.scss',
 })
-export class AdminProductsComponent implements OnInit {
+export class AdminProductsComponent implements OnInit, OnDestroy {
   private productsService = inject(ProductsService);
   private toast = inject(ToastService);
+  private confirmService = inject(ConfirmService);
   private fb = inject(FormBuilder);
 
   products = signal<Product[]>([]);
   saving = signal(false);
   showModal = signal(false);
   editingProduct = signal<Product | null>(null);
+
+  searchQuery = signal('');
+  private search$ = new Subject<string>();
+  private searchSub!: Subscription;
 
   // Stock drawer
   stockProduct = signal<Product | null>(null);
@@ -37,11 +45,29 @@ export class AdminProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.searchSub = this.search$.pipe(
+      debounceTime(350),
+      distinctUntilChanged(),
+    ).subscribe(q => this.load(q));
     this.load();
   }
 
-  load(): void {
-    this.productsService.getAll({ limit: 100 }).subscribe((res) => this.products.set(res.items));
+  ngOnDestroy(): void {
+    this.searchSub?.unsubscribe();
+  }
+
+  onSearch(value: string): void {
+    this.searchQuery.set(value);
+    this.search$.next(value.trim());
+  }
+
+  clearSearch(): void {
+    this.onSearch('');
+  }
+
+  load(search = ''): void {
+    this.productsService.getAll({ limit: 100, search: search || undefined })
+      .subscribe((res) => this.products.set(res.items));
   }
 
   openAddModal(): void {
@@ -85,10 +111,17 @@ export class AdminProductsComponent implements OnInit {
   }
 
   delete(product: Product): void {
-    if (!confirm(`Delete "${product.name}"?`)) return;
-    this.productsService.delete(product._id).subscribe(() => {
-      this.toast.success('Product deleted');
-      this.load();
+    this.confirmService.open({
+      title: 'Delete Product',
+      message: `Are you sure you want to delete "${product.name}"?`,
+      confirmLabel: 'Delete',
+      danger: true,
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      this.productsService.delete(product._id).subscribe(() => {
+        this.toast.success('Product deleted');
+        this.load();
+      });
     });
   }
 

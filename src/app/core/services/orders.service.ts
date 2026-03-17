@@ -71,4 +71,8 @@ export class OrdersService {
   updateStatus(id: string, status: OrderStatus) {
     return this.http.patch<Order>(`${this.base}/${id}/status`, { status });
   }
+
+  cancelOrder(id: string, reason?: string) {
+    return this.http.patch<Order>(`${this.base}/${id}/cancel`, { reason });
+  }
 }

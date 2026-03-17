@@ -6,7 +6,33 @@
       </button>
       <h1>Order #{{ o._id.slice(-8).toUpperCase() }}</h1>
     </div>
-    <span class="badge badge--{{ o.status }}">{{ o.status | titlecase }}</span>
+
+    <div class="header-right">
+      <span class="badge badge--{{ o.status }}">{{ o.status | titlecase }}</span>
+
+      <!-- Kebab menu -->
+      <div class="order-menu">
+        <button
+          class="btn btn--icon"
+          (click)="menuOpen.set(!menuOpen()); $event.stopPropagation()"
+          aria-label="Order options"
+        >
+          <span class="material-symbols-rounded">more_vert</span>
+        </button>
+        @if (menuOpen()) {
+          <div class="order-menu__dropdown">
+            <button (click)="openCancelModal()" [disabled]="!isCancellable()">
+              <span class="material-symbols-rounded">cancel</span>
+              Cancel Order
+            </button>
+            <button (click)="downloadInvoice()">
+              <span class="material-symbols-rounded">download</span>
+              Download Invoice
+            </button>
+          </div>
+        }
+      </div>
+    </div>
   </div>
 
   <div class="order-layout">
@@ -44,5 +70,31 @@
         @if (o.notes) { <hr><p><strong>Notes:</strong> {{ o.notes }}</p> }
       </div>
     </div>
+
+    <!-- Cancellation info -->
+    @if (o.status === 'cancelled') {
+      <div class="card cancel-info-card">
+        <div class="card__body">
+          <p class="cancel-label">
+            <span class="material-symbols-rounded">cancel</span>
+            Order cancelled
+            @if (o.cancelledBy) { by {{ o.cancelledBy }} }
+            @if (o.cancelledAt) { on {{ o.cancelledAt | date:'mediumDate' }} }
+          </p>
+          @if (o.cancellationReason) {
+            <p class="cancel-reason"><strong>Reason:</strong> {{ o.cancellationReason }}</p>
+          }
+        </div>
+      </div>
+    }
   </div>
+}
+
+<!-- Cancel modal -->
+@if (showCancelModal()) {
+  <app-cancel-reason-modal
+    [loading]="cancelling()"
+    (confirmed)="onCancelConfirmed($event)"
+    (dismissed)="showCancelModal.set(false)"
+  />
 }

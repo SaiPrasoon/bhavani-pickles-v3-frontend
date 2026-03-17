@@ -3,11 +3,20 @@ import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { ToastComponent } from './shared/toast/toast.component';
 import { FooterComponent } from './shared/footer/footer.component';
+import { LoaderComponent } from './shared/loader/loader.component';
+import { ConfirmModalComponent } from './shared/confirm-modal/confirm-modal.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, ToastComponent, FooterComponent],
+  imports: [
+    RouterOutlet,
+    NavbarComponent,
+    ToastComponent,
+    FooterComponent,
+    LoaderComponent,
+    ConfirmModalComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

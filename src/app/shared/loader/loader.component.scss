@@ -1,0 +1,64 @@
+.loader-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 7, 3, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fade-in 0.15s ease;
+}
+
+.loader-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 36px 48px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+// ── Spinner ────────────────────────────────────────────────────────────────────
+.spinner {
+  position: relative;
+  width: 52px;
+  height: 52px;
+
+  &__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: var(--c-primary, #950220);
+    animation: spin 0.9s linear infinite;
+  }
+
+  &__ring--inner {
+    inset: 8px;
+    border-top-color: var(--c-amber, #c8870a);
+    animation-duration: 0.6s;
+    animation-direction: reverse;
+  }
+}
+
+.loader-message {
+  font-size: 0.9rem;
+  color: var(--c-text-muted);
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+// ── Animations ─────────────────────────────────────────────────────────────────
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

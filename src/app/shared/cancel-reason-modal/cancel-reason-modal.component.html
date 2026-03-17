@@ -1,0 +1,33 @@
+<div class="modal-backdrop" (click)="dismissed.emit()">
+  <div class="modal card" (click)="$event.stopPropagation()">
+    <div class="modal__header">
+      <h3>Cancel Order</h3>
+      <button class="modal__close" type="button" (click)="dismissed.emit()">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+    <div class="card__body cancel-modal-body">
+      <p class="cancel-modal-desc">
+        This action cannot be undone. Stock for all items in this order will be restored.
+      </p>
+      <div class="form-group">
+        <label class="form-label">Reason for cancellation (optional)</label>
+        <textarea
+          class="form-control"
+          rows="4"
+          placeholder="e.g. Customer requested, item unavailable…"
+          [ngModel]="reason()"
+          (ngModelChange)="reason.set($event)"
+        ></textarea>
+      </div>
+      <div class="cancel-modal-actions">
+        <button class="btn btn--ghost" type="button" (click)="dismissed.emit()" [disabled]="loading">
+          Keep Order
+        </button>
+        <button class="btn btn--danger" type="button" (click)="confirm()" [disabled]="loading">
+          {{ loading ? 'Cancelling…' : 'Confirm Cancel' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
