@@ -58,11 +58,7 @@
           </div>
 
           <p class="stock" [class.stock--out]="v.leftoverStock === 0 || p.isOutOfStock">
-            {{
-              v.leftoverStock > 0 && !p.isOutOfStock
-                ? 'In Stock (' + v.leftoverStock + ' available)'
-                : 'Out of Stock'
-            }}
+            {{ v.leftoverStock > 0 && !p.isOutOfStock ? 'In Stock' : 'Out of Stock' }}
           </p>
 
           <!-- CTA: qty stepper if in cart, else Add to Cart -->

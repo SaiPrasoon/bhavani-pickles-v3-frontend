@@ -12,6 +12,22 @@
     </button>
   </section>
 
+  <div class="search-bar">
+    <span class="search-bar__icon material-symbols-rounded">search</span>
+    <input
+      class="search-bar__input"
+      type="text"
+      placeholder="Search products…"
+      [value]="searchQuery()"
+      (input)="onSearch($any($event.target).value)"
+    />
+    @if (searchQuery()) {
+      <button class="search-bar__clear btn btn--icon" (click)="clearSearch()" title="Clear">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    }
+  </div>
+
   <table class="table">
     <thead>
       <tr>

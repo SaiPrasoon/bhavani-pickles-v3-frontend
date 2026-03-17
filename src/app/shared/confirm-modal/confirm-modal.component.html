@@ -1,0 +1,29 @@
+@if (confirm.config(); as cfg) {
+  <div class="modal-backdrop" (click)="confirm.resolve(false)">
+    <div class="modal card" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+      <div class="modal__header">
+        <h3>{{ cfg.title }}</h3>
+        <button class="modal__close" type="button" (click)="confirm.resolve(false)">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      </div>
+      <div class="modal__body">
+        <p class="modal__message">{{ cfg.message }}</p>
+        <div class="modal__actions">
+          <button class="btn btn--ghost" type="button" (click)="confirm.resolve(false)">
+            {{ cfg.cancelLabel }}
+          </button>
+          <button
+            class="btn"
+            [class.btn--danger]="cfg.danger"
+            [class.btn--primary]="!cfg.danger"
+            type="button"
+            (click)="confirm.resolve(true)"
+          >
+            {{ cfg.confirmLabel }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

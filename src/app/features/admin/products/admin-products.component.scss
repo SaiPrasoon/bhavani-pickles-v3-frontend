@@ -4,6 +4,52 @@
   gap: 16px;
 }
 
+// ─── Search bar ───────────────────────────────────────────────────────────────
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  padding: 0 12px;
+  max-width: 360px;
+  transition: border-color 0.15s;
+
+  &:focus-within {
+    border-color: rgba(240, 235, 224, 0.3);
+  }
+
+  &__icon {
+    font-size: 1.1rem;
+    color: var(--c-text-faint);
+    flex-shrink: 0;
+  }
+
+  &__input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--c-text);
+    font-size: 0.875rem;
+    padding: 9px 0;
+
+    &::placeholder { color: var(--c-text-faint); }
+  }
+
+  &__clear {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    color: var(--c-text-faint);
+
+    .material-symbols-rounded { font-size: 1rem; }
+
+    &:hover { color: var(--c-text); }
+  }
+}
+
 // ─── Table thumbnail ──────────────────────────────────────────────────────────
 .prod-thumb {
   width: 48px;

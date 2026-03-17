@@ -45,16 +45,9 @@
           </p>
           <p
             class="stock"
-            [class.stock--low]="product.variants[0].leftoverStock < 10 && product.variants[0].leftoverStock > 0"
             [class.stock--out]="product.variants[0].leftoverStock === 0 || product.isOutOfStock"
           >
-            {{
-              (!product.isOutOfStock && product.variants[0].leftoverStock > 0)
-                ? product.variants[0].leftoverStock < 10
-                  ? 'Only ' + product.variants[0].leftoverStock + ' left'
-                  : 'In Stock'
-                : 'Out of Stock'
-            }}
+            {{ (!product.isOutOfStock && product.variants[0].leftoverStock > 0) ? 'In Stock' : 'Out of Stock' }}
           </p>
         }
       </div>
@@ -119,8 +112,8 @@
                 ₹{{ v.price }}
               }
             </span>
-            <span class="variant-chip__stock" [class.variant-chip__stock--low]="v.leftoverStock < 10">
-              {{ v.leftoverStock === 0 ? 'Out of stock' : v.leftoverStock < 10 ? 'Only ' + v.leftoverStock + ' left' : v.leftoverStock + ' available' }}
+            <span class="variant-chip__stock">
+              {{ v.leftoverStock === 0 ? 'Out of stock' : 'In stock' }}
             </span>
           </button>
         }
