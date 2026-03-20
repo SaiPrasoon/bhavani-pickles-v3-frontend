@@ -101,12 +101,27 @@
               <input class="form-control" formControlName="city" placeholder="City" />
             </div>
             <div class="form-group">
+              <label class="form-label">Country</label>
+              <select class="form-control" formControlName="country">
+                @for (c of countries; track c.code) {
+                  <option [value]="c.code">{{ c.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
               <label class="form-label">State</label>
-              <input class="form-control" formControlName="state" placeholder="State" />
+              <select class="form-control" formControlName="state">
+                <option value="">Select state</option>
+                @for (s of addressStates(); track s) {
+                  <option [value]="s">{{ s }}</option>
+                }
+              </select>
             </div>
             <div class="form-group">
-              <label class="form-label">Pincode</label>
-              <input class="form-control" formControlName="pincode" placeholder="6-digit pincode" maxlength="6" />
+              <label class="form-label">{{ addressPincodeLabel() }}</label>
+              <input class="form-control" formControlName="pincode" [placeholder]="addressPincodeLabel()" />
             </div>
           </div>
           <div class="form-check">
@@ -135,7 +150,7 @@
               @if (addr.line2) {
                 <p class="address-card__text">{{ addr.line2 }}</p>
               }
-              <p class="address-card__text">{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</p>
+              <p class="address-card__text">{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}, {{ addr.country === 'US' ? 'United States' : 'India' }}</p>
               @if (addr.phone) {
                 <p class="address-card__text address-card__phone">{{ addr.phone }}</p>
               }

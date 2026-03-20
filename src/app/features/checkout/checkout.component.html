@@ -63,7 +63,7 @@
                 , {{ addr.line2 }}
               }
             </p>
-            <p class="addr-card__line">{{ addr.city }}, {{ addr.state }} – {{ addr.pincode }}</p>
+            <p class="addr-card__line">{{ addr.city }}, {{ addr.state }} – {{ addr.pincode }}, {{ addr.country === 'US' ? 'United States' : 'India' }}</p>
             @if (addr.phone) {
               <p class="addr-card__line addr-card__phone">{{ addr.phone }}</p>
             }
@@ -97,16 +97,31 @@
         <div class="two-col">
           <div class="form-group">
             <label class="form-label">City</label>
-            <input class="form-control" formControlName="city" />
+            <input class="form-control" formControlName="city" placeholder="City" />
           </div>
           <div class="form-group">
-            <label class="form-label">State</label>
-            <input class="form-control" formControlName="state" />
+            <label class="form-label">Country</label>
+            <select class="form-control" formControlName="country">
+              @for (c of countries; track c.code) {
+                <option [value]="c.code">{{ c.name }}</option>
+              }
+            </select>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Pincode</label>
-          <input class="form-control" formControlName="pincode" />
+        <div class="two-col">
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <select class="form-control" formControlName="state">
+              <option value="">Select state</option>
+              @for (s of states(); track s) {
+                <option [value]="s">{{ s }}</option>
+              }
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">{{ pincodeLabel() }}</label>
+            <input class="form-control" formControlName="pincode" [placeholder]="pincodeLabel()" />
+          </div>
         </div>
       </form>
     }

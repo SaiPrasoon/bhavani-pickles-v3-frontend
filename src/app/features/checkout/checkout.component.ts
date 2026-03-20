@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CartService } from '../../core/services/cart.service';
@@ -8,6 +8,7 @@ import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { Address } from '../../core/models/user.model';
+import { COUNTRIES, getCountry } from '../../core/data/geo.data';
 
 @Component({
   selector: 'app-checkout',
@@ -32,12 +33,19 @@ export class CheckoutComponent implements OnInit {
   useNewAddress = signal(false);
   paymentType = signal<'COD' | 'online'>('COD');
 
+  readonly countries = COUNTRIES;
+  readonly selectedCountry = signal('IN');
+
+  readonly states = computed(() => getCountry(this.selectedCountry())?.states ?? []);
+  readonly pincodeLabel = computed(() => getCountry(this.selectedCountry())?.pincodeLabel ?? 'Pincode');
+
   form = this.fb.group({
     name:    ['', Validators.required],
     email:   ['', [Validators.required, Validators.email]],
     phone:   ['', Validators.required],
     street:  ['', Validators.required],
     city:    ['', Validators.required],
+    country: ['IN', Validators.required],
     state:   ['', Validators.required],
     pincode: ['', Validators.required],
     notes:   [''],
@@ -45,6 +53,12 @@ export class CheckoutComponent implements OnInit {
 
   ngOnInit(): void {
     this.cartService.loadCart().subscribe();
+
+    // Keep selectedCountry signal in sync and reset dependent fields
+    this.form.get('country')!.valueChanges.subscribe(code => {
+      this.selectedCountry.set(code ?? 'IN');
+      this.form.patchValue({ state: '', pincode: '' }, { emitEvent: false });
+    });
 
     const user = this.authService.user();
     if (user) {
@@ -95,7 +109,6 @@ export class CheckoutComponent implements OnInit {
       customerPhone: this.form.value.phone || undefined,
     };
 
-    // For guests, pass the cart items in the request
     const guestItems = !this.authService.isLoggedIn()
       ? (this.cartService.cart()?.items ?? []).map(i => ({
           productId: i.product._id,
@@ -136,21 +149,19 @@ export class CheckoutComponent implements OnInit {
         city: addr.city,
         state: addr.state,
         pincode: addr.pincode,
+        country: addr.country ?? 'IN',
         phone: addr.phone,
       };
     }
-    if (
-      !this.form.value.street ||
-      !this.form.value.city ||
-      !this.form.value.state ||
-      !this.form.value.pincode
-    ) return null;
+    const v = this.form.value;
+    if (!v.street || !v.city || !v.state || !v.pincode || !v.country) return null;
     return {
-      street: this.form.value.street!,
-      city: this.form.value.city!,
-      state: this.form.value.state!,
-      pincode: this.form.value.pincode!,
-      phone: this.form.value.phone || undefined,
+      street: v.street,
+      city: v.city,
+      state: v.state,
+      pincode: v.pincode,
+      country: v.country,
+      phone: v.phone || undefined,
     };
   }
 
@@ -196,7 +207,7 @@ export class CheckoutComponent implements OnInit {
     const v = this.form.value;
     if (!v.name || !this.form.get('email')!.valid || !v.phone) return false;
     if (!this.useNewAddress()) return !!this.selectedAddressId();
-    return !!(v.street && v.city && v.state && v.pincode);
+    return !!(v.street && v.city && v.country && v.state && v.pincode);
   }
 
   goBack(): void { window.history.back(); }
