@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BUSINESS } from '../../core/constants/business.constants';
 
 @Component({
   selector: 'app-shipping',
@@ -6,4 +7,6 @@ import { Component } from '@angular/core';
   templateUrl: './shipping.component.html',
   styleUrl: './shipping.component.scss',
 })
-export class ShippingComponent {}
+export class ShippingComponent {
+  readonly biz = BUSINESS;
+}

@@ -60,6 +60,14 @@
         >
           + Cart
         </button>
+        <button
+          class="btn btn--icon btn--wishlist"
+          [class.btn--wishlisted]="wishlistService.isWishlisted(product._id)"
+          (click)="wishlistService.toggle(product._id)"
+          title="{{ wishlistService.isWishlisted(product._id) ? 'Remove from wishlist' : 'Add to wishlist' }}"
+        >
+          <span class="material-symbols-rounded">{{ wishlistService.isWishlisted(product._id) ? 'favorite' : 'favorite_border' }}</span>
+        </button>
       </div>
     </div>
   } @empty {

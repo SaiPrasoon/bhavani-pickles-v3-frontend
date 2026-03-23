@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
+import { WishlistService } from '../../core/services/wishlist.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -14,6 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
 export class NavbarComponent {
   authService = inject(AuthService);
   cartService = inject(CartService);
+  wishlistService = inject(WishlistService);
   private elRef = inject(ElementRef);
 
   sidebarOpen = signal(false);

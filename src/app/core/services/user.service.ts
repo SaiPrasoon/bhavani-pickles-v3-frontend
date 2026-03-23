@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { User, Address } from '../models/user.model';
+import { Product } from '../models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -31,5 +32,13 @@ export class UserService {
 
   changePassword(currentPassword: string, newPassword: string) {
     return this.http.patch<void>(`${this.base}/me/change-password`, { currentPassword, newPassword });
+  }
+
+  getWishlist() {
+    return this.http.get<Product[]>(`${this.base}/me/wishlist`);
+  }
+
+  toggleWishlist(productId: string) {
+    return this.http.post<{ wishlisted: boolean }>(`${this.base}/me/wishlist/${productId}`, {});
   }
 }

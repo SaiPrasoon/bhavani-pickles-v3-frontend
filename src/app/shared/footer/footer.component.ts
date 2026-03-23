@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { BUSINESS } from '../../core/constants/business.constants';
 
 @Component({
   selector: 'app-footer',
@@ -10,4 +11,5 @@ import { RouterLink } from '@angular/router';
 })
 export class FooterComponent {
   readonly year = new Date().getFullYear();
+  readonly biz = BUSINESS;
 }

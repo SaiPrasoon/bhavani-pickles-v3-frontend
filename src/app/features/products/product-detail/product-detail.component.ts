@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductsService } from '../../../core/services/products.service';
 import { CartService } from '../../../core/services/cart.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { WishlistService } from '../../../core/services/wishlist.service';
 import { Product } from '../../../core/models/product.model';
 import { CartItem } from '../../../core/models/cart.model';
 
@@ -18,6 +19,7 @@ export class ProductDetailComponent implements OnInit {
   private productsService = inject(ProductsService);
   readonly cartService = inject(CartService);
   private toast = inject(ToastService);
+  readonly wishlistService = inject(WishlistService);
 
   product = signal<Product | null>(null);
   selectedVariantIdx = signal(0);
@@ -56,6 +58,7 @@ export class ProductDetailComponent implements OnInit {
     if (!this.cartService.cart()) {
       this.cartService.loadCart().subscribe();
     }
+    this.wishlistService.load();
   }
 
   selectVariant(idx: number): void {

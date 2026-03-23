@@ -3,6 +3,7 @@ import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
+import { WishlistService } from '../../../core/services/wishlist.service';
 
 @Component({
   selector: 'app-login',
@@ -15,6 +16,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private cartService = inject(CartService);
+  private wishlistService = inject(WishlistService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -30,7 +32,9 @@ export class LoginComponent {
     this.authService.login(this.form.value as any).subscribe({
       next: () => {
         const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/';
-        this.cartService.mergeGuestCart().subscribe(() => this.router.navigateByUrl(returnUrl));
+        this.cartService.mergeGuestCart().subscribe(() => {
+          this.wishlistService.syncOnLogin().subscribe(() => this.router.navigateByUrl(returnUrl));
+        });
       },
       error: () => this.loading.set(false),
     });

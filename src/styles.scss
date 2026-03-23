@@ -56,6 +56,17 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+// Inline content links (email, phone, whatsapp in policy pages)
+.contact-list a {
+  color: var(--c-amber);
+  text-decoration: none;
+  transition: text-decoration 0.15s;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
 img {
   max-width: 100%;
   display: block;

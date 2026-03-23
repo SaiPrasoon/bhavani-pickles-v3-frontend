@@ -108,12 +108,12 @@
         <li>
           <span class="material-symbols-rounded">mail</span>
           <strong>Email:</strong>
-          <span class="contact-placeholder">—</span>
+          <a [href]="biz.emailMailto">{{ biz.email }}</a>
         </li>
         <li>
           <span class="material-symbols-rounded">forum</span>
           <strong>WhatsApp:</strong>
-          <span class="contact-placeholder">—</span>
+          <a [href]="biz.whatsapp" target="_blank" rel="noopener noreferrer">{{ biz.phone }}</a>
         </li>
       </ul>
     </section>

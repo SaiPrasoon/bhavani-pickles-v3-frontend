@@ -115,5 +115,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
 
+  {
+    path: 'order-status',
+    loadComponent: () => import('./features/order-status/order-status.component').then(m => m.OrderStatusComponent),
+  },
+
+  {
+    path: 'wishlist',
+    loadComponent: () => import('./features/wishlist/wishlist.component').then(m => m.WishlistComponent),
+  },
+
   { path: '**', redirectTo: 'home' },
 ];

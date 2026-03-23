@@ -126,17 +126,17 @@ export class CheckoutComponent implements OnInit {
         next: (data) => {
           if (data.paymentType === 'COD') {
             this.cartService.clearLocal();
-            this.toast.success('Order placed! We will collect payment on delivery.');
-            if (this.authService.isLoggedIn()) {
-              this.router.navigate(['/orders', data.orderId]);
-            } else {
-              this.router.navigate(['/']);
-            }
+            this.router.navigate(['/order-status'], {
+              queryParams: { type: 'success', orderId: data.orderId },
+            });
           } else {
             this.openRazorpay(data);
           }
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.router.navigate(['/order-status'], { queryParams: { type: 'failure' } });
+        },
       });
   }
 
@@ -181,16 +181,13 @@ export class CheckoutComponent implements OnInit {
         }).subscribe({
           next: (order) => {
             this.cartService.clearLocal();
-            this.toast.success('Payment successful! Order confirmed.');
-            if (this.authService.isLoggedIn()) {
-              this.router.navigate(['/orders', order._id]);
-            } else {
-              this.router.navigate(['/']);
-            }
+            this.router.navigate(['/order-status'], {
+              queryParams: { type: 'success', orderId: order._id },
+            });
           },
           error: () => {
-            this.toast.error('Payment verification failed. Contact support.');
             this.loading.set(false);
+            this.router.navigate(['/order-status'], { queryParams: { type: 'failure' } });
           },
         });
       })
