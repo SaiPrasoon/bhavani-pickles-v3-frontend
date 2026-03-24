@@ -148,6 +148,14 @@
   p { margin: 0; }
 }
 
+.footer__credits {
+  width: 100%;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--c-text-faint);
+  padding-top: 4px;
+}
+
 .footer__bottom-links {
   display: flex;
   align-items: center;

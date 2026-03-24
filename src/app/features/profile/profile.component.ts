@@ -1,10 +1,11 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { UserService } from '../../core/services/user.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { User, Address } from '../../core/models/user.model';
+import { COUNTRIES, getCountry } from '../../core/data/geo.data';
 
 @Component({
   selector: 'app-profile',
@@ -26,6 +27,12 @@ export class ProfileComponent implements OnInit {
   savingPassword = signal(false);
   savingAddress = signal(false);
 
+  readonly countries = COUNTRIES;
+  readonly selectedAddressCountry = signal('IN');
+
+  readonly addressStates = computed(() => getCountry(this.selectedAddressCountry())?.states ?? []);
+  readonly addressPincodeLabel = computed(() => getCountry(this.selectedAddressCountry())?.pincodeLabel ?? 'Pincode');
+
   infoForm = this.fb.group({
     name: ['', Validators.required],
     phone: [''],
@@ -36,8 +43,9 @@ export class ProfileComponent implements OnInit {
     line1: ['', Validators.required],
     line2: [''],
     city: ['', Validators.required],
+    country: ['IN', Validators.required],
     state: ['', Validators.required],
-    pincode: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
+    pincode: ['', Validators.required],
     phone: [''],
     isDefault: [false],
   });
@@ -52,6 +60,11 @@ export class ProfileComponent implements OnInit {
     this.userService.getProfile().subscribe(u => {
       this.user.set(u);
       this.infoForm.patchValue({ name: u.name, phone: u.phone ?? '' });
+    });
+
+    this.addressForm.get('country')!.valueChanges.subscribe(code => {
+      this.selectedAddressCountry.set(code ?? 'IN');
+      this.addressForm.patchValue({ state: '', pincode: '' }, { emitEvent: false });
     });
   }
 
@@ -82,6 +95,7 @@ export class ProfileComponent implements OnInit {
       line1: val.line1!,
       line2: val.line2 ?? undefined,
       city: val.city!,
+      country: val.country!,
       state: val.state!,
       pincode: val.pincode!,
       phone: val.phone ?? undefined,

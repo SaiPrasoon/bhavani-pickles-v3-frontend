@@ -9,6 +9,20 @@
 .stock--low { color: #ffb74d; }
 .stock--out { color: #ef9a9a; }
 
+// Wishlist heart button
+.btn--wishlist {
+  margin-left: auto;
+  color: var(--c-text-muted);
+  padding: 4px;
+  transition: color 0.2s, transform 0.2s;
+  .material-symbols-rounded { font-size: 1.2rem; }
+  &:hover { color: #f43f5e; transform: scale(1.15); }
+}
+.btn--wishlisted {
+  color: #f43f5e;
+  .material-symbols-rounded { font-variation-settings: 'FILL' 1; }
+}
+
 // ── Variant picker popup ─────────────────────────────────────────────────────
 .picker-backdrop {
   position: fixed;

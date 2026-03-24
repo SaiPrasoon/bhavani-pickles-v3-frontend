@@ -62,36 +62,48 @@
           </p>
 
           <!-- CTA: qty stepper if in cart, else Add to Cart -->
-          @if (cartItem(); as item) {
-            <div class="cart-ctrl">
-              <div class="cart-ctrl__stepper">
-                <button class="cart-ctrl__btn" type="button" (click)="decrementCart()">−</button>
-                <span class="cart-ctrl__qty">{{ item.quantity }}</span>
-                <button
-                  class="cart-ctrl__btn"
-                  type="button"
-                  (click)="incrementCart()"
-                  [disabled]="item.quantity >= v.leftoverStock"
-                >
-                  +
-                </button>
+          <div class="cta-row">
+            @if (cartItem(); as item) {
+              <div class="cart-ctrl">
+                <div class="cart-ctrl__stepper">
+                  <button class="cart-ctrl__btn" type="button" (click)="decrementCart()">−</button>
+                  <span class="cart-ctrl__qty">{{ item.quantity }}</span>
+                  <button
+                    class="cart-ctrl__btn"
+                    type="button"
+                    (click)="incrementCart()"
+                    [disabled]="item.quantity >= v.leftoverStock"
+                  >
+                    +
+                  </button>
+                </div>
+                <a routerLink="/cart" class="btn btn--outline">View Cart →</a>
               </div>
-              <a routerLink="/cart" class="btn btn--outline">View Cart →</a>
-            </div>
+            } @else {
+              <button
+                class="btn btn--primary btn--lg"
+                (click)="addToCart()"
+                [disabled]="v.leftoverStock === 0 || p.isOutOfStock"
+              >
+                Add to Cart
+              </button>
+            }
+            <button
+              class="btn btn--icon btn--wishlist-detail"
+              [class.btn--wishlisted]="wishlistService.isWishlisted(p._id)"
+              (click)="wishlistService.toggle(p._id)"
+              title="{{ wishlistService.isWishlisted(p._id) ? 'Remove from wishlist' : 'Add to wishlist' }}"
+            >
+              <span class="material-symbols-rounded">{{ wishlistService.isWishlisted(p._id) ? 'favorite' : 'favorite_border' }}</span>
+            </button>
+          </div>
+          @if (cartItem(); as item) {
             <p class="cart-ctrl__hint">
               {{ item.quantity }} × ₹{{ v.discountedPrice ?? v.price }} = ₹{{
                 item.quantity * (v.discountedPrice ?? v.price)
               }}
               in cart
             </p>
-          } @else {
-            <button
-              class="btn btn--primary btn--lg"
-              (click)="addToCart()"
-              [disabled]="v.leftoverStock === 0 || p.isOutOfStock"
-            >
-              Add to Cart
-            </button>
           }
         }
       }

@@ -12,8 +12,11 @@
   </a>
 
   <div class="header__right">
-    <a routerLink="/wishlist" class="icon-btn" aria-label="Wishlist">
+    <a routerLink="/wishlist" class="icon-btn wishlist-btn" aria-label="Wishlist">
       <span class="material-symbols-rounded">favorite</span>
+      @if (wishlistService.products().length > 0) {
+        <span class="wishlist-badge">{{ wishlistService.products().length }}</span>
+      }
     </a>
 
     <a routerLink="/cart" class="icon-btn cart-btn" aria-label="Cart">

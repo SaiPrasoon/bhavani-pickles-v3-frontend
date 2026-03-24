@@ -1,0 +1,141 @@
+.status-page {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+}
+
+.status-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+  animation: fade-up 0.4s ease both;
+}
+
+// ── Animation wrapper ──────────────────────────────────────────────────────────
+.anim-wrap {
+  position: relative;
+  width: 130px;
+  height: 120px;
+}
+
+.anim-circle,
+.anim-icon,
+.anim-triangle {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+// Circle track (faint background ring)
+.circle-track {
+  stroke: rgba(240, 235, 224, 0.08);
+  stroke-width: 5;
+}
+
+// Animated circle stroke
+$circumference: 289; // 2 * π * 46 ≈ 289
+
+.circle-draw {
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: $circumference;
+  stroke-dashoffset: $circumference;
+  transform-origin: center;
+  transform: rotate(-90deg);
+  animation: draw-path 0.6s cubic-bezier(0.65, 0, 0.35, 1) 0.1s forwards;
+
+  &--success { stroke: #22c55e; }
+}
+
+// Icon strokes
+.icon-draw {
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+// Checkmark — perimeter ≈ 80
+.icon-draw--check {
+  stroke: #22c55e;
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  animation: draw-path 0.35s ease 0.7s forwards;
+}
+
+// ── Triangle + exclamation (failure) ──────────────────────────────────────────
+// Triangle perimeter: two sides 85 + base 82 ≈ 252
+.triangle-draw {
+  stroke: #f59e0b;
+  stroke-width: 5.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: rgba(245, 158, 11, 0.08);
+  stroke-dasharray: 252;
+  stroke-dashoffset: 252;
+  animation: draw-path 0.7s cubic-bezier(0.65, 0, 0.35, 1) 0.1s forwards;
+}
+
+// Exclamation body line — length 28
+.exclaim-body {
+  stroke: #f59e0b;
+  stroke-width: 5.5;
+  stroke-linecap: round;
+  stroke-dasharray: 30;
+  stroke-dashoffset: 30;
+  animation: draw-path 0.2s ease 0.85s forwards;
+}
+
+// Exclamation dot — pop in after body
+.exclaim-dot {
+  fill: #f59e0b;
+  opacity: 0;
+  animation: pop-in 0.2s ease 1.05s forwards;
+}
+
+// ── Text & actions ─────────────────────────────────────────────────────────────
+.status-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #22c55e;
+  margin: 0;
+
+  &--failure { color: #f59e0b; }
+}
+
+.status-message {
+  font-size: 0.95rem;
+  color: var(--c-text-muted);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.status-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+// ── Keyframes ──────────────────────────────────────────────────────────────────
+@keyframes draw-path {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.4); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

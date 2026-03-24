@@ -1,0 +1,58 @@
+<div class="status-page">
+  @if (type === 'success') {
+    <div class="status-card">
+
+      <!-- Success animation -->
+      <div class="anim-wrap">
+        <svg class="anim-circle" viewBox="0 0 100 100" fill="none">
+          <circle class="circle-track" cx="50" cy="50" r="46" />
+          <circle class="circle-draw circle-draw--success" cx="50" cy="50" r="46" />
+        </svg>
+        <svg class="anim-icon" viewBox="0 0 100 100" fill="none">
+          <polyline class="icon-draw icon-draw--check" points="22,52 42,70 76,32" />
+        </svg>
+      </div>
+
+      <h1 class="status-title">Order Confirmed!</h1>
+      <p class="status-message">
+        Your order has been placed successfully.<br />
+        You can track it in <strong>My Orders</strong>.
+      </p>
+
+      <div class="status-actions">
+        @if (orderId) {
+          <a class="btn btn--primary" [routerLink]="['/orders', orderId]">View Order</a>
+        }
+        <a class="btn btn--outline" routerLink="/products">Continue Shopping</a>
+      </div>
+
+    </div>
+  } @else {
+    <div class="status-card">
+
+      <!-- Failure animation: triangle + exclamation -->
+      <div class="anim-wrap">
+        <svg class="anim-triangle" viewBox="0 0 100 100" fill="none">
+          <!-- Triangle outline draws itself -->
+          <polyline class="triangle-draw" points="50,10 91,86 9,86 50,10" />
+          <!-- Exclamation body -->
+          <line class="exclaim-body" x1="50" y1="34" x2="50" y2="62" />
+          <!-- Exclamation dot -->
+          <circle class="exclaim-dot" cx="50" cy="74" r="3" />
+        </svg>
+      </div>
+
+      <h1 class="status-title status-title--failure">Order Failed</h1>
+      <p class="status-message">
+        Something went wrong while placing your order.<br />
+        Please try again or contact support if the issue persists.
+      </p>
+
+      <div class="status-actions">
+        <a class="btn btn--primary" routerLink="/checkout">Try Again</a>
+        <a class="btn btn--outline" routerLink="/products">Continue Shopping</a>
+      </div>
+
+    </div>
+  }
+</div>

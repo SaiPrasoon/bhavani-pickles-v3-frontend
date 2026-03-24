@@ -7,6 +7,7 @@ import { ProductsService } from '../../../core/services/products.service';
 import { CategoriesService } from '../../../core/services/categories.service';
 import { CartService } from '../../../core/services/cart.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { WishlistService } from '../../../core/services/wishlist.service';
 import { Product, Category, ProductVariant } from '../../../core/models/product.model';
 
 @Component({
@@ -22,6 +23,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private cartService = inject(CartService);
   private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
+  readonly wishlistService = inject(WishlistService);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -53,6 +55,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
     ).subscribe(() => { this.page.set(1); this.load(); });
 
+    this.wishlistService.load();
     this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
     this.route.queryParams.subscribe(params => {
       if (params['category']) this.selectedCategory.set(params['category']);
