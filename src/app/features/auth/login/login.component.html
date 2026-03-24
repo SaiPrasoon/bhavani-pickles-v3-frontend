@@ -14,6 +14,9 @@
       <div class="form-group">
         <label class="form-label">Password</label>
         <input class="form-control" type="password" formControlName="password" placeholder="••••••">
+        <div class="forgot-link">
+          <a routerLink="/auth/forgot-password">Forgot password?</a>
+        </div>
       </div>
       <button class="btn btn--primary full-width" type="submit" [disabled]="form.invalid || loading()">
         {{ loading() ? 'Logging in…' : 'Login' }}

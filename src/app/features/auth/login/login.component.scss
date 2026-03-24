@@ -25,6 +25,16 @@
 
 .full-width { width: 100%; justify-content: center; }
 
+.forgot-link {
+  text-align: right;
+  margin-top: 6px;
+  a {
+    font-size: 0.82rem;
+    color: var(--c-amber);
+    &:hover { text-decoration: underline; }
+  }
+}
+
 .auth-footer {
   text-align: center;
   margin-top: 20px;
