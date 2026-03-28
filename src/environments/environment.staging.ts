@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://bhavani-pickles-v3-backend-testing.up.railway.app/api',
+  apiUrl: 'https://bhavani-pickles-api-testing.onrender.com/api',
   razorpayKeyId: 'rzp_test_YOUR_KEY_ID',
 };
