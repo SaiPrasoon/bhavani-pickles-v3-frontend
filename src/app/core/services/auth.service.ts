@@ -43,6 +43,14 @@ export class AuthService {
     return localStorage.getItem('refreshToken');
   }
 
+  forgotPassword(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/reset-password`, { token, newPassword });
+  }
+
   refreshAccessToken(): Observable<{ accessToken: string }> {
     const refreshToken = this.getRefreshToken();
     return this.http
