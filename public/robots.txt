@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin
+Disallow: /auth
+Disallow: /profile
+Disallow: /checkout
+Disallow: /order-status
+
+Sitemap: https://www.bhavanipickles.com/sitemap.xml

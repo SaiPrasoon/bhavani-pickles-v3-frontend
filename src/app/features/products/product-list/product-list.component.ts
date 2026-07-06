@@ -9,6 +9,7 @@ import { CartService } from '../../../core/services/cart.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { WishlistService } from '../../../core/services/wishlist.service';
 import { Product, Category, ProductVariant } from '../../../core/models/product.model';
+import { SeoService } from '../../../core/services/seo.service';
 
 @Component({
   selector: 'app-product-list',
@@ -24,6 +25,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
   readonly wishlistService = inject(WishlistService);
+  private seo = inject(SeoService);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -54,6 +56,14 @@ export class ProductListComponent implements OnInit, OnDestroy {
       debounceTime(400),
       distinctUntilChanged(),
     ).subscribe(() => { this.page.set(1); this.load(); });
+
+    this.seo.update({
+      title: 'Products',
+      description:
+        'Browse our collection of authentic handmade Telugu pickles — avakaya, gongura, mango, and more. Free shipping on orders above a minimum.',
+      canonicalUrl: 'https://www.bhavanipickles.com/products',
+      keywords: 'buy pickles online, Telugu pickles, avakaya, gongura pickle, mango pickle',
+    });
 
     this.wishlistService.load();
     this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
