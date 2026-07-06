@@ -50,7 +50,9 @@ export class OrderDetailComponent implements OnInit {
 
   downloadInvoice(): void {
     this.menuOpen.set(false);
-    this.toast.info('Invoice download coming soon.');
+    const o = this.order();
+    if (!o) return;
+    this.ordersService.downloadInvoice(o._id);
   }
 
   onCancelConfirmed(reason: string | undefined): void {

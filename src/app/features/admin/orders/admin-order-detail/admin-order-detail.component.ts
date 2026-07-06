@@ -127,6 +127,12 @@ export class AdminOrderDetailComponent implements OnInit {
     this.showCancelModal.set(false);
   }
 
+  downloadInvoice(): void {
+    const o = this.order();
+    if (!o) return;
+    this.ordersService.downloadInvoice(o._id);
+  }
+
   goBack(): void {
     window.history.back();
   }

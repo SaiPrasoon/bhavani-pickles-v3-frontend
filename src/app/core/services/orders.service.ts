@@ -75,4 +75,17 @@ export class OrdersService {
   cancelOrder(id: string, reason?: string) {
     return this.http.patch<Order>(`${this.base}/${id}/cancel`, { reason });
   }
+
+  downloadInvoice(id: string): void {
+    this.http
+      .get(`${this.base}/${id}/invoice`, { responseType: 'blob' })
+      .subscribe((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `invoice-${id.slice(-8).toUpperCase()}.pdf`;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+  }
 }

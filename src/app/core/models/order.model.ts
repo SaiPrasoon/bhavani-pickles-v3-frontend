@@ -35,7 +35,10 @@ export interface Order {
   status: OrderStatus;
   notes?: string;
   isPaid: boolean;
+  paidAt?: string;
   paymentType?: 'COD' | 'online';
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
   createdAt: string;
   cancellationReason?: string;
   cancelledAt?: string;

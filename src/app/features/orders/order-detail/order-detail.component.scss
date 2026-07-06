@@ -52,6 +52,57 @@
   }
 }
 
+// ── Payment details ──────────────────────────────────────────────────────────
+.payment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  h3 { margin: 0; }
+}
+
+.payment-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+
+  &__label {
+    color: var(--c-text-muted);
+  }
+
+  &__value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--c-text);
+    font-weight: 500;
+  }
+
+  &__icon {
+    font-size: 1.1rem;
+    color: var(--c-text-muted);
+  }
+
+  &__mono {
+    font-family: monospace;
+    font-size: 0.8rem;
+    word-break: break-all;
+  }
+
+  &__amount {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
 // ── Cancellation info ─────────────────────────────────────────────────────────
 .cancel-info-card {
   grid-column: 1 / -1;
