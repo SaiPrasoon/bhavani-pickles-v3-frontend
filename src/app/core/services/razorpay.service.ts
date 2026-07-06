@@ -17,6 +17,8 @@ export class RazorpayService {
     userPhone: string,
   ): Promise<RazorpaySuccessResponse> {
     return new Promise((resolve, reject) => {
+      let settled = false;
+
       const options = {
         key: environment.razorpayKeyId,
         amount: data.amount,
@@ -31,16 +33,22 @@ export class RazorpayService {
           contact: userPhone,
         },
         theme: { color: '#950220' },
-        handler: (response: RazorpaySuccessResponse) => resolve(response),
+        handler: (response: RazorpaySuccessResponse) => {
+          settled = true;
+          resolve(response);
+        },
         modal: {
-          ondismiss: () => reject(new Error('Payment cancelled')),
+          ondismiss: () => {
+            if (!settled) reject(new Error('Payment cancelled'));
+          },
         },
       };
 
       const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', (response: any) =>
-        reject(new Error(response.error?.description ?? 'Payment failed')),
-      );
+      rzp.on('payment.failed', (response: any) => {
+        settled = true;
+        reject(new Error(response.error?.description ?? 'Payment failed'));
+      });
       rzp.open();
     });
   }
