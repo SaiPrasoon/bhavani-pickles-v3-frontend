@@ -35,6 +35,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   search = signal('');
   selectedCategory = signal('');
   sortBy = signal('');
+  loading = signal(true);
 
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
@@ -79,6 +80,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   load(): void {
+    this.loading.set(true);
     this.productsService.getAll({
       search: this.search(),
       category: this.selectedCategory(),
@@ -88,6 +90,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     }).subscribe(res => {
       this.products.set(res.items);
       this.total.set(res.total);
+      this.loading.set(false);
     });
   }
 

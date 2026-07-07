@@ -19,6 +19,8 @@ export class HomeComponent implements OnInit {
 
   categories = signal<Category[]>([]);
   featuredProducts = signal<Product[]>([]);
+  loadingCategories = signal(true);
+  loadingProducts = signal(true);
 
   ngOnInit(): void {
     this.seo.update({
@@ -28,7 +30,13 @@ export class HomeComponent implements OnInit {
       canonicalUrl: 'https://www.bhavanipickles.com/home',
     });
 
-    this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
-    this.productsService.getAll({ limit: 8 }).subscribe(res => this.featuredProducts.set(res.items));
+    this.categoriesService.getAll().subscribe(cats => {
+      this.categories.set(cats);
+      this.loadingCategories.set(false);
+    });
+    this.productsService.getAll({ limit: 8 }).subscribe(res => {
+      this.featuredProducts.set(res.items);
+      this.loadingProducts.set(false);
+    });
   }
 }

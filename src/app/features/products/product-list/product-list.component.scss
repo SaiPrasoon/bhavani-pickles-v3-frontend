@@ -163,7 +163,8 @@
 }
 
 // ── Product grid ─────────────────────────────────────────────────────────────
-.product-grid > .card {
+.product-grid > .card,
+.product-grid > .skeleton-card {
   width: 100%;
 
   @media (min-width: 768px) {

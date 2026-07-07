@@ -5,7 +5,21 @@
   <div class="detail-layout">
     <div class="images">
       @if (p.images.length) {
-        <img [src]="p.images[0]" [alt]="p.name" class="main-image" loading="lazy" />
+        <img [src]="p.images[selectedImageIdx()]" [alt]="p.name" class="main-image" loading="lazy" />
+        @if (p.images.length > 1) {
+          <div class="image-thumbs">
+            @for (img of p.images; track img; let i = $index) {
+              <button
+                type="button"
+                class="image-thumb"
+                [class.image-thumb--active]="selectedImageIdx() === i"
+                (click)="selectedImageIdx.set(i)"
+              >
+                <img [src]="img" [alt]="p.name + ' ' + (i + 1)" loading="lazy" />
+              </button>
+            }
+          </div>
+        }
       } @else {
         <div class="img-placeholder">
           <span class="material-symbols-rounded">image</span>

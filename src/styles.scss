@@ -18,6 +18,25 @@
   --c-border: rgba(240, 235, 224, 0.1);
 }
 
+// ─── Skip link (accessibility) ───────────────────────────────────────────────
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 10000;
+  padding: 8px 16px;
+  background: var(--c-primary);
+  color: #fff;
+  border-radius: 0 0 6px 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s;
+
+  &:focus {
+    top: 0;
+  }
+}
+
 // ─── Reset & Base ────────────────────────────────────────────────────────────
 *,
 *::before,
@@ -423,6 +442,61 @@ hr {
     margin-bottom: 0.5rem;
     opacity: 0.4;
   }
+}
+
+// ─── Skeleton / Shimmer ─────────────────────────────────────────────────────
+.skeleton {
+  background: rgba(240, 235, 224, 0.06);
+  border-radius: 8px;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(240, 235, 224, 0.06),
+      transparent
+    );
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+.skeleton-card {
+  @extend .skeleton;
+  border: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+
+  &__img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: rgba(240, 235, 224, 0.04);
+  }
+
+  &__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__line {
+    height: 14px;
+    border-radius: 4px;
+    background: rgba(240, 235, 224, 0.08);
+
+    &--short { width: 60%; }
+    &--xs { width: 40%; height: 12px; }
+  }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .empty-grid-state {

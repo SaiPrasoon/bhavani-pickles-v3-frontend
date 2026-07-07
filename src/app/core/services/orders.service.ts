@@ -31,6 +31,13 @@ export interface CustomerInfo {
   customerPhone?: string;
 }
 
+export interface DashboardStats {
+  totalOrders: number;
+  totalRevenue: number;
+  daily: { date: string; orders: number; revenue: number }[];
+  statusBreakdown: { status: string; count: number }[];
+}
+
 @Injectable({ providedIn: 'root' })
 export class OrdersService {
   private readonly base = `${environment.apiUrl}/orders`;
@@ -83,6 +90,10 @@ export class OrdersService {
 
   cancelOrder(id: string, reason?: string) {
     return this.http.patch<Order>(`${this.base}/${id}/cancel`, { reason });
+  }
+
+  getDashboardStats() {
+    return this.http.get<DashboardStats>(`${this.base}/dashboard-stats`);
   }
 
   downloadInvoice(id: string): void {

@@ -5,9 +5,9 @@ import { BaseChartDirective } from 'ng2-charts';
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { forkJoin } from 'rxjs';
 import { ProductsService } from '../../../core/services/products.service';
-import { OrdersService } from '../../../core/services/orders.service';
+import { OrdersService, DashboardStats } from '../../../core/services/orders.service';
 import { CategoriesService } from '../../../core/services/categories.service';
-import { Order, OrderStatus } from '../../../core/models/order.model';
+import { UserService } from '../../../core/services/user.service';
 import { Product } from '../../../core/models/product.model';
 
 Chart.register(...registerables);
@@ -16,7 +16,6 @@ Chart.register(...registerables);
 const AMBER   = '#c8870a';
 const CRIMSON = '#950220';
 const CREAM   = 'rgba(240,235,224,0.85)';
-const SURFACE = 'rgba(30,22,14,0)'; // transparent — canvas bg handled by CSS
 const GRID    = 'rgba(240,235,224,0.08)';
 const TICK    = 'rgba(176,160,144,0.9)';
 
@@ -36,12 +35,14 @@ export class DashboardComponent implements OnInit {
   private productsService  = inject(ProductsService);
   private ordersService    = inject(OrdersService);
   private categoriesService = inject(CategoriesService);
+  private userService = inject(UserService);
 
   // ── Stat cards ──────────────────────────────────────────────────────────────
   totalProducts   = signal(0);
   totalOrders     = signal(0);
   totalRevenue    = signal(0);
   totalCategories = signal(0);
+  totalUsers      = signal(0);
 
   // ── Orders over last 7 days (line chart) ────────────────────────────────────
   ordersLineData = signal<ChartData<'line'>>({ labels: [], datasets: [] });
@@ -80,17 +81,6 @@ export class DashboardComponent implements OnInit {
     scales: cartesianScales(),
   };
 
-  // ── Orders per category (pie) ───────────────────────────────────────────────
-  ordersCatData = signal<ChartData<'pie'>>({ labels: [], datasets: [] });
-  ordersCatOptions: ChartOptions<'pie'> = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { position: 'bottom', labels: { color: CREAM, padding: 14 } },
-      tooltip: { backgroundColor: 'rgba(14,10,5,0.92)', titleColor: CREAM, bodyColor: TICK },
-    },
-  };
-
   // ── Orders by status (doughnut) ─────────────────────────────────────────────
   statusDoughnutData = signal<ChartData<'doughnut'>>({ labels: [], datasets: [] });
   statusDoughnutOptions: ChartOptions<'doughnut'> = {
@@ -104,47 +94,34 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.categoriesService.getAll().subscribe(cats => this.totalCategories.set(cats.length));
+    this.userService.getAllUsers().subscribe(users => this.totalUsers.set(users.length));
+
     forkJoin({
       products: this.productsService.getAll({ limit: 1000 }),
-      orders:   this.ordersService.getAll({ limit: 10000 }),
-    }).subscribe(({ products, orders }) => {
+      stats: this.ordersService.getDashboardStats(),
+    }).subscribe(({ products, stats }) => {
       this.totalProducts.set(products.total);
-      this.buildCharts(orders.items, products.items);
+      this.buildCharts(stats, products.items);
     });
   }
 
   goBack(): void { window.history.back(); }
 
-  private buildCharts(orders: Order[], products: Product[]): void {
-    this.totalOrders.set(orders.length);
-    this.totalRevenue.set(orders.reduce((sum, o) => sum + o.totalAmount, 0));
+  private buildCharts(stats: DashboardStats, products: Product[]): void {
+    this.totalOrders.set(stats.totalOrders);
+    this.totalRevenue.set(stats.totalRevenue);
 
-    // Last 7 days labels
-    const days = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date();
-      d.setDate(d.getDate() - (6 - i));
-      return d;
+    // Daily labels
+    const labels = stats.daily.map(d => {
+      const date = new Date(d.date + 'T00:00:00');
+      return date.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' });
     });
-    const labels = days.map(d => d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' }));
-
-    const ordersPerDay = days.map(day =>
-      orders.filter(o => {
-        const od = new Date(o.createdAt);
-        return od.toDateString() === day.toDateString();
-      }).length
-    );
-
-    const revenuePerDay = days.map(day =>
-      orders
-        .filter(o => new Date(o.createdAt).toDateString() === day.toDateString())
-        .reduce((sum, o) => sum + o.totalAmount, 0)
-    );
 
     this.ordersLineData.set({
       labels,
       datasets: [{
         label: 'Orders',
-        data: ordersPerDay,
+        data: stats.daily.map(d => d.orders),
         borderColor: AMBER,
         backgroundColor: 'rgba(200,135,10,0.12)',
         fill: true,
@@ -158,7 +135,7 @@ export class DashboardComponent implements OnInit {
       labels,
       datasets: [{
         label: 'Revenue (₹)',
-        data: revenuePerDay,
+        data: stats.daily.map(d => d.revenue),
         backgroundColor: 'rgba(149,2,32,0.7)',
         borderColor: CRIMSON,
         borderWidth: 1,
@@ -167,12 +144,20 @@ export class DashboardComponent implements OnInit {
     });
 
     // Status breakdown
-    const statusLabels: OrderStatus[] = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
-    const statusColors = ['#e8c96a', '#64b5f6', '#ce93d8', '#81c784', '#66bb6a', '#ef9a9a'];
-    const statusCounts = statusLabels.map(s => orders.filter(o => o.status === s).length);
+    const statusColorMap: Record<string, string> = {
+      pending: '#e8c96a',
+      confirmed: '#64b5f6',
+      processing: '#ce93d8',
+      shipped: '#81c784',
+      delivered: '#66bb6a',
+      cancelled: '#ef9a9a',
+    };
+    const statusLabels = stats.statusBreakdown.map(s => s.status.charAt(0).toUpperCase() + s.status.slice(1));
+    const statusCounts = stats.statusBreakdown.map(s => s.count);
+    const statusColors = stats.statusBreakdown.map(s => statusColorMap[s.status] ?? '#888');
 
     this.statusDoughnutData.set({
-      labels: statusLabels.map(s => s.charAt(0).toUpperCase() + s.slice(1)),
+      labels: statusLabels,
       datasets: [{
         data: statusCounts,
         backgroundColor: statusColors.map(c => c + 'cc'),
@@ -200,28 +185,6 @@ export class DashboardComponent implements OnInit {
         borderColor: catColors,
         borderWidth: 1,
         borderRadius: 4,
-      }],
-    });
-
-    // Orders per category (count order items by product category)
-    const catOrderMap = new Map<string, number>();
-    orders.forEach(o =>
-      o.items.forEach(item => {
-        const name = (item.product as any)?.category?.name ?? item.name ?? 'Other';
-        catOrderMap.set(name, (catOrderMap.get(name) ?? 0) + item.quantity);
-      })
-    );
-    const orderCatNames = Array.from(catOrderMap.keys());
-    const orderCatCounts = orderCatNames.map(n => catOrderMap.get(n)!);
-    const pieColors = orderCatNames.map((_, i) => `hsl(${(i * 67 + 30) % 360}, 60%, 58%)`);
-
-    this.ordersCatData.set({
-      labels: orderCatNames,
-      datasets: [{
-        data: orderCatCounts,
-        backgroundColor: pieColors.map(c => c.replace('58%)', '58%, 0.8)')),
-        borderColor: pieColors,
-        borderWidth: 1,
       }],
     });
   }

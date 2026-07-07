@@ -1,6 +1,6 @@
 <app-sidebar [isOpen]="sidebarOpen()" (closed)="closeSidebar()" />
 
-<header class="header" [class.header--scrolled]="scrolled()">
+<header class="header" [class.header--scrolled]="scrolled()" role="banner">
   <div class="header__left">
     <button class="icon-btn" (click)="toggleSidebar()" aria-label="Open menu">
       <span class="material-symbols-rounded">menu</span>
@@ -27,12 +27,12 @@
     </a>
 
     <div class="user-menu">
-      <button class="icon-btn" (click)="toggleUserMenu()" aria-label="User account">
+      <button class="icon-btn" (click)="toggleUserMenu()" aria-label="User account" aria-haspopup="true" [attr.aria-expanded]="userMenuOpen()">
         <span class="material-symbols-rounded">person</span>
       </button>
 
       @if (userMenuOpen()) {
-        <div class="user-menu__dropdown" (click)="closeUserMenu()">
+        <div class="user-menu__dropdown" role="menu" (click)="closeUserMenu()">
           @if (authService.isLoggedIn()) {
             <div class="user-menu__name">{{ authService.user()?.name }}</div>
             <hr />

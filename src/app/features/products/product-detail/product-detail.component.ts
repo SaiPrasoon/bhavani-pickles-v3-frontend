@@ -25,6 +25,7 @@ export class ProductDetailComponent implements OnInit {
 
   product = signal<Product | null>(null);
   selectedVariantIdx = signal(0);
+  selectedImageIdx = signal(0);
 
   selectedVariant = computed(() => {
     const p = this.product();
