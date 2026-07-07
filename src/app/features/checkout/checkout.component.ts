@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { hasError } from '../../core/utils/form.utils';
 import { CartService } from '../../core/services/cart.service';
 import { OrdersService, InitiatePaymentResponse } from '../../core/services/orders.service';
 import { RazorpayService } from '../../core/services/razorpay.service';
@@ -27,6 +28,7 @@ export class CheckoutComponent implements OnInit {
   private toast = inject(ToastService);
   cartService = inject(CartService);
 
+  readonly hasError = hasError;
   loading = signal(false);
   savedAddresses = signal<Address[]>([]);
   selectedAddressId = signal<string | null>(null);

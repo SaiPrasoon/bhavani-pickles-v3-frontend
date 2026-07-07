@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { hasError } from '../../../core/utils/form.utils';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -14,6 +15,7 @@ export class ForgotPasswordComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
 
+  readonly hasError = hasError;
   loading = signal(false);
   sent = signal(false);
 

@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { hasError } from '../../../core/utils/form.utils';
 import { AuthService } from '../../../core/services/auth.service';
 import { CartService } from '../../../core/services/cart.service';
 
@@ -18,6 +19,7 @@ export class RegisterComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
+  readonly hasError = hasError;
   loading = signal(false);
   form = this.fb.group({
     name:     ['', Validators.required],

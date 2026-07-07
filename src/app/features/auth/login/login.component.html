@@ -10,9 +10,9 @@
       <div class="form-group">
         <label class="form-label">Email</label>
         <input class="form-control" type="email" formControlName="email" placeholder="you@example.com">
-        @if (form.get('email')!.touched && form.get('email')!.invalid) {
+        @if (hasError(form, 'email')) {
           <span class="form-error">
-            @if (form.get('email')!.hasError('required')) { Email is required }
+            @if (hasError(form, 'email', 'required')) { Email is required }
             @else { Enter a valid email }
           </span>
         }
@@ -20,9 +20,9 @@
       <div class="form-group">
         <label class="form-label">Password</label>
         <input class="form-control" type="password" formControlName="password" placeholder="••••••">
-        @if (form.get('password')!.touched && form.get('password')!.invalid) {
+        @if (hasError(form, 'password')) {
           <span class="form-error">
-            @if (form.get('password')!.hasError('required')) { Password is required }
+            @if (hasError(form, 'password', 'required')) { Password is required }
             @else { Minimum 6 characters }
           </span>
         }
