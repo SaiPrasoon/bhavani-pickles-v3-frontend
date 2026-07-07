@@ -8,6 +8,7 @@ export interface ProductFilters {
   search?: string;
   minPrice?: number;
   maxPrice?: number;
+  sort?: string;
   page?: number;
   limit?: number;
 }

@@ -15,6 +15,9 @@
       <div class="form-group">
         <label class="form-label">Full Name</label>
         <input class="form-control" formControlName="name" placeholder="Your full name" />
+        @if (form.get('name')!.touched && form.get('name')!.hasError('required')) {
+          <span class="form-error">Name is required</span>
+        }
       </div>
       <div class="two-col">
         <div class="form-group">
@@ -26,6 +29,9 @@
             placeholder="you@example.com"
             [attr.readonly]="authService.isLoggedIn() ? true : null"
           />
+          @if (form.get('email')!.touched && form.get('email')!.invalid) {
+            <span class="form-error">Enter a valid email</span>
+          }
         </div>
         <div class="form-group">
           <label class="form-label">Mobile Number</label>
@@ -35,6 +41,9 @@
             formControlName="phone"
             placeholder="10-digit mobile"
           />
+          @if (form.get('phone')!.touched && form.get('phone')!.hasError('required')) {
+            <span class="form-error">Phone number is required</span>
+          }
         </div>
       </div>
     </form>
@@ -86,6 +95,9 @@
             formControlName="street"
             placeholder="House no, Street, Area"
           />
+          @if (form.get('street')!.touched && form.get('street')!.hasError('required')) {
+            <span class="form-error">Street address is required</span>
+          }
         </div>
         <div class="two-col">
           <div class="form-group">
@@ -110,6 +122,9 @@
         <div class="form-group">
           <label class="form-label">Pincode</label>
           <input class="form-control" formControlName="pincode">
+          @if (form.get('pincode')!.touched && form.get('pincode')!.hasError('required')) {
+            <span class="form-error">Pincode is required</span>
+          }
         </div>
       </form>
     }

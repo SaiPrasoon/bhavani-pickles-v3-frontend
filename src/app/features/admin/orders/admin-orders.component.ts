@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, TitleCasePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { OrdersService } from '../../../core/services/orders.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { Order, OrderStatus, CANCELLABLE_STATUSES } from '../../../core/models/order.model';
@@ -13,7 +14,7 @@ const STATUS_PROGRESSION: OrderStatus[] = [
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [RouterLink, DatePipe, TitleCasePipe, CancelReasonModalComponent],
+  imports: [RouterLink, DatePipe, TitleCasePipe, FormsModule, CancelReasonModalComponent],
   templateUrl: './admin-orders.component.html',
   styleUrl: './admin-orders.component.scss',
 })
@@ -26,12 +27,49 @@ export class AdminOrdersComponent implements OnInit {
   showCancelModal = signal(false);
   pendingCancelOrder = signal<Order | null>(null);
 
+  // Pagination & filtering
+  total = signal(0);
+  page = signal(1);
+  limit = signal(20);
+  pages = signal(0);
+  statusFilter = signal('');
+
+  readonly statuses: OrderStatus[] = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+
   ngOnInit(): void {
     this.loadOrders();
   }
 
   private loadOrders(): void {
-    this.ordersService.getAll().subscribe(orders => this.orders.set(orders));
+    this.ordersService.getAll({
+      status: this.statusFilter() || undefined,
+      page: this.page(),
+      limit: this.limit(),
+    }).subscribe(res => {
+      this.orders.set(res.items);
+      this.total.set(res.total);
+      this.pages.set(res.pages);
+    });
+  }
+
+  onStatusFilterChange(value: string): void {
+    this.statusFilter.set(value);
+    this.page.set(1);
+    this.loadOrders();
+  }
+
+  prevPage(): void {
+    if (this.page() > 1) {
+      this.page.update(p => p - 1);
+      this.loadOrders();
+    }
+  }
+
+  nextPage(): void {
+    if (this.page() < this.pages()) {
+      this.page.update(p => p + 1);
+      this.loadOrders();
+    }
   }
 
   getUserName(order: Order): string {
@@ -56,7 +94,6 @@ export class AdminOrdersComponent implements OnInit {
   onStatusChange(order: Order, event: Event): void {
     const select = event.target as HTMLSelectElement;
     const newStatus = select.value as OrderStatus;
-    // Reset select visual immediately — actual update comes from API refresh
     select.value = '';
 
     if (!newStatus) return;

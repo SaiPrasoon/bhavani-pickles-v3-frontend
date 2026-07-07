@@ -5,7 +5,7 @@
   <div class="detail-layout">
     <div class="images">
       @if (p.images.length) {
-        <img [src]="p.images[0]" [alt]="p.name" class="main-image" />
+        <img [src]="p.images[0]" [alt]="p.name" class="main-image" loading="lazy" />
       } @else {
         <div class="img-placeholder">
           <span class="material-symbols-rounded">image</span>

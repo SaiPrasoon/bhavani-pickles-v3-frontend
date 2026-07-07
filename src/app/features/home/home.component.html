@@ -13,7 +13,7 @@
         <a class="cat-card card" routerLink="/products" [queryParams]="{ category: cat._id }">
           <div class="card__body">
             @if (cat.image) {
-              <img class="card__img" [src]="cat.image" [alt]="cat.name" />
+              <img class="card__img" [src]="cat.image" [alt]="cat.name" loading="lazy" />
             } @else {
               <div class="cat-thumb cat-thumb--empty">
                 <span class="material-symbols-rounded">image</span>
@@ -40,7 +40,7 @@
       @for (product of featuredProducts(); track product._id) {
         <div class="card">
           @if (product.images.length) {
-            <img class="card__img" [src]="product.images[0]" [alt]="product.name" />
+            <img class="card__img" [src]="product.images[0]" [alt]="product.name" loading="lazy" />
           } @else {
             <div class="cat-thumb cat-thumb--empty">
               <span class="material-symbols-rounded">image</span>

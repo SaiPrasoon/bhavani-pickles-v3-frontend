@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Order, OrderStatus, ShippingAddress } from '../models/order.model';
 
@@ -62,8 +62,17 @@ export class OrdersService {
   getMyOrders() {
     return this.http.get<Order[]>(`${this.base}/my`);
   }
-  getAll() {
-    return this.http.get<Order[]>(this.base);
+  getAll(query?: { status?: string; page?: number; limit?: number }) {
+    let params = new HttpParams();
+    if (query) {
+      Object.entries(query).forEach(([key, val]) => {
+        if (val !== undefined && val !== null && val !== '') params = params.set(key, String(val));
+      });
+    }
+    return this.http.get<{ items: Order[]; total: number; page: number; limit: number; pages: number }>(
+      this.base,
+      { params },
+    );
   }
   getOne(id: string) {
     return this.http.get<Order>(`${this.base}/${id}`);

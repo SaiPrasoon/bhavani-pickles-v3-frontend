@@ -34,6 +34,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   limit = signal(12);
   search = signal('');
   selectedCategory = signal('');
+  sortBy = signal('');
 
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
@@ -81,6 +82,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productsService.getAll({
       search: this.search(),
       category: this.selectedCategory(),
+      sort: this.sortBy() || undefined,
       page: this.page(),
       limit: this.limit(),
     }).subscribe(res => {
@@ -99,6 +101,12 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.page.set(1);
     this.load();
   }
+  onSortChange(value: string): void {
+    this.sortBy.set(value);
+    this.page.set(1);
+    this.load();
+  }
+
   prevPage(): void { if (this.page() > 1) { this.page.update(p => p - 1); this.load(); } }
   nextPage(): void { if (this.page() < this.totalPages) { this.page.update(p => p + 1); this.load(); } }
 

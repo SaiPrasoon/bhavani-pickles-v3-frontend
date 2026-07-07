@@ -106,10 +106,10 @@ export class DashboardComponent implements OnInit {
     this.categoriesService.getAll().subscribe(cats => this.totalCategories.set(cats.length));
     forkJoin({
       products: this.productsService.getAll({ limit: 1000 }),
-      orders:   this.ordersService.getAll(),
+      orders:   this.ordersService.getAll({ limit: 10000 }),
     }).subscribe(({ products, orders }) => {
       this.totalProducts.set(products.total);
-      this.buildCharts(orders, products.items);
+      this.buildCharts(orders.items, products.items);
     });
   }
 

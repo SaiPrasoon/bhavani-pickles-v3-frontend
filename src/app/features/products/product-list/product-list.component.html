@@ -28,13 +28,27 @@
       }
     </select>
   </div>
+  <div class="form-group">
+    <select
+      class="form-control"
+      [value]="sortBy()"
+      (change)="onSortChange($any($event.target).value)"
+    >
+      <option value="">Sort by</option>
+      <option value="price_asc">Price: Low to High</option>
+      <option value="price_desc">Price: High to Low</option>
+      <option value="name_asc">Name: A–Z</option>
+      <option value="name_desc">Name: Z–A</option>
+      <option value="newest">Newest First</option>
+    </select>
+  </div>
 </div>
 
 <div class="product-grid">
   @for (product of products(); track product._id) {
     <div class="card">
       @if (product.images.length) {
-        <img class="card__img" [src]="product.images[0]" [alt]="product.name" />
+        <img class="card__img" [src]="product.images[0]" [alt]="product.name" loading="lazy" />
       }
       <div class="card__body">
         <p class="card__title">{{ product.name }}</p>

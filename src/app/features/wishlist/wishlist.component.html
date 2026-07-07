@@ -12,7 +12,7 @@
     @for (product of wishlistService.products(); track product._id) {
       <div class="card">
         @if (product.images.length) {
-          <img class="card__img" [src]="product.images[0]" [alt]="product.name" />
+          <img class="card__img" [src]="product.images[0]" [alt]="product.name" loading="lazy" />
         }
         <div class="card__body">
           <p class="card__title">{{ product.name }}</p>
