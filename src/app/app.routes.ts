@@ -133,5 +133,8 @@ export const routes: Routes = [
     loadComponent: () => import('./features/wishlist/wishlist.component').then(m => m.WishlistComponent),
   },
 
-  { path: '**', redirectTo: 'home' },
+  {
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found.component').then(m => m.NotFoundComponent),
+  },
 ];
