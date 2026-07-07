@@ -1,9 +1,9 @@
 import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CartService } from '../../core/services/cart.service';
-import { WishlistService } from '../../core/services/wishlist.service';
+import { CartService } from '@app/core/services/cart.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
   selector: 'app-navbar',

@@ -1,6 +1,6 @@
 import { Component, input, output, signal, effect } from '@angular/core';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Category } from '../../../../core/models/product.model';
+import { Category } from '@app/core/models/product.model';
 
 @Component({
   selector: 'app-category-form',

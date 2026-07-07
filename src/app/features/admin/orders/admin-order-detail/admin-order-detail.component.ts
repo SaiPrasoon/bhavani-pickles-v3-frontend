@@ -2,10 +2,10 @@ import { DatePipe, TitleCasePipe } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Order, OrderStatus, CANCELLABLE_STATUSES } from '../../../../core/models/order.model';
-import { OrdersService } from '../../../../core/services/orders.service';
-import { ToastService } from '../../../../core/services/toast.service';
-import { CancelReasonModalComponent } from '../../../../shared/cancel-reason-modal/cancel-reason-modal.component';
+import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { OrdersService } from '@app/core/services/orders.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
 
 // Forward-only progression — cancelled is handled separately
 const STATUS_PROGRESSION: OrderStatus[] = [

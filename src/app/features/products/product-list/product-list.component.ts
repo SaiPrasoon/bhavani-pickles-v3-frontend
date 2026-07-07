@@ -3,18 +3,19 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ProductsService } from '../../../core/services/products.service';
-import { CategoriesService } from '../../../core/services/categories.service';
-import { CartService } from '../../../core/services/cart.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { WishlistService } from '../../../core/services/wishlist.service';
-import { Product, Category, ProductVariant } from '../../../core/models/product.model';
-import { SeoService } from '../../../core/services/seo.service';
+import { ProductsService } from '@app/core/services/products.service';
+import { CategoriesService } from '@app/core/services/categories.service';
+import { CartService } from '@app/core/services/cart.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
+import { Product, Category, ProductVariant } from '@app/core/models/product.model';
+import { SeoService } from '@app/core/services/seo.service';
+import { SkeletonCardComponent } from '@app/shared/skeletons/skeleton-card.component';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, SkeletonCardComponent],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss',
 })
@@ -35,6 +36,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   search = signal('');
   selectedCategory = signal('');
   sortBy = signal('');
+  loading = signal(true);
 
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
@@ -79,6 +81,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   load(): void {
+    this.loading.set(true);
     this.productsService.getAll({
       search: this.search(),
       category: this.selectedCategory(),
@@ -88,6 +91,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     }).subscribe(res => {
       this.products.set(res.items);
       this.total.set(res.total);
+      this.loading.set(false);
     });
   }
 

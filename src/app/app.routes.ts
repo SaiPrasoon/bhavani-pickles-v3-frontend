@@ -29,6 +29,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/shipping/shipping.component').then(m => m.ShippingComponent),
   },
 
+  {
+    path: 'contact',
+    loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent),
+  },
+
   // Products
   {
     path: 'products',
@@ -113,6 +118,10 @@ export const routes: Routes = [
       {
         path: 'categories',
         loadComponent: () => import('./features/admin/categories/admin-categories.component').then(m => m.AdminCategoriesComponent),
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/admin/users/admin-users.component').then(m => m.AdminUsersComponent),
       },
     ],
   },

@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { OrdersService } from '../../../core/services/orders.service';
-import { Order } from '../../../core/models/order.model';
+import { OrdersService } from '@app/core/services/orders.service';
+import { Order } from '@app/core/models/order.model';
 
 @Component({
   selector: 'app-order-list',

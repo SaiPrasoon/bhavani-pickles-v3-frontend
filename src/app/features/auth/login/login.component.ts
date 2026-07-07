@@ -1,9 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../core/services/auth.service';
-import { CartService } from '../../../core/services/cart.service';
-import { WishlistService } from '../../../core/services/wishlist.service';
+import { hasError } from '@app/core/utils/form.utils';
+import { AuthService } from '@app/core/services/auth.service';
+import { CartService } from '@app/core/services/cart.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
+  readonly hasError = hasError;
   loading = signal(false);
   form = this.fb.group({
     email:    ['', [Validators.required, Validators.email]],

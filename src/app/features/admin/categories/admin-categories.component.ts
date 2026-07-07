@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CategoriesService } from '../../../core/services/categories.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { ConfirmService } from '../../../core/services/confirm.service';
-import { Category } from '../../../core/models/product.model';
+import { CategoriesService } from '@app/core/services/categories.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { ConfirmService } from '@app/core/services/confirm.service';
+import { Category } from '@app/core/models/product.model';
 import { CategoryFormComponent } from './category-form/category-form.component';
 
 @Component({

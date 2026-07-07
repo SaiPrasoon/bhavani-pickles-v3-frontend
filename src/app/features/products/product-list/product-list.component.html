@@ -14,6 +14,7 @@
       [value]="search()"
       (input)="onSearchInput($any($event.target).value)"
       placeholder="Search pickles…"
+      aria-label="Search products"
     />
   </div>
   <div class="form-group">
@@ -45,6 +46,11 @@
 </div>
 
 <div class="product-grid">
+  @if (loading()) {
+    @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+      <app-skeleton-card />
+    }
+  } @else {
   @for (product of products(); track product._id) {
     <div class="card">
       @if (product.images.length) {
@@ -90,6 +96,7 @@
       <p>No products found.</p>
     </div>
   }
+  }
 </div>
 
 @if (total() > limit()) {
@@ -104,7 +111,7 @@
 
 <!-- Variant picker popup -->
 @if (pickerProduct(); as product) {
-  <div class="picker-backdrop" (click)="closePicker()">
+  <div class="picker-backdrop" (click)="closePicker()" role="dialog" aria-modal="true" aria-label="Select variant">
     <div class="picker" (click)="$event.stopPropagation()">
       <div class="picker__header">
         <div>

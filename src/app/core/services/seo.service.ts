@@ -2,16 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
 import { BUSINESS } from '../constants/business.constants';
-
-export interface SeoConfig {
-  title?: string;
-  description?: string;
-  keywords?: string;
-  ogImage?: string;
-  ogType?: string;
-  canonicalUrl?: string;
-  jsonLd?: Record<string, unknown>;
-}
+import { SeoConfig } from '../models/seo.model';
 
 const DEFAULT_DESCRIPTION =
   'Bhavani Pickles — authentic handmade Telugu pickles from Hyderabad. Order avakaya, gongura, mango, and more online with pan-India delivery.';

@@ -49,6 +49,17 @@
       <a routerLink="/admin/categories" class="btn btn--sm btn--outline">Manage</a>
     </div>
   </div>
+
+  <div class="stat-card card">
+    <div class="card__body">
+      <span class="stat-icon material-symbols-rounded">group</span>
+      <h2>{{ totalUsers() }}</h2>
+      <p>Users</p>
+    </div>
+    <div class="card__footer">
+      <a routerLink="/admin/users" class="btn btn--sm btn--outline">Manage</a>
+    </div>
+  </div>
 </div>
 
 <!-- ── Charts row 1 ────────────────────────────────────────────────────────── -->
@@ -95,22 +106,6 @@
     </div>
   </div>
 
-  <div class="chart-card card">
-    <div class="card__body">
-      <h3 class="chart-title">Orders by Category</h3>
-      <div class="chart-wrap">
-        <canvas baseChart
-          [data]="ordersCatData()"
-          [options]="ordersCatOptions"
-          type="pie">
-        </canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ── Charts row 3 ────────────────────────────────────────────────────────── -->
-<div class="charts-row charts-row--single">
   <div class="chart-card chart-card--sm card">
     <div class="card__body">
       <h3 class="chart-title">Orders by Status</h3>
@@ -124,3 +119,4 @@
     </div>
   </div>
 </div>
+

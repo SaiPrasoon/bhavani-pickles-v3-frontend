@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
+import { environment } from '@env/environment';
 import { User, Address } from '../models/user.model';
 import { Product } from '../models/product.model';
 
@@ -40,5 +40,14 @@ export class UserService {
 
   toggleWishlist(productId: string) {
     return this.http.post<{ wishlisted: boolean }>(`${this.base}/me/wishlist/${productId}`, {});
+  }
+
+  // Admin
+  getAllUsers() {
+    return this.http.get<User[]>(this.base);
+  }
+
+  deleteUser(id: string) {
+    return this.http.delete<void>(`${this.base}/${id}`);
   }
 }

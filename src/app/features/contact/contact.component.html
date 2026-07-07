@@ -1,0 +1,100 @@
+<section class="contact-page">
+  <h1>Contact Us</h1>
+  <p class="contact-page__intro">
+    We'd love to hear from you. Whether it's a question about our products, an order inquiry, or
+    feedback — reach out and we'll get back to you.
+  </p>
+
+  <div class="contact-layout">
+    <div class="contact-info">
+      <div class="info-card">
+        <span class="material-symbols-rounded">call</span>
+        <div>
+          <h3>Phone</h3>
+          <a [href]="biz.phoneTel">{{ biz.phone }}</a>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <span class="material-symbols-rounded">mail</span>
+        <div>
+          <h3>Email</h3>
+          <a [href]="biz.emailMailto">{{ biz.emailSupport }}</a>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <span class="material-symbols-rounded">chat</span>
+        <div>
+          <h3>WhatsApp</h3>
+          <a [href]="biz.whatsapp" target="_blank" rel="noopener">Message us on WhatsApp</a>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <span class="material-symbols-rounded">location_on</span>
+        <div>
+          <h3>Address</h3>
+          <p>{{ biz.address }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form-wrapper">
+      @if (submitted()) {
+        <div class="success-msg">
+          <span class="material-symbols-rounded">check_circle</span>
+          <h3>Thank you!</h3>
+          <p>Your email client should have opened with the message. If not, please email us directly
+            at <a [href]="biz.emailMailto">{{ biz.emailSupport }}</a>.</p>
+        </div>
+      } @else {
+        <form #contactForm="ngForm" (ngSubmit)="contactForm.valid && onSubmit()">
+          <div class="form-group">
+            <label class="form-label" for="name">Name</label>
+            <input
+              id="name"
+              class="form-control"
+              [(ngModel)]="name"
+              name="name"
+              required
+              placeholder="Your name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">Email</label>
+            <input
+              id="email"
+              class="form-control"
+              type="email"
+              [(ngModel)]="email"
+              name="email"
+              required
+              email
+              placeholder="you@example.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="message">Message</label>
+            <textarea
+              id="message"
+              class="form-control"
+              [(ngModel)]="message"
+              name="message"
+              required
+              rows="5"
+              placeholder="How can we help?"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn btn--primary btn--lg" [disabled]="contactForm.invalid">
+            Send Message
+            <span class="material-symbols-rounded">send</span>
+          </button>
+        </form>
+      }
+    </div>
+  </div>
+</section>
