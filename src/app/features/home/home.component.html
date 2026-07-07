@@ -17,12 +17,7 @@
     <div class="category-grid">
       @if (loadingCategories()) {
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="cat-card skeleton-card">
-            <div class="skeleton-card__body">
-              <div class="skeleton-card__line"></div>
-              <div class="skeleton-card__line skeleton-card__line--short"></div>
-            </div>
-          </div>
+          <app-skeleton-card class="cat-card" [showImage]="false" />
         }
       } @else {
       @for (cat of categories(); track cat._id) {
@@ -56,14 +51,7 @@
     <div class="product-grid">
       @if (loadingProducts()) {
         @for (i of [1, 2, 3, 4]; track i) {
-          <div class="skeleton-card">
-            <div class="skeleton-card__img"></div>
-            <div class="skeleton-card__body">
-              <div class="skeleton-card__line"></div>
-              <div class="skeleton-card__line skeleton-card__line--short"></div>
-              <div class="skeleton-card__line skeleton-card__line--xs"></div>
-            </div>
-          </div>
+          <app-skeleton-card />
         }
       } @else {
       @for (product of featuredProducts(); track product._id) {

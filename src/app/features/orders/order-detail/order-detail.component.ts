@@ -1,10 +1,10 @@
 import { Component, ElementRef, HostListener, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { OrdersService } from '../../../core/services/orders.service';
-import { Order, CANCELLABLE_STATUSES } from '../../../core/models/order.model';
-import { ToastService } from '../../../core/services/toast.service';
-import { CancelReasonModalComponent } from '../../../shared/cancel-reason-modal/cancel-reason-modal.component';
+import { OrdersService } from '@app/core/services/orders.service';
+import { Order, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { ToastService } from '@app/core/services/toast.service';
+import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
 
 @Component({
   selector: 'app-order-detail',

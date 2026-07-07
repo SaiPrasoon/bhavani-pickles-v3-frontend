@@ -4,11 +4,11 @@ import { DecimalPipe } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { forkJoin } from 'rxjs';
-import { ProductsService } from '../../../core/services/products.service';
-import { OrdersService, DashboardStats } from '../../../core/services/orders.service';
-import { CategoriesService } from '../../../core/services/categories.service';
-import { UserService } from '../../../core/services/user.service';
-import { Product } from '../../../core/models/product.model';
+import { ProductsService } from '@app/core/services/products.service';
+import { OrdersService, DashboardStats } from '@app/core/services/orders.service';
+import { CategoriesService } from '@app/core/services/categories.service';
+import { UserService } from '@app/core/services/user.service';
+import { Product } from '@app/core/models/product.model';
 
 Chart.register(...registerables);
 

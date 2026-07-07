@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { WishlistService } from '../../core/services/wishlist.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
 
 @Component({
   selector: 'app-wishlist',

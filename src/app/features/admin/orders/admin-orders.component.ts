@@ -2,10 +2,10 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { OrdersService } from '../../../core/services/orders.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { Order, OrderStatus, CANCELLABLE_STATUSES } from '../../../core/models/order.model';
-import { CancelReasonModalComponent } from '../../../shared/cancel-reason-modal/cancel-reason-modal.component';
+import { OrdersService } from '@app/core/services/orders.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
 
 const STATUS_PROGRESSION: OrderStatus[] = [
   'pending', 'confirmed', 'processing', 'shipped', 'delivered',

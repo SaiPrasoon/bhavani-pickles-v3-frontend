@@ -1,8 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { hasError } from '../../../core/utils/form.utils';
-import { AuthService } from '../../../core/services/auth.service';
+import { hasError } from '@app/core/utils/form.utils';
+import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
   selector: 'app-forgot-password',

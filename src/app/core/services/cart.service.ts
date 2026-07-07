@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
 import { tap, switchMap, map, catchError } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { environment } from '@env/environment';
 import { Cart, CartItem } from '../models/cart.model';
 import { AuthService } from './auth.service';
 import { Product } from '../models/product.model';

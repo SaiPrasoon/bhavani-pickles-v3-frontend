@@ -164,7 +164,7 @@
 
 // ── Product grid ─────────────────────────────────────────────────────────────
 .product-grid > .card,
-.product-grid > .skeleton-card {
+.product-grid > app-skeleton-card {
   width: 100%;
 
   @media (min-width: 768px) {

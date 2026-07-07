@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SeoService } from '../../core/services/seo.service';
-import { BUSINESS } from '../../core/constants/business.constants';
+import { SeoService } from '@app/core/services/seo.service';
+import { BUSINESS } from '@app/core/constants/business.constants';
 
 @Component({
   selector: 'app-contact',

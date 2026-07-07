@@ -1,7 +1,7 @@
 import { Component, inject, input, output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthService } from '../../core/services/auth.service';
-import { CartService } from '../../core/services/cart.service';
+import { AuthService } from '@app/core/services/auth.service';
+import { CartService } from '@app/core/services/cart.service';
 
 @Component({
   selector: 'app-sidebar',

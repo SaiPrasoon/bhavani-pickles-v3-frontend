@@ -1,9 +1,9 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { hasError } from '../../../core/utils/form.utils';
-import { AuthService } from '../../../core/services/auth.service';
-import { CartService } from '../../../core/services/cart.service';
+import { hasError } from '@app/core/utils/form.utils';
+import { AuthService } from '@app/core/services/auth.service';
+import { CartService } from '@app/core/services/cart.service';
 
 @Component({
   selector: 'app-register',

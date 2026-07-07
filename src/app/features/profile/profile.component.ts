@@ -1,11 +1,11 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { UserService } from '../../core/services/user.service';
-import { AuthService } from '../../core/services/auth.service';
-import { ToastService } from '../../core/services/toast.service';
-import { User, Address } from '../../core/models/user.model';
-import { COUNTRIES, getCountry } from '../../core/data/geo.data';
+import { UserService } from '@app/core/services/user.service';
+import { AuthService } from '@app/core/services/auth.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { User, Address } from '@app/core/models/user.model';
+import { COUNTRIES, getCountry } from '@app/core/data/geo.data';
 
 @Component({
   selector: 'app-profile',

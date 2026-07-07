@@ -1,15 +1,15 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { hasError } from '../../core/utils/form.utils';
-import { CartService } from '../../core/services/cart.service';
-import { OrdersService, InitiatePaymentResponse } from '../../core/services/orders.service';
-import { RazorpayService } from '../../core/services/razorpay.service';
-import { UserService } from '../../core/services/user.service';
-import { AuthService } from '../../core/services/auth.service';
-import { ToastService } from '../../core/services/toast.service';
-import { Address } from '../../core/models/user.model';
-import { COUNTRIES, getCountry } from '../../core/data/geo.data';
+import { hasError } from '@app/core/utils/form.utils';
+import { CartService } from '@app/core/services/cart.service';
+import { OrdersService, InitiatePaymentResponse } from '@app/core/services/orders.service';
+import { RazorpayService } from '@app/core/services/razorpay.service';
+import { UserService } from '@app/core/services/user.service';
+import { AuthService } from '@app/core/services/auth.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { Address } from '@app/core/models/user.model';
+import { COUNTRIES, getCountry } from '@app/core/data/geo.data';
 
 @Component({
   selector: 'app-checkout',

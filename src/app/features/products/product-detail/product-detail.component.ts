@@ -1,12 +1,12 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ProductsService } from '../../../core/services/products.service';
-import { CartService } from '../../../core/services/cart.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { WishlistService } from '../../../core/services/wishlist.service';
-import { SeoService } from '../../../core/services/seo.service';
-import { Product } from '../../../core/models/product.model';
-import { CartItem } from '../../../core/models/cart.model';
+import { ProductsService } from '@app/core/services/products.service';
+import { CartService } from '@app/core/services/cart.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
+import { SeoService } from '@app/core/services/seo.service';
+import { Product } from '@app/core/models/product.model';
+import { CartItem } from '@app/core/models/cart.model';
 
 @Component({
   selector: 'app-product-detail',

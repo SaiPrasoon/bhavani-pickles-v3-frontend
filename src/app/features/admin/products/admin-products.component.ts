@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ProductsService } from '../../../core/services/products.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { ConfirmService } from '../../../core/services/confirm.service';
-import { Product, ProductVariant } from '../../../core/models/product.model';
+import { ProductsService } from '@app/core/services/products.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { ConfirmService } from '@app/core/services/confirm.service';
+import { Product, ProductVariant } from '@app/core/models/product.model';
 import { ProductFormComponent, ProductSubmitPayload } from './product-form/product-form.component';
 
 @Component({

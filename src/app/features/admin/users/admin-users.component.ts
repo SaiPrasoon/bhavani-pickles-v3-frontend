@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { UserService } from '../../../core/services/user.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { User } from '../../../core/models/user.model';
+import { UserService } from '@app/core/services/user.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { User } from '@app/core/models/user.model';
 
 @Component({
   selector: 'app-admin-users',
