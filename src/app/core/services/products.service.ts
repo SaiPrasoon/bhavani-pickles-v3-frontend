@@ -1,17 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '@env/environment';
-import { Product, ProductsResponse } from '../models/product.model';
-
-export interface ProductFilters {
-  category?: string;
-  search?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  sort?: string;
-  page?: number;
-  limit?: number;
-}
+import { Product, ProductsResponse, ProductFilters } from '../models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductsService {

@@ -34,3 +34,22 @@ export interface ProductsResponse {
   limit: number;
   pages: number;
 }
+
+export interface ProductFilters {
+  category?: string;
+  search?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sort?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface ProductSubmitPayload {
+  name: string;
+  description: string;
+  category: string;
+  variants: { weight: string; price: number; discountedPrice?: number; stock: number }[];
+  images: string[];
+  isActive: boolean;
+}

@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
-import { InitiatePaymentResponse } from './orders.service';
-
-export interface RazorpaySuccessResponse {
-  razorpay_payment_id: string;
-  razorpay_order_id: string;
-  razorpay_signature: string;
-}
+import { InitiatePaymentResponse } from '../models/order.model';
+import { RazorpaySuccessResponse } from '../models/razorpay.model';
 
 @Injectable({ providedIn: 'root' })
 export class RazorpayService {

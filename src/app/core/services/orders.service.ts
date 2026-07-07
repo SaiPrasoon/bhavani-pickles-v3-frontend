@@ -1,42 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '@env/environment';
-import { Order, OrderStatus, ShippingAddress } from '../models/order.model';
-
-export interface InitiatePaymentResponse {
-  orderId: string;
-  paymentType: 'COD' | 'online';
-  razorpayOrderId?: string;
-  amount?: number;
-  currency?: string;
-}
-
-export interface VerifyPaymentPayload {
-  razorpayPaymentId: string;
-  razorpayOrderId: string;
-  razorpaySignature: string;
-}
-
-export interface GuestOrderItem {
-  productId: string;
-  name: string;
-  weight: string;
-  quantity: number;
-  price: number;
-}
-
-export interface CustomerInfo {
-  customerName: string;
-  customerEmail: string;
-  customerPhone?: string;
-}
-
-export interface DashboardStats {
-  totalOrders: number;
-  totalRevenue: number;
-  daily: { date: string; orders: number; revenue: number }[];
-  statusBreakdown: { status: string; count: number }[];
-}
+import {
+  Order, OrderStatus, ShippingAddress,
+  InitiatePaymentResponse, VerifyPaymentPayload,
+  GuestOrderItem, CustomerInfo, DashboardStats,
+} from '../models/order.model';
 
 @Injectable({ providedIn: 'root' })
 export class OrdersService {

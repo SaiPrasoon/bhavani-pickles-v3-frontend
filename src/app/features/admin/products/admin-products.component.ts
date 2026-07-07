@@ -6,7 +6,8 @@ import { ProductsService } from '@app/core/services/products.service';
 import { ToastService } from '@app/core/services/toast.service';
 import { ConfirmService } from '@app/core/services/confirm.service';
 import { Product, ProductVariant } from '@app/core/models/product.model';
-import { ProductFormComponent, ProductSubmitPayload } from './product-form/product-form.component';
+import { ProductFormComponent } from './product-form/product-form.component';
+import { ProductSubmitPayload } from '@app/core/models/product.model';
 
 @Component({
   selector: 'app-admin-products',
