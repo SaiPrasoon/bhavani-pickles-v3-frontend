@@ -8,6 +8,19 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loaderInterceptor } from './core/interceptors/loader.interceptor';
+import { environment } from '@env/environment';
+
+// Guard: warn if API URL doesn't match environment
+if (!environment.production && environment.apiUrl.includes('api.bhavanipickles.com')) {
+  console.warn(
+    `[ENV MISMATCH] Non-production build (${environment.envName}) is pointing to PRODUCTION API: ${environment.apiUrl}`,
+  );
+}
+if (environment.production && environment.apiUrl.includes('localhost')) {
+  console.warn(
+    `[ENV MISMATCH] Production build is pointing to localhost API: ${environment.apiUrl}`,
+  );
+}
 
 export const appConfig: ApplicationConfig = {
   providers: [

@@ -39,6 +39,7 @@ export interface ProductsResponse {
 export interface ProductFilters {
   category?: string;
   search?: string;
+  tag?: string;
   minPrice?: number;
   maxPrice?: number;
   sort?: string;
