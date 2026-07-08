@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, signal, computed, HostListener } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormArray, Validators } from '@angular/forms';
-import { Subject, Subscription } from 'rxjs';
+import { Subject, Subscription, forkJoin } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { ProductsService } from '@app/core/services/products.service';
 import { ToastService } from '@app/core/services/toast.service';
@@ -30,6 +30,20 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   searchQuery = signal('');
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
+
+  // Bulk selection
+  selectedIds = signal<Set<string>>(new Set());
+  allSelected = computed(() => {
+    const prods = this.products();
+    return prods.length > 0 && this.selectedIds().size === prods.length;
+  });
+  someSelected = computed(() => {
+    const size = this.selectedIds().size;
+    return size > 0 && size < this.products().length;
+  });
+
+  // Dropdown menu
+  openMenuId = signal<string | null>(null);
 
   // Stock drawer
   stockProduct = signal<Product | null>(null);
@@ -184,6 +198,97 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
         this.closeStockDrawer();
       },
       error: () => this.savingStock.set(false),
+    });
+  }
+
+  // ── Selection ──────────────────────────────────────────────────────────────
+
+  toggleSelect(id: string): void {
+    const next = new Set(this.selectedIds());
+    next.has(id) ? next.delete(id) : next.add(id);
+    this.selectedIds.set(next);
+  }
+
+  toggleSelectAll(): void {
+    if (this.allSelected()) {
+      this.selectedIds.set(new Set());
+    } else {
+      this.selectedIds.set(new Set(this.products().map(p => p._id)));
+    }
+  }
+
+  clearSelection(): void {
+    this.selectedIds.set(new Set());
+  }
+
+  // ── Dropdown menu ─────────────────────────────────────────────────────────
+
+  toggleMenu(id: string): void {
+    this.openMenuId.set(this.openMenuId() === id ? null : id);
+  }
+
+  closeMenu(): void {
+    this.openMenuId.set(null);
+  }
+
+  @HostListener('document:click')
+  onDocClick(): void {
+    if (this.openMenuId()) this.closeMenu();
+  }
+
+  // ── Bulk actions ──────────────────────────────────────────────────────────
+
+  bulkMarkInStock(): void {
+    const ids = [...this.selectedIds()];
+    forkJoin(ids.map(id => this.productsService.update(id, { isOutOfStock: false } as any)))
+      .subscribe(() => {
+        this.toast.success(`${ids.length} product(s) marked in stock`);
+        this.clearSelection();
+        this.load();
+      });
+  }
+
+  bulkMarkOutOfStock(): void {
+    const ids = [...this.selectedIds()];
+    forkJoin(ids.map(id => this.productsService.update(id, { isOutOfStock: true } as any)))
+      .subscribe(() => {
+        this.toast.success(`${ids.length} product(s) marked out of stock`);
+        this.clearSelection();
+        this.load();
+      });
+  }
+
+  bulkSetBestSeller(value: boolean): void {
+    const ids = [...this.selectedIds()];
+    const prods = this.products().filter(p => ids.includes(p._id));
+    const toToggle = prods.filter(p => p.isBestSeller !== value);
+    if (toToggle.length === 0) {
+      this.toast.info('No changes needed');
+      return;
+    }
+    forkJoin(toToggle.map(p => this.productsService.toggleBestSeller(p._id)))
+      .subscribe(() => {
+        this.toast.success(`${toToggle.length} product(s) updated`);
+        this.clearSelection();
+        this.load();
+      });
+  }
+
+  bulkDelete(): void {
+    const ids = [...this.selectedIds()];
+    this.confirmService.open({
+      title: 'Delete Products',
+      message: `Are you sure you want to delete ${ids.length} product(s)?`,
+      confirmLabel: 'Delete All',
+      danger: true,
+    }).subscribe(confirmed => {
+      if (!confirmed) return;
+      forkJoin(ids.map(id => this.productsService.delete(id)))
+        .subscribe(() => {
+          this.toast.success(`${ids.length} product(s) deleted`);
+          this.clearSelection();
+          this.load();
+        });
     });
   }
 

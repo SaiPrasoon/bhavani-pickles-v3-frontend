@@ -12,37 +12,66 @@
     </button>
   </section>
 
-  <div class="search-bar">
-    <span class="search-bar__icon material-symbols-rounded">search</span>
-    <input
-      class="search-bar__input"
-      type="text"
-      placeholder="Search products…"
-      [value]="searchQuery()"
-      (input)="onSearch($any($event.target).value)"
-    />
-    @if (searchQuery()) {
-      <button class="search-bar__clear btn btn--icon" (click)="clearSearch()" title="Clear">
-        <span class="material-symbols-rounded">close</span>
-      </button>
+  <div class="toolbar">
+    <div class="search-bar">
+      <span class="search-bar__icon material-symbols-rounded">search</span>
+      <input
+        class="search-bar__input"
+        type="text"
+        placeholder="Search products…"
+        [value]="searchQuery()"
+        (input)="onSearch($any($event.target).value)"
+      />
+      @if (searchQuery()) {
+        <button class="search-bar__clear btn btn--icon" (click)="clearSearch()" title="Clear">
+          <span class="material-symbols-rounded">close</span>
+        </button>
+      }
+    </div>
+
+    @if (selectedIds().size > 0) {
+      <div class="bulk-bar">
+        <span class="bulk-bar__count">{{ selectedIds().size }} selected</span>
+        <button class="btn btn--sm btn--ghost" (click)="bulkMarkInStock()">
+          <span class="material-symbols-rounded">check_circle</span> In Stock
+        </button>
+        <button class="btn btn--sm btn--ghost" (click)="bulkMarkOutOfStock()">
+          <span class="material-symbols-rounded">remove_shopping_cart</span> Out of Stock
+        </button>
+        <button class="btn btn--sm btn--ghost" (click)="bulkSetBestSeller(true)">
+          <span class="material-symbols-rounded">star</span> Best Seller
+        </button>
+        <button class="btn btn--sm btn--ghost" (click)="bulkSetBestSeller(false)">
+          <span class="material-symbols-rounded">star_border</span> Remove Best Seller
+        </button>
+        <button class="btn btn--sm btn--ghost bulk-bar__delete" (click)="bulkDelete()">
+          <span class="material-symbols-rounded">delete</span> Delete
+        </button>
+        <button class="btn btn--sm btn--ghost" (click)="clearSelection()">Clear</button>
+      </div>
     }
   </div>
 
   <table class="table">
     <thead>
       <tr>
+        <th class="th-check">
+          <input type="checkbox" [checked]="allSelected()" [indeterminate]="someSelected()" (change)="toggleSelectAll()" />
+        </th>
         <th>Image</th>
         <th>Name</th>
         <th>Category</th>
         <th>Variants</th>
         <th>Status</th>
-        <th>Out of Stock</th>
-        <th>Actions</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
       @for (product of products(); track product._id) {
-        <tr>
+        <tr [class.row--selected]="selectedIds().has(product._id)">
+          <td class="td-check">
+            <input type="checkbox" [checked]="selectedIds().has(product._id)" (change)="toggleSelect(product._id)" />
+          </td>
           <td>
             @if (product.images.length) {
               <img class="prod-thumb" [src]="product.images[0]" [alt]="product.name">
@@ -52,7 +81,14 @@
               </div>
             }
           </td>
-          <td>{{ product.name }}</td>
+          <td>
+            <div class="name-cell">
+              <span>{{ product.name }}</span>
+              @if (product.isBestSeller) {
+                <span class="material-symbols-rounded best-seller-icon" title="Best Seller">star</span>
+              }
+            </div>
+          </td>
           <td>{{ product.category.name }}</td>
           <td>
             @if (product.variants.length) {
@@ -78,30 +114,33 @@
             }
           </td>
           <td>
-            <label class="toggle-switch" [title]="product.isOutOfStock ? 'Mark as In Stock' : 'Mark as Out of Stock'">
-              <input type="checkbox" [checked]="product.isOutOfStock" (change)="toggleOutOfStock(product)" />
-              <span class="toggle-switch__track"></span>
-            </label>
-          </td>
-          <td>
             <div class="actions-cell">
-              <button
-                class="btn btn--icon"
-                [class.best-seller-active]="product.isBestSeller"
-                [title]="product.isBestSeller ? 'Remove Best Seller' : 'Mark as Best Seller'"
-                (click)="toggleBestSeller(product)"
-              >
-                <span class="material-symbols-rounded">{{ product.isBestSeller ? 'star' : 'star_border' }}</span>
-              </button>
-              <button class="btn btn--icon" title="Update Stock" (click)="openStockDrawer(product)">
-                <span class="material-symbols-rounded">inventory_2</span>
-              </button>
               <button class="btn btn--icon" title="Edit" (click)="openEditModal(product)">
                 <span class="material-symbols-rounded">edit</span>
               </button>
-              <button class="btn btn--icon btn--danger" title="Delete" (click)="delete(product)">
-                <span class="material-symbols-rounded">delete</span>
-              </button>
+              <div class="dropdown">
+                <button class="btn btn--icon" title="More actions" (click)="$event.stopPropagation(); toggleMenu(product._id)">
+                  <span class="material-symbols-rounded">more_vert</span>
+                </button>
+                @if (openMenuId() === product._id) {
+                  <div class="dropdown__menu">
+                    <button class="dropdown__item" (click)="openStockDrawer(product)">
+                      <span class="material-symbols-rounded">inventory_2</span> Update Stock
+                    </button>
+                    <button class="dropdown__item" (click)="toggleBestSeller(product)">
+                      <span class="material-symbols-rounded">{{ product.isBestSeller ? 'star' : 'star_border' }}</span>
+                      {{ product.isBestSeller ? 'Remove Best Seller' : 'Mark Best Seller' }}
+                    </button>
+                    <button class="dropdown__item" (click)="toggleOutOfStock(product)">
+                      <span class="material-symbols-rounded">{{ product.isOutOfStock ? 'check_circle' : 'remove_shopping_cart' }}</span>
+                      {{ product.isOutOfStock ? 'Mark In Stock' : 'Mark Out of Stock' }}
+                    </button>
+                    <button class="dropdown__item dropdown__item--danger" (click)="delete(product)">
+                      <span class="material-symbols-rounded">delete</span> Delete
+                    </button>
+                  </div>
+                }
+              </div>
             </div>
           </td>
         </tr>

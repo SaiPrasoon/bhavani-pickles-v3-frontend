@@ -4,9 +4,126 @@
   gap: 16px;
 }
 
-.best-seller-active {
+// Allow dropdown to overflow the table
+:host ::ng-deep .table {
+  overflow: visible;
+}
+
+// ─── Toolbar ─────────────────────────────────────────────────────────────────
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+// ─── Checkbox columns ────────────────────────────────────────────────────────
+.th-check, .td-check {
+  width: 40px;
+  text-align: center;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--c-amber);
+    cursor: pointer;
+  }
+}
+
+.row--selected {
+  background: rgba(200, 135, 10, 0.06);
+}
+
+// ─── Name cell with best-seller star ─────────────────────────────────────────
+.name-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.best-seller-icon {
   color: #f59e0b;
-  .material-symbols-rounded { font-variation-settings: 'FILL' 1; }
+  font-size: 1rem;
+  font-variation-settings: 'FILL' 1;
+}
+
+// ─── Bulk action bar ─────────────────────────────────────────────────────────
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: rgba(200, 135, 10, 0.08);
+  border: 1px solid rgba(200, 135, 10, 0.25);
+  border-radius: 8px;
+  flex-wrap: wrap;
+
+  &__count {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--c-amber);
+    margin-right: 4px;
+  }
+
+  .btn {
+    gap: 4px;
+    .material-symbols-rounded { font-size: 1rem; }
+  }
+
+  &__delete {
+    color: #ef4444;
+    &:hover { background: rgba(239, 68, 68, 0.12); }
+  }
+}
+
+// ─── Dropdown menu ───────────────────────────────────────────────────────────
+.dropdown {
+  position: relative;
+
+  &__menu {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    min-width: 200px;
+    background: var(--c-surface);
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    z-index: 100;
+    padding: 4px 0;
+    animation: fade-in 0.12s ease;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    background: none;
+    color: var(--c-text);
+    font-size: 0.84rem;
+    cursor: pointer;
+    text-align: left;
+
+    .material-symbols-rounded { font-size: 1.1rem; color: var(--c-text-faint); }
+
+    &:hover {
+      background: rgba(240, 235, 224, 0.06);
+    }
+
+    &--danger {
+      color: #ef4444;
+      .material-symbols-rounded { color: #ef4444; }
+    }
+  }
+}
+
+.actions-cell {
+  display: flex;
+  gap: 2px;
+  align-items: center;
 }
 
 // ─── Search bar ───────────────────────────────────────────────────────────────
@@ -186,46 +303,6 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-// ─── Out-of-stock toggle ──────────────────────────────────────────────────────
-.toggle-switch {
-  display: inline-flex;
-  align-items: center;
-  cursor: pointer;
-
-  input { display: none; }
-
-  &__track {
-    width: 40px;
-    height: 22px;
-    border-radius: 999px;
-    background: rgba(240, 235, 224, 0.12);
-    border: 1px solid var(--c-border);
-    position: relative;
-    transition: background 0.2s, border-color 0.2s;
-
-    &::after {
-      content: '';
-      position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--c-text-faint);
-      transition: transform 0.2s, background 0.2s;
-    }
-  }
-
-  input:checked + &__track {
-    background: rgba(239, 68, 68, 0.2);
-    border-color: rgba(239, 68, 68, 0.5);
-
-    &::after {
-      transform: translateX(18px);
-      background: #ef4444;
-    }
-  }
-}
 
 // ─── Stock drawer ──────────────────────────────────────────────────────────────
 .drawer-backdrop {
