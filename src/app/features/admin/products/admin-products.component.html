@@ -85,6 +85,14 @@
           </td>
           <td>
             <div class="actions-cell">
+              <button
+                class="btn btn--icon"
+                [class.best-seller-active]="product.isBestSeller"
+                [title]="product.isBestSeller ? 'Remove Best Seller' : 'Mark as Best Seller'"
+                (click)="toggleBestSeller(product)"
+              >
+                <span class="material-symbols-rounded">{{ product.isBestSeller ? 'star' : 'star_border' }}</span>
+              </button>
               <button class="btn btn--icon" title="Update Stock" (click)="openStockDrawer(product)">
                 <span class="material-symbols-rounded">inventory_2</span>
               </button>

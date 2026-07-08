@@ -43,6 +43,10 @@ export const routes: Routes = [
     path: 'products/:id',
     loadComponent: () => import('./features/products/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
   },
+  {
+    path: 'best-sellers',
+    loadComponent: () => import('./features/products/best-sellers/best-sellers.component').then(m => m.BestSellersComponent),
+  },
 
   // Cart & Checkout
   {

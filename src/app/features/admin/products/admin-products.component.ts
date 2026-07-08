@@ -104,6 +104,13 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
     });
   }
 
+  toggleBestSeller(product: Product): void {
+    this.productsService.toggleBestSeller(product._id).subscribe(() => {
+      this.toast.success(product.isBestSeller ? 'Removed from best sellers' : 'Marked as best seller');
+      this.load();
+    });
+  }
+
   toggleOutOfStock(product: Product): void {
     this.productsService.update(product._id, { isOutOfStock: !product.isOutOfStock } as any).subscribe(() => {
       this.toast.success(product.isOutOfStock ? 'Marked as in stock' : 'Marked as out of stock');

@@ -24,6 +24,7 @@ export interface Product {
   reviewCount: number;
   isActive: boolean;
   isOutOfStock: boolean;
+  isBestSeller: boolean;
   createdAt: string;
 }
 
