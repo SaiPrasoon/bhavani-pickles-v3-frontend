@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { RouterLink, Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { hasError } from '@app/core/utils/form.utils';
@@ -18,6 +19,7 @@ export class RegisterComponent {
   private cartService = inject(CartService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private location = inject(Location);
 
   readonly hasError = hasError;
   loading = signal(false);
@@ -40,5 +42,5 @@ export class RegisterComponent {
     });
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

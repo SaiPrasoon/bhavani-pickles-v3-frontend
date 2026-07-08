@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { CategoriesService } from '@app/core/services/categories.service';
 import { ToastService } from '@app/core/services/toast.service';
 import { ConfirmService } from '@app/core/services/confirm.service';
@@ -16,6 +17,7 @@ export class AdminCategoriesComponent implements OnInit {
   private categoriesService = inject(CategoriesService);
   private toast = inject(ToastService);
   private confirmService = inject(ConfirmService);
+  private location = inject(Location);
 
   categories = signal<Category[]>([]);
   saving = signal(false);
@@ -79,6 +81,6 @@ export class AdminCategoriesComponent implements OnInit {
   }
 
   goBack(): void {
-    window.history.back();
+    this.location.back();
   }
 }

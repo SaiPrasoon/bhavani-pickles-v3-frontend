@@ -7,8 +7,9 @@ RUN npm run build
 
 FROM node:20-alpine AS production
 WORKDIR /app
-RUN npm install -g serve
-COPY --from=builder /app/dist/frontend/browser ./dist
+COPY --from=builder /app/dist/frontend ./dist/frontend
+COPY --from=builder /app/package.json ./
+RUN npm ci --omit=dev
 ENV PORT=8080
 EXPOSE 8080
-CMD ["sh", "-c", "serve -s dist -p $PORT"]
+CMD ["node", "dist/frontend/server/server.mjs"]

@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { hasError } from '@app/core/utils/form.utils';
@@ -28,6 +29,7 @@ export class CheckoutComponent implements OnInit {
   private router = inject(Router);
   private toast = inject(ToastService);
   cartService = inject(CartService);
+  private location = inject(Location);
 
   readonly hasError = hasError;
   loading = signal(false);
@@ -210,5 +212,5 @@ export class CheckoutComponent implements OnInit {
     return !!(v.street && v.city && v.country && v.state && v.pincode);
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

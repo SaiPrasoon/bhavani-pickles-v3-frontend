@@ -1,6 +1,6 @@
 import { Component, ElementRef, HostListener, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, Location, TitleCasePipe } from '@angular/common';
 import { OrdersService } from '@app/core/services/orders.service';
 import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
 import { ToastService } from '@app/core/services/toast.service';
@@ -22,6 +22,7 @@ export class OrderDetailComponent implements OnInit {
   private ordersService = inject(OrdersService);
   private toast = inject(ToastService);
   private el = inject(ElementRef);
+  private location = inject(Location);
 
   order = signal<Order | null>(null);
   menuOpen = signal(false);
@@ -89,6 +90,6 @@ export class OrderDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    window.history.back();
+    this.location.back();
   }
 }

@@ -1,4 +1,4 @@
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, Location, TitleCasePipe } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -23,6 +23,7 @@ export class AdminOrderDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private ordersService = inject(OrdersService);
   private toast = inject(ToastService);
+  private location = inject(Location);
 
   order = signal<Order | null>(null);
   saving = signal(false);
@@ -134,6 +135,6 @@ export class AdminOrderDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    window.history.back();
+    this.location.back();
   }
 }

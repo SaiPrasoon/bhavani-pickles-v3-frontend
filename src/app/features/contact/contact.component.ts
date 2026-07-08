@@ -33,7 +33,7 @@ export class ContactComponent implements OnInit {
     const body = encodeURIComponent(
       `Name: ${this.name}\nEmail: ${this.email}\n\n${this.message}`,
     );
-    window.open(`mailto:${this.biz.emailSupport}?subject=${subject}&body=${body}`);
+    if (typeof window !== 'undefined') window.open(`mailto:${this.biz.emailSupport}?subject=${subject}&body=${body}`);
     this.submitted.set(true);
   }
 }

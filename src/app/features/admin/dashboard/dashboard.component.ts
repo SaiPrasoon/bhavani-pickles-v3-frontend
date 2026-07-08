@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, Location } from '@angular/common';
 import { BaseChartDirective } from 'ng2-charts';
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { forkJoin } from 'rxjs';
@@ -37,6 +37,7 @@ export class DashboardComponent implements OnInit {
   private ordersService    = inject(OrdersService);
   private categoriesService = inject(CategoriesService);
   private userService = inject(UserService);
+  private location = inject(Location);
 
   // ── Stat cards ──────────────────────────────────────────────────────────────
   totalProducts   = signal(0);
@@ -106,7 +107,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 
   private buildCharts(stats: DashboardStats, products: Product[]): void {
     this.totalOrders.set(stats.totalOrders);

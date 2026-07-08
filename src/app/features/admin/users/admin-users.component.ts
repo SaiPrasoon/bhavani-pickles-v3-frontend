@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { UserService } from '@app/core/services/user.service';
 import { ToastService } from '@app/core/services/toast.service';
 import { User } from '@app/core/models/user.model';
@@ -14,6 +14,7 @@ import { User } from '@app/core/models/user.model';
 export class AdminUsersComponent implements OnInit {
   private userService = inject(UserService);
   private toast = inject(ToastService);
+  private location = inject(Location);
 
   users = signal<User[]>([]);
   loading = signal(true);
@@ -48,6 +49,6 @@ export class AdminUsersComponent implements OnInit {
   }
 
   goBack(): void {
-    window.history.back();
+    this.location.back();
   }
 }

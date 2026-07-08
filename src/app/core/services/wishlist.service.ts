@@ -1,4 +1,5 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { Observable, of, forkJoin } from 'rxjs';
 import { tap, switchMap, map } from 'rxjs/operators';
 import { UserService } from './user.service';
@@ -15,6 +16,7 @@ export class WishlistService {
   private productsService = inject(ProductsService);
   private auth = inject(AuthService);
   private toast = inject(ToastService);
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private _ids = signal<Set<string>>(new Set());
   private _products = signal<Product[]>([]);
@@ -136,14 +138,15 @@ export class WishlistService {
   }
 
   private _getLocalIds(): string[] {
+    if (!this.isBrowser) return [];
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]'); } catch { return []; }
   }
 
   private _setLocalIds(ids: string[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+    if (this.isBrowser) localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
   }
 
   private _clearLocal(): void {
-    localStorage.removeItem(STORAGE_KEY);
+    if (this.isBrowser) localStorage.removeItem(STORAGE_KEY);
   }
 }

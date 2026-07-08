@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Location } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
@@ -27,6 +28,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   readonly wishlistService = inject(WishlistService);
   private seo = inject(SeoService);
+  private location = inject(Location);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -158,5 +160,5 @@ export class ProductListComponent implements OnInit, OnDestroy {
       });
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

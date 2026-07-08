@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, Location, TitleCasePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrdersService } from '@app/core/services/orders.service';
 import { ToastService } from '@app/core/services/toast.service';
@@ -21,6 +21,7 @@ const STATUS_PROGRESSION: OrderStatus[] = [
 export class AdminOrdersComponent implements OnInit {
   private ordersService = inject(OrdersService);
   private toast = inject(ToastService);
+  private location = inject(Location);
 
   orders = signal<Order[]>([]);
   saving = signal(false);
@@ -136,5 +137,5 @@ export class AdminOrdersComponent implements OnInit {
     this.pendingCancelOrder.set(null);
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }
