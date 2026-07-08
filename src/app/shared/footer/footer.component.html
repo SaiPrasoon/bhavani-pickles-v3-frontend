@@ -34,8 +34,8 @@
       <h4 class="footer__heading">Shop</h4>
       <nav class="footer__links">
         <a routerLink="/products">All Products</a>
-        <a routerLink="/products">Best Sellers</a>
-        <a routerLink="/products">Shop By Category</a>
+        <a routerLink="/products" [queryParams]="{ sort: 'newest' }">New Arrivals</a>
+        <a routerLink="/">Shop By Category</a>
       </nav>
     </div>
 

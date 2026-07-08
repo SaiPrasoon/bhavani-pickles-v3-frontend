@@ -27,12 +27,14 @@ export class AuthService {
     );
   }
 
-  logout() {
+  logout(returnUrl?: string) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
     this._user.set(null);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/auth/login'], {
+      queryParams: returnUrl ? { returnUrl } : {},
+    });
   }
 
   getToken(): string | null {
@@ -51,11 +53,14 @@ export class AuthService {
     return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/reset-password`, { token, newPassword });
   }
 
-  refreshAccessToken(): Observable<{ accessToken: string }> {
+  refreshAccessToken(): Observable<{ accessToken: string; refreshToken: string }> {
     const refreshToken = this.getRefreshToken();
     return this.http
-      .post<{ accessToken: string }>(`${environment.apiUrl}/auth/refresh`, { refreshToken })
-      .pipe(tap(res => localStorage.setItem('accessToken', res.accessToken)));
+      .post<{ accessToken: string; refreshToken: string }>(`${environment.apiUrl}/auth/refresh`, { refreshToken })
+      .pipe(tap(res => {
+        localStorage.setItem('accessToken', res.accessToken);
+        if (res.refreshToken) localStorage.setItem('refreshToken', res.refreshToken);
+      }));
   }
 
   private storeSession(res: AuthResponse) {

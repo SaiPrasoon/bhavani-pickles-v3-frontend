@@ -2,9 +2,13 @@ import { Component, ElementRef, HostListener, OnInit, inject, signal } from '@an
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { OrdersService } from '@app/core/services/orders.service';
-import { Order, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
 import { ToastService } from '@app/core/services/toast.service';
 import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
+
+const STATUS_PROGRESSION: OrderStatus[] = [
+  'pending', 'confirmed', 'processing', 'shipped', 'delivered',
+];
 
 @Component({
   selector: 'app-order-detail',
@@ -25,6 +29,7 @@ export class OrderDetailComponent implements OnInit {
   cancelling = signal(false);
 
   readonly cancellableStatuses = CANCELLABLE_STATUSES;
+  readonly progression = STATUS_PROGRESSION;
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
@@ -68,6 +73,19 @@ export class OrderDetailComponent implements OnInit {
       },
       error: () => this.cancelling.set(false),
     });
+  }
+
+  stepState(status: OrderStatus): 'done' | 'current' | 'upcoming' {
+    const o = this.order();
+    if (!o) return 'upcoming';
+    const currentIdx = STATUS_PROGRESSION.indexOf(o.status);
+    const stepIdx = STATUS_PROGRESSION.indexOf(status);
+    if (o.status === 'cancelled') {
+      return stepIdx < currentIdx ? 'done' : 'upcoming';
+    }
+    if (stepIdx < currentIdx) return 'done';
+    if (stepIdx === currentIdx) return 'current';
+    return 'upcoming';
   }
 
   goBack(): void {

@@ -3,7 +3,6 @@ import {
   ApplicationConfig,
   provideBrowserGlobalErrorListeners
 } from '@angular/core';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideRouter, withInMemoryScrolling, withNavigationErrorHandler } from '@angular/router';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
@@ -18,7 +17,6 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({ scrollPositionRestoration: 'top' }),
       withNavigationErrorHandler(() => window.location.reload()),
     ),
-    provideClientHydration(withEventReplay()),
     provideHttpClient(withInterceptors([loaderInterceptor, authInterceptor, errorInterceptor])),
   ],
 };

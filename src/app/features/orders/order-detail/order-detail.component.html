@@ -35,6 +35,35 @@
     </div>
   </div>
 
+  <!-- Order tracking timeline -->
+  <div class="card">
+    <div class="card__body">
+      <h3 class="timeline-heading">Order Progress</h3>
+      <div class="status-stepper">
+        @for (step of progression; track step) {
+          @if (o.paymentType !== 'COD' || step !== 'pending') {
+            <div class="step step--{{ stepState(step) }}">
+              <div class="step__dot">
+                @if (stepState(step) === 'done') {
+                  <span class="material-symbols-rounded">check</span>
+                }
+              </div>
+              <span class="step__label">{{ step | titlecase }}</span>
+            </div>
+          }
+        }
+        @if (o.status === 'cancelled') {
+          <div class="step step--cancelled">
+            <div class="step__dot">
+              <span class="material-symbols-rounded">close</span>
+            </div>
+            <span class="step__label">Cancelled</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
   <div class="order-layout">
     <div class="card">
       <div class="card__body">
