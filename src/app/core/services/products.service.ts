@@ -32,4 +32,16 @@ export class ProductsService {
   delete(id: string) {
     return this.http.delete(`${this.base}/${id}`);
   }
+
+  getBestSellers() {
+    return this.http.get<Product[]>(`${this.base}/best-sellers`);
+  }
+
+  toggleBestSeller(id: string) {
+    return this.http.patch<Product>(`${this.base}/${id}/best-seller`, {});
+  }
+
+  getTags() {
+    return this.http.get<string[]>(`${this.base}/tags`);
+  }
 }

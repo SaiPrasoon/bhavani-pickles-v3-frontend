@@ -1,0 +1,128 @@
+<div class="page-header">
+  <div class="table-title">
+    <button class="btn btn--icon back-icon" (click)="goBack()">
+      <span class="material-symbols-rounded">arrow_back</span>
+    </button>
+    <h1>Best Sellers</h1>
+  </div>
+</div>
+
+<div class="product-grid">
+  @if (loading()) {
+    @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+      <app-skeleton-card />
+    }
+  } @else {
+    @for (product of products(); track product._id) {
+      <div class="card">
+        @if (product.images.length) {
+          <img class="card__img" [src]="product.images[0]" [alt]="product.name" loading="lazy" />
+        } @else {
+          <div class="card__img-placeholder">
+            <span class="material-symbols-rounded">image</span>
+          </div>
+        }
+        <div class="card__body">
+          <p class="card__title">{{ product.name }}</p>
+          <p class="card__subtitle">{{ product.category.name }}</p>
+          @if (product.variants.length) {
+            <p>
+              <span class="price">₹{{ product.variants[0].price }} onwards</span>
+            </p>
+            <p
+              class="stock"
+              [class.stock--out]="product.variants[0].leftoverStock === 0 || product.isOutOfStock"
+            >
+              {{ (!product.isOutOfStock && product.variants[0].leftoverStock > 0) ? 'In Stock' : 'Out of Stock' }}
+            </p>
+          }
+        </div>
+        <div class="card__footer">
+          <a [routerLink]="['/products', product._id]" class="btn btn--sm btn--outline">Details</a>
+          <button
+            class="btn btn--sm btn--primary"
+            (click)="openPicker(product)"
+            [disabled]="!product.variants.length || product.variants[0].leftoverStock === 0 || product.isOutOfStock"
+          >
+            + Cart
+          </button>
+          <button
+            class="btn btn--icon btn--wishlist"
+            [class.btn--wishlisted]="wishlistService.isWishlisted(product._id)"
+            (click)="wishlistService.toggle(product._id)"
+            [title]="wishlistService.isWishlisted(product._id) ? 'Remove from wishlist' : 'Add to wishlist'"
+          >
+            <span class="material-symbols-rounded">{{ wishlistService.isWishlisted(product._id) ? 'favorite' : 'favorite_border' }}</span>
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-grid-state">
+        <span class="material-symbols-rounded">star_border</span>
+        <p>No best sellers yet. Check back soon!</p>
+      </div>
+    }
+  }
+</div>
+
+<!-- Variant picker popup -->
+@if (pickerProduct(); as product) {
+  <div class="picker-backdrop" (click)="closePicker()" role="dialog" aria-modal="true" aria-label="Select variant">
+    <div class="picker" (click)="$event.stopPropagation()">
+      <div class="picker__header">
+        <div>
+          <h3 class="picker__title">{{ product.name }}</h3>
+          <p class="picker__sub">{{ product.category.name }}</p>
+        </div>
+        <button class="picker__close" type="button" (click)="closePicker()">✕</button>
+      </div>
+
+      <p class="picker__label">Select Weight</p>
+      <div class="picker__variants">
+        @for (v of product.variants; track v.weight) {
+          <button
+            type="button"
+            class="variant-chip"
+            [class.variant-chip--selected]="pickerWeight() === v.weight"
+            [class.variant-chip--out]="v.leftoverStock === 0"
+            [disabled]="v.leftoverStock === 0"
+            (click)="pickerWeight.set(v.weight); pickerQty.set(1)"
+          >
+            <span class="variant-chip__weight">{{ v.weight }}</span>
+            <span class="variant-chip__price">
+              @if (v.discountedPrice) {
+                <s>₹{{ v.price }}</s> ₹{{ v.discountedPrice }}
+              } @else {
+                ₹{{ v.price }}
+              }
+            </span>
+            <span class="variant-chip__stock">
+              {{ v.leftoverStock === 0 ? 'Out of stock' : 'In stock' }}
+            </span>
+          </button>
+        }
+      </div>
+
+      <p class="picker__label">Quantity</p>
+      <div class="picker__qty">
+        <button class="qty-btn" type="button" (click)="decrementQty()" [disabled]="pickerQty() <= 1">−</button>
+        <span class="qty-val">{{ pickerQty() }}</span>
+        <button class="qty-btn" type="button" (click)="incrementQty()" [disabled]="pickerQty() >= (pickerVariant?.leftoverStock ?? 1)">+</button>
+      </div>
+
+      @if (pickerVariant) {
+        <p class="picker__total">
+          Total: <strong>₹{{ (pickerVariant.discountedPrice ?? pickerVariant.price) * pickerQty() }}</strong>
+        </p>
+      }
+
+      <button
+        class="btn btn--primary picker__cta"
+        [disabled]="!pickerVariant || pickerVariant.leftoverStock === 0"
+        (click)="confirmAddToCart()"
+      >
+        Add to Cart
+      </button>
+    </div>
+  </div>
+}

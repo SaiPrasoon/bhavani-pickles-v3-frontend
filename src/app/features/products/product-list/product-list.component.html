@@ -29,6 +29,20 @@
       }
     </select>
   </div>
+  @if (tags().length) {
+    <div class="form-group">
+      <select
+        class="form-control"
+        [value]="selectedTag()"
+        (change)="onTagChange($any($event.target).value)"
+      >
+        <option value="">All Tags</option>
+        @for (tag of tags(); track tag) {
+          <option [value]="tag">{{ tag }}</option>
+        }
+      </select>
+    </div>
+  }
   <div class="form-group">
     <select
       class="form-control"
@@ -55,6 +69,10 @@
     <div class="card">
       @if (product.images.length) {
         <img class="card__img" [src]="product.images[0]" [alt]="product.name" loading="lazy" />
+      } @else {
+        <div class="card__img-placeholder">
+          <span class="material-symbols-rounded">image</span>
+        </div>
       }
       <div class="card__body">
         <p class="card__title">{{ product.name }}</p>

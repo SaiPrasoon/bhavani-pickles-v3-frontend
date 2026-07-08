@@ -36,6 +36,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   search = signal('');
   selectedCategory = signal('');
   sortBy = signal('');
+  selectedTag = signal('');
+  tags = signal<string[]>([]);
   loading = signal(true);
 
   private search$ = new Subject<string>();
@@ -70,6 +72,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
     this.wishlistService.load();
     this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
+    this.productsService.getTags().subscribe(tags => this.tags.set(tags));
     this.route.queryParams.subscribe(params => {
       if (params['category']) this.selectedCategory.set(params['category']);
       this.load();
@@ -85,6 +88,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.productsService.getAll({
       search: this.search(),
       category: this.selectedCategory(),
+      tag: this.selectedTag() || undefined,
       sort: this.sortBy() || undefined,
       page: this.page(),
       limit: this.limit(),
@@ -102,6 +106,11 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   onCategoryChange(value: string): void {
     this.selectedCategory.set(value);
+    this.page.set(1);
+    this.load();
+  }
+  onTagChange(value: string): void {
+    this.selectedTag.set(value);
     this.page.set(1);
     this.load();
   }

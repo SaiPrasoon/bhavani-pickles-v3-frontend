@@ -61,6 +61,11 @@ export class SeoService {
     // Canonical URL
     this.setCanonical(config.canonicalUrl);
 
+    // HTML lang attribute
+    if (config.lang) {
+      this.doc.documentElement.setAttribute('lang', config.lang);
+    }
+
     // JSON-LD structured data
     this.setJsonLd(config.jsonLd);
   }

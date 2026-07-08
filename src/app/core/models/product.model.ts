@@ -24,6 +24,7 @@ export interface Product {
   reviewCount: number;
   isActive: boolean;
   isOutOfStock: boolean;
+  isBestSeller: boolean;
   createdAt: string;
 }
 
@@ -38,6 +39,7 @@ export interface ProductsResponse {
 export interface ProductFilters {
   category?: string;
   search?: string;
+  tag?: string;
   minPrice?: number;
   maxPrice?: number;
   sort?: string;

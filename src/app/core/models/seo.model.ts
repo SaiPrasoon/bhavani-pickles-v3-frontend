@@ -6,4 +6,5 @@ export interface SeoConfig {
   ogType?: string;
   canonicalUrl?: string;
   jsonLd?: Record<string, unknown>;
+  lang?: string;
 }
