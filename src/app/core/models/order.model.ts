@@ -43,6 +43,13 @@ export interface Order {
   cancellationReason?: string;
   cancelledAt?: string;
   cancelledBy?: 'user' | 'admin';
+  // Shiprocket shipping fields
+  shiprocketOrderId?: number;
+  shiprocketShipmentId?: number;
+  awbCode?: string;
+  courierName?: string;
+  trackingUrl?: string;
+  shippingLabelUrl?: string;
 }
 
 export const CANCELLABLE_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing'];

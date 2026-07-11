@@ -224,6 +224,29 @@
   color: var(--c-text);
 }
 
+.tracking-link {
+  color: var(--c-primary, #f97316);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+
+  .material-symbols-rounded { font-size: 0.9rem; }
+
+  &:hover { text-decoration: underline; }
+}
+
+.ship-btn {
+  .material-symbols-rounded { font-size: 1.1rem; }
+}
+
+.shipping-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .invoice-btn {
   margin-top: 16px;
   display: inline-flex;

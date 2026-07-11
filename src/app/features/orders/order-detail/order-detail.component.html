@@ -100,6 +100,43 @@
       </div>
     </div>
 
+    <!-- Shipping Info -->
+    @if (o.awbCode || o.courierName) {
+      <div class="card">
+        <div class="card__body">
+          <h3>
+            <span class="material-symbols-rounded">local_shipping</span>
+            Shipping Details
+          </h3>
+          <div class="shipping-rows">
+            @if (o.courierName) {
+              <div class="payment-row">
+                <span class="payment-row__label">Courier</span>
+                <span class="payment-row__value">{{ o.courierName }}</span>
+              </div>
+            }
+            @if (o.awbCode) {
+              <div class="payment-row">
+                <span class="payment-row__label">AWB Number</span>
+                <span class="payment-row__value payment-row__mono">{{ o.awbCode }}</span>
+              </div>
+            }
+            @if (o.trackingUrl) {
+              <div class="payment-row">
+                <span class="payment-row__label">Tracking</span>
+                <span class="payment-row__value">
+                  <a [href]="o.trackingUrl" target="_blank" rel="noopener" class="tracking-link">
+                    Track Shipment
+                    <span class="material-symbols-rounded">open_in_new</span>
+                  </a>
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
     <!-- Payment Details -->
     <div class="card">
       <div class="card__body">

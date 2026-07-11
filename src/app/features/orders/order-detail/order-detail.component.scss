@@ -188,6 +188,26 @@
   }
 }
 
+// ── Shipping details ─────────────────────────────────────────────────────────
+.shipping-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tracking-link {
+  color: var(--c-primary, #f97316);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+
+  .material-symbols-rounded { font-size: 0.9rem; }
+
+  &:hover { text-decoration: underline; }
+}
+
 // ── Cancellation info ─────────────────────────────────────────────────────────
 .cancel-info-card {
   grid-column: 1 / -1;

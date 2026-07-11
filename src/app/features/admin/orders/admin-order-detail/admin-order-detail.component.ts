@@ -27,6 +27,7 @@ export class AdminOrderDetailComponent implements OnInit {
 
   order = signal<Order | null>(null);
   saving = signal(false);
+  shipping = signal(false);
   showCancelModal = signal(false);
   selectedStatus = signal<OrderStatus | null>(null);
 
@@ -126,6 +127,23 @@ export class AdminOrderDetailComponent implements OnInit {
 
   onCancelDismissed(): void {
     this.showCancelModal.set(false);
+  }
+
+  shipOrder(): void {
+    const o = this.order();
+    if (!o) return;
+    this.shipping.set(true);
+    this.ordersService.shipOrder(o._id).subscribe({
+      next: () => {
+        this.fetchOrderDetails();
+        this.toast.success('Order shipped via Shiprocket');
+        this.shipping.set(false);
+      },
+      error: (err) => {
+        this.toast.error(err?.error?.message || 'Failed to ship order');
+        this.shipping.set(false);
+      },
+    });
   }
 
   downloadInvoice(): void {
