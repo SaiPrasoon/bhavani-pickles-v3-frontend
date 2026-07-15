@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { environment } from '@env/environment';
 import {
@@ -10,6 +11,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class OrdersService {
   private readonly base = `${environment.apiUrl}/orders`;
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   constructor(private http: HttpClient) {}
 
@@ -65,7 +67,20 @@ export class OrdersService {
     return this.http.get<DashboardStats>(`${this.base}/dashboard-stats`);
   }
 
+  shipOrder(id: string) {
+    return this.http.post<Order>(`${this.base}/${id}/ship`, {});
+  }
+
+  getTracking(id: string) {
+    return this.http.get<any>(`${this.base}/${id}/tracking`);
+  }
+
+  getShippingLabel(id: string) {
+    return this.http.get<{ labelUrl: string }>(`${this.base}/${id}/label`);
+  }
+
   downloadInvoice(id: string): void {
+    if (!this.isBrowser) return;
     this.http
       .get(`${this.base}/${id}/invoice`, { responseType: 'blob' })
       .subscribe((blob) => {

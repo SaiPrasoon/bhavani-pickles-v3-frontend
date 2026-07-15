@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed, HostListener } from '@angular/core';
+import { Location } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { Subject, Subscription, forkJoin } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -21,6 +22,7 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   private toast = inject(ToastService);
   private confirmService = inject(ConfirmService);
   private fb = inject(FormBuilder);
+  private location = inject(Location);
 
   products = signal<Product[]>([]);
   saving = signal(false);
@@ -293,6 +295,6 @@ export class AdminProductsComponent implements OnInit, OnDestroy {
   }
 
   goBack(): void {
-    window.history.back();
+    this.location.back();
   }
 }

@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { hasError } from '@app/core/utils/form.utils';
@@ -14,6 +15,7 @@ import { AuthService } from '@app/core/services/auth.service';
 export class ForgotPasswordComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
+  private location = inject(Location);
 
   readonly hasError = hasError;
   loading = signal(false);
@@ -32,5 +34,5 @@ export class ForgotPasswordComponent {
     });
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

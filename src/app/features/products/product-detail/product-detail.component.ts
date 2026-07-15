@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductsService } from '@app/core/services/products.service';
 import { CartService } from '@app/core/services/cart.service';
@@ -22,6 +23,7 @@ export class ProductDetailComponent implements OnInit {
   private toast = inject(ToastService);
   readonly wishlistService = inject(WishlistService);
   private seo = inject(SeoService);
+  private location = inject(Location);
 
   product = signal<Product | null>(null);
   selectedVariantIdx = signal(0);
@@ -109,7 +111,7 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 
   private updateSeo(p: Product): void {
     const lowestVariant = p.variants.reduce(

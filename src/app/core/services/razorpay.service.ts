@@ -1,10 +1,13 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { environment } from '@env/environment';
 import { InitiatePaymentResponse } from '../models/order.model';
 import { RazorpaySuccessResponse } from '../models/razorpay.model';
 
 @Injectable({ providedIn: 'root' })
 export class RazorpayService {
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   openCheckout(
     data: InitiatePaymentResponse,
     userName: string,
@@ -12,6 +15,7 @@ export class RazorpayService {
     userPhone: string,
   ): Promise<RazorpaySuccessResponse> {
     return new Promise((resolve, reject) => {
+      if (!this.isBrowser) { reject(new Error('Razorpay not available on server')); return; }
       let settled = false;
 
       const options = {

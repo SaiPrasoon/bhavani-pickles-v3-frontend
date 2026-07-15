@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl } from '@angular/forms';
-import { DatePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { UserService } from '@app/core/services/user.service';
 import { AuthService } from '@app/core/services/auth.service';
 import { ToastService } from '@app/core/services/toast.service';
@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit {
   private authService = inject(AuthService);
   private toast = inject(ToastService);
   private fb = inject(FormBuilder);
+  private location = inject(Location);
 
   activeTab = signal<'info' | 'addresses' | 'security'>('info');
   user = signal<User | null>(null);
@@ -147,5 +148,5 @@ export class ProfileComponent implements OnInit {
     return pw === confirm ? null : { mismatch: true };
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

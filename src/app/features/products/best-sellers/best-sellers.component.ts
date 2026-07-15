@@ -1,4 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
+import { Location } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ProductsService } from '@app/core/services/products.service';
 import { SeoService } from '@app/core/services/seo.service';
@@ -21,6 +22,7 @@ export class BestSellersComponent implements OnInit {
   private cartService = inject(CartService);
   private toast = inject(ToastService);
   readonly wishlistService = inject(WishlistService);
+  private location = inject(Location);
 
   products = signal<Product[]>([]);
   loading = signal(true);
@@ -85,5 +87,5 @@ export class BestSellersComponent implements OnInit {
       });
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }
