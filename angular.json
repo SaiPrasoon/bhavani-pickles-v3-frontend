@@ -38,7 +38,12 @@
             "server": "src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": []
+              "allowedHosts": [
+                "bhavani-pickles-web-testing.onrender.com",
+                "www.bhavanipickles.com",
+                "bhavanipickles.com",
+                "localhost"
+              ]
             },
             "ssr": {
               "entry": "src/server.ts"
