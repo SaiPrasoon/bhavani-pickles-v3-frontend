@@ -1,5 +1,14 @@
 <a class="skip-link" href="#main-content">Skip to content</a>
 <app-navbar></app-navbar>
+@if (showVerifyBanner) {
+  <div class="verify-banner">
+    <span class="material-symbols-rounded">mail</span>
+    <span>Please verify your email address.</span>
+    <button class="verify-banner__btn" (click)="resendVerification()" [disabled]="resending()">
+      {{ resending() ? 'Sending...' : 'Resend Email' }}
+    </button>
+  </div>
+}
 <main id="main-content" class="container" role="main">
   <router-outlet></router-outlet>
 </main>

@@ -4,6 +4,7 @@ import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { NgOptimizedImage } from '@angular/common';
 import { ProductsService } from '@app/core/services/products.service';
 import { CategoriesService } from '@app/core/services/categories.service';
 import { CartService } from '@app/core/services/cart.service';
@@ -16,7 +17,7 @@ import { SkeletonCardComponent } from '@app/shared/skeletons/skeleton-card.compo
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [RouterLink, FormsModule, SkeletonCardComponent],
+  imports: [RouterLink, FormsModule, SkeletonCardComponent, NgOptimizedImage],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss',
 })

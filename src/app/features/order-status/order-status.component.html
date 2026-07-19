@@ -21,7 +21,11 @@
 
       <div class="status-actions">
         @if (orderId) {
-          <a class="btn btn--primary" [routerLink]="['/orders', orderId]">View Order</a>
+          @if (authService.isLoggedIn()) {
+            <a class="btn btn--primary" [routerLink]="['/orders', orderId]">View Order</a>
+          } @else {
+            <a class="btn btn--primary" routerLink="/track-order">Track Order</a>
+          }
         }
         <a class="btn btn--outline" routerLink="/products">Continue Shopping</a>
       </div>

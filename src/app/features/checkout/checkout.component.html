@@ -43,6 +43,8 @@
           />
           @if (hasError(form, 'phone', 'required')) {
             <span class="form-error">Phone number is required</span>
+          } @else if (hasError(form, 'phone', 'pattern')) {
+            <span class="form-error">Enter a valid phone number</span>
           }
         </div>
       </div>
@@ -124,6 +126,8 @@
           <input class="form-control" formControlName="pincode">
           @if (hasError(form, 'pincode', 'required')) {
             <span class="form-error">Pincode is required</span>
+          } @else if (hasError(form, 'pincode', 'pattern')) {
+            <span class="form-error">Enter a valid 5-6 digit pincode</span>
           }
         </div>
       </form>
@@ -198,10 +202,35 @@
         <span>₹{{ item.price * item.quantity }}</span>
       </div>
     }
-    <hr />
+    <div class="summary-row">
+      <span>Subtotal</span>
+      <span>₹{{ cartService.cart()?.totalAmount }}</span>
+    </div>
+    <div class="summary-row">
+      <span>Shipping</span>
+      <span>
+        @if (checkingShipping()) {
+          Checking…
+        } @else if (shippingAvailable() === null) {
+          <span class="text-muted">Enter pincode</span>
+        } @else if (shippingAvailable() === false) {
+          <span class="text-danger">Not serviceable</span>
+        } @else if (shippingFee() > 0) {
+          ₹{{ shippingFee() }}
+        } @else {
+          Free
+        }
+      </span>
+    </div>
+    @if (estimatedDelivery()) {
+      <div class="summary-row etd-row">
+        <span>Estimated Delivery</span>
+        <span>{{ estimatedDelivery() }}</span>
+      </div>
+    }
     <div class="summary-row total">
       <strong>Total</strong>
-      <strong>₹{{ cartService.cart()?.totalAmount }}</strong>
+      <strong>₹{{ (cartService.cart()?.totalAmount || 0) + shippingFee() }}</strong>
     </div>
   </div>
 </div>
