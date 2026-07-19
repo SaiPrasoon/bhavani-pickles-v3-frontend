@@ -67,6 +67,23 @@ export class OrdersService {
     return this.http.get<DashboardStats>(`${this.base}/dashboard-stats`);
   }
 
+  getShippingRates(pincode: string, weight = 0.5, cod = false) {
+    return this.http.get<{
+      available: boolean;
+      shippingFee: number;
+      estimatedDelivery: string | null;
+      couriers: { name: string; rate: number; etd: string }[];
+    }>(`${this.base}/shipping-rates`, {
+      params: { pincode, weight: String(weight), cod: String(cod) },
+    });
+  }
+
+  trackGuestOrder(orderId: string, email: string) {
+    return this.http.get<Order>(`${this.base}/track`, {
+      params: { orderId, email },
+    });
+  }
+
   shipOrder(id: string) {
     return this.http.post<Order>(`${this.base}/${id}/ship`, {});
   }

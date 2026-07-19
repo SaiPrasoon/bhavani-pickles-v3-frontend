@@ -1,0 +1,23 @@
+<div class="verify-container">
+  @if (status() === 'verifying') {
+    <div class="verify-card">
+      <span class="material-symbols-rounded verify-icon spinning">sync</span>
+      <h2>Verifying your email...</h2>
+      <p>Please wait while we verify your email address.</p>
+    </div>
+  } @else if (status() === 'success') {
+    <div class="verify-card verify-card--success">
+      <span class="material-symbols-rounded verify-icon">check_circle</span>
+      <h2>Email Verified!</h2>
+      <p>{{ message() }}</p>
+      <a routerLink="/home" class="btn btn--primary">Go to Home</a>
+    </div>
+  } @else {
+    <div class="verify-card verify-card--error">
+      <span class="material-symbols-rounded verify-icon">error</span>
+      <h2>Verification Failed</h2>
+      <p>{{ message() }}</p>
+      <a routerLink="/auth/login" class="btn btn--primary">Go to Login</a>
+    </div>
+  }
+</div>

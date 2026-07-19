@@ -59,6 +59,21 @@ export class AuthService {
     return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/reset-password`, { token, newPassword });
   }
 
+  verifyEmail(token: string): Observable<{ message: string; email: string }> {
+    return this.http.get<{ message: string; email: string }>(`${environment.apiUrl}/auth/verify-email`, { params: { token } });
+  }
+
+  resendVerification(): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${environment.apiUrl}/auth/resend-verification`, {});
+  }
+
+  updateUser(user: User): void {
+    this._user.set(user);
+    if (this.isBrowser) {
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+  }
+
   refreshAccessToken(): Observable<{ accessToken: string; refreshToken: string }> {
     const refreshToken = this.getRefreshToken();
     return this.http

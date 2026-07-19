@@ -5,3 +5,33 @@
   width: 100%;
   min-height: calc(100dvh - 350px);
 }
+
+.verify-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: rgba(234, 179, 8, 0.12);
+  border-bottom: 1px solid rgba(234, 179, 8, 0.3);
+  color: #facc15;
+  font-size: 0.85rem;
+
+  .material-symbols-rounded { font-size: 18px; }
+
+  &__btn {
+    background: none;
+    border: 1px solid rgba(234, 179, 8, 0.4);
+    color: #facc15;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-left: 4px;
+    transition: background 0.2s;
+
+    &:hover:not(:disabled) { background: rgba(234, 179, 8, 0.15); }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}

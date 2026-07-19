@@ -17,6 +17,10 @@
         <option [value]="s">{{ s | titlecase }}</option>
       }
     </select>
+    <button class="btn btn--outline btn--sm" (click)="exportCsv()" [disabled]="!orders().length">
+      <span class="material-symbols-rounded">download</span>
+      Export CSV
+    </button>
   </div>
 </section>
 

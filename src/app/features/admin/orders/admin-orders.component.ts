@@ -137,5 +137,33 @@ export class AdminOrdersComponent implements OnInit {
     this.pendingCancelOrder.set(null);
   }
 
+  exportCsv(): void {
+    const rows = this.orders();
+    if (!rows.length) return;
+
+    const headers = ['Order ID', 'Customer', 'Email', 'Total', 'Status', 'Payment', 'Date'];
+    const csvRows = rows.map(o => {
+      const user = o.user as any;
+      return [
+        o._id,
+        user?.name || 'N/A',
+        user?.email || 'N/A',
+        o.totalAmount,
+        o.status,
+        o.paymentType || 'N/A',
+        new Date(o.createdAt).toLocaleDateString(),
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+    });
+
+    const csv = [headers.join(','), ...csvRows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `orders-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   goBack(): void { this.location.back(); }
 }

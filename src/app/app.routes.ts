@@ -94,6 +94,10 @@ export const routes: Routes = [
         path: 'reset-password',
         loadComponent: () => import('./features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent),
       },
+      {
+        path: 'verify-email',
+        loadComponent: () => import('./features/auth/verify-email/verify-email.component').then(m => m.VerifyEmailComponent),
+      },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },
@@ -139,6 +143,11 @@ export const routes: Routes = [
   {
     path: 'order-status',
     loadComponent: () => import('./features/order-status/order-status.component').then(m => m.OrderStatusComponent),
+  },
+
+  {
+    path: 'track-order',
+    loadComponent: () => import('./features/track-order/track-order.component').then(m => m.TrackOrderComponent),
   },
 
   {
