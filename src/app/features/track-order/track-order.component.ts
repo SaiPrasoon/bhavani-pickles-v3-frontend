@@ -1,17 +1,17 @@
 import { Component, inject, signal } from '@angular/core';
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrdersService } from '@app/core/services/orders.service';
-import { Order, OrderStatus } from '@app/core/models/order.model';
+import { Order, OrderStatus, ORDER_STATUS_LABELS } from '@app/core/models/order.model';
 
 const STATUS_PROGRESSION: OrderStatus[] = [
-  'pending', 'confirmed', 'processing', 'shipped', 'delivered',
+  'pending', 'confirmed', 'processing', 'ready_to_ship', 'shipped', 'delivered',
 ];
 
 @Component({
   selector: 'app-track-order',
   standalone: true,
-  imports: [FormsModule, DatePipe, TitleCasePipe],
+  imports: [FormsModule, DatePipe],
   templateUrl: './track-order.component.html',
   styleUrl: './track-order.component.scss',
 })
@@ -25,6 +25,7 @@ export class TrackOrderComponent {
   error = signal<string | null>(null);
 
   readonly progression = STATUS_PROGRESSION;
+  readonly statusLabels = ORDER_STATUS_LABELS;
 
   track(): void {
     if (!this.orderId.trim() || !this.email.trim()) return;

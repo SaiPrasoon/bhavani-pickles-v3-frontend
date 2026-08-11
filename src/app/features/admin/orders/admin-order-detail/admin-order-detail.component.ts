@@ -1,21 +1,21 @@
-import { DatePipe, Location, TitleCasePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { Order, OrderStatus, CANCELLABLE_STATUSES, ORDER_STATUS_LABELS } from '@app/core/models/order.model';
 import { OrdersService } from '@app/core/services/orders.service';
 import { ToastService } from '@app/core/services/toast.service';
 import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
 
 // Forward-only progression — cancelled is handled separately
 const STATUS_PROGRESSION: OrderStatus[] = [
-  'pending', 'confirmed', 'processing', 'shipped', 'delivered',
+  'pending', 'confirmed', 'processing', 'ready_to_ship', 'shipped', 'delivered',
 ];
 
 @Component({
   selector: 'app-admin-order-detail',
   standalone: true,
-  imports: [FormsModule, DatePipe, TitleCasePipe, CancelReasonModalComponent],
+  imports: [FormsModule, DatePipe, CancelReasonModalComponent],
   templateUrl: './admin-order-detail.component.html',
   styleUrl: './admin-order-detail.component.scss',
 })
@@ -32,13 +32,16 @@ export class AdminOrderDetailComponent implements OnInit {
   selectedStatus = signal<OrderStatus | null>(null);
 
   readonly progression = STATUS_PROGRESSION;
+  readonly statusLabels = ORDER_STATUS_LABELS;
 
-  // Statuses that can still be set (only forward from current)
+  private static readonly ADMIN_SETTABLE: OrderStatus[] = ['confirmed', 'processing', 'ready_to_ship'];
+
   readonly allowedNextStatuses = computed<OrderStatus[]>(() => {
     const current = this.order()?.status;
     if (!current || current === 'delivered' || current === 'cancelled') return [];
     const idx = STATUS_PROGRESSION.indexOf(current);
-    return STATUS_PROGRESSION.slice(idx + 1);
+    return STATUS_PROGRESSION.slice(idx + 1)
+      .filter(s => AdminOrderDetailComponent.ADMIN_SETTABLE.includes(s));
   });
 
   readonly isTerminal = computed(() => {
@@ -136,7 +139,7 @@ export class AdminOrderDetailComponent implements OnInit {
     this.ordersService.shipOrder(o._id).subscribe({
       next: () => {
         this.fetchOrderDetails();
-        this.toast.success('Order shipped via Shiprocket');
+        this.toast.success('Order submitted to Shiprocket — ready for pickup');
         this.shipping.set(false);
       },
       error: (err) => {

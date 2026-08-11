@@ -5,6 +5,7 @@ export type OrderStatus =
   | 'pending'
   | 'confirmed'
   | 'processing'
+  | 'ready_to_ship'
   | 'shipped'
   | 'delivered'
   | 'cancelled';
@@ -52,7 +53,17 @@ export interface Order {
   shippingLabelUrl?: string;
 }
 
-export const CANCELLABLE_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing'];
+export const CANCELLABLE_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing', 'ready_to_ship'];
+
+export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+  pending: 'Pending',
+  confirmed: 'Confirmed',
+  processing: 'Processing',
+  ready_to_ship: 'Ready to Ship',
+  shipped: 'Shipped',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled',
+};
 
 export interface InitiatePaymentResponse {
   orderId: string;
