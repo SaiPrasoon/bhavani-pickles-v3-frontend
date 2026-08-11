@@ -55,7 +55,7 @@
           <p class="track-date">Placed on {{ o.createdAt | date:'mediumDate' }}</p>
         </div>
         <span class="badge" [class]="'badge--' + o.status">
-          {{ o.status | titlecase }}
+          {{ statusLabels[o.status] }}
         </span>
       </div>
 
@@ -65,7 +65,7 @@
           @for (step of progression; track step) {
             <div class="stepper__step" [attr.data-state]="stepState(step)">
               <div class="stepper__dot"></div>
-              <span class="stepper__label">{{ step | titlecase }}</span>
+              <span class="stepper__label">{{ statusLabels[step] }}</span>
             </div>
           }
         </div>

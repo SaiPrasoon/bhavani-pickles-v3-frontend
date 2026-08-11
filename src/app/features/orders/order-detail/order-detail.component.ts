@@ -1,19 +1,19 @@
 import { Component, ElementRef, HostListener, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { DatePipe, Location, TitleCasePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { OrdersService } from '@app/core/services/orders.service';
-import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { Order, OrderStatus, CANCELLABLE_STATUSES, ORDER_STATUS_LABELS } from '@app/core/models/order.model';
 import { ToastService } from '@app/core/services/toast.service';
 import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
 
 const STATUS_PROGRESSION: OrderStatus[] = [
-  'pending', 'confirmed', 'processing', 'shipped', 'delivered',
+  'pending', 'confirmed', 'processing', 'ready_to_ship', 'shipped', 'delivered',
 ];
 
 @Component({
   selector: 'app-order-detail',
   standalone: true,
-  imports: [DatePipe, TitleCasePipe, CancelReasonModalComponent],
+  imports: [DatePipe, CancelReasonModalComponent],
   templateUrl: './order-detail.component.html',
   styleUrl: './order-detail.component.scss',
 })
@@ -31,6 +31,7 @@ export class OrderDetailComponent implements OnInit {
 
   readonly cancellableStatuses = CANCELLABLE_STATUSES;
   readonly progression = STATUS_PROGRESSION;
+  readonly statusLabels = ORDER_STATUS_LABELS;
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {

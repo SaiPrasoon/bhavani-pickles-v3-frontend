@@ -1,20 +1,20 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe, Location, TitleCasePipe } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { OrdersService } from '@app/core/services/orders.service';
 import { ToastService } from '@app/core/services/toast.service';
-import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { Order, OrderStatus, CANCELLABLE_STATUSES, ORDER_STATUS_LABELS } from '@app/core/models/order.model';
 import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
 
 const STATUS_PROGRESSION: OrderStatus[] = [
-  'pending', 'confirmed', 'processing', 'shipped', 'delivered',
+  'pending', 'confirmed', 'processing', 'ready_to_ship', 'shipped', 'delivered',
 ];
 
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [RouterLink, DatePipe, TitleCasePipe, FormsModule, CancelReasonModalComponent],
+  imports: [RouterLink, DatePipe, FormsModule, CancelReasonModalComponent],
   templateUrl: './admin-orders.component.html',
   styleUrl: './admin-orders.component.scss',
 })
@@ -35,7 +35,8 @@ export class AdminOrdersComponent implements OnInit {
   pages = signal(0);
   statusFilter = signal('');
 
-  readonly statuses: OrderStatus[] = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+  readonly statuses: OrderStatus[] = ['pending', 'confirmed', 'processing', 'ready_to_ship', 'shipped', 'delivered', 'cancelled'];
+  readonly statusLabels = ORDER_STATUS_LABELS;
 
   ngOnInit(): void {
     this.loadOrders();
@@ -82,10 +83,13 @@ export class AdminOrdersComponent implements OnInit {
     return order.status === 'delivered' || order.status === 'cancelled';
   }
 
+  private static readonly ADMIN_SETTABLE: OrderStatus[] = ['confirmed', 'processing', 'ready_to_ship'];
+
   allowedNextStatuses(order: Order): OrderStatus[] {
     if (this.isTerminal(order)) return [];
     const idx = STATUS_PROGRESSION.indexOf(order.status);
-    return STATUS_PROGRESSION.slice(idx + 1);
+    return STATUS_PROGRESSION.slice(idx + 1)
+      .filter(s => AdminOrdersComponent.ADMIN_SETTABLE.includes(s));
   }
 
   isCancellable(order: Order): boolean {

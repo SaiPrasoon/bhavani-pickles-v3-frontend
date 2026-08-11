@@ -14,7 +14,7 @@
     >
       <option value="">All Statuses</option>
       @for (s of statuses; track s) {
-        <option [value]="s">{{ s | titlecase }}</option>
+        <option [value]="s">{{ statusLabels[s] }}</option>
       }
     </select>
     <button class="btn btn--outline btn--sm" (click)="exportCsv()" [disabled]="!orders().length">
@@ -47,7 +47,7 @@
         <td>{{ order.createdAt | date:'short' }}</td>
         <td>
           @if (isTerminal(order)) {
-            <span class="badge badge--{{ order.status }}">{{ order.status | titlecase }}</span>
+            <span class="badge badge--{{ order.status }}">{{ statusLabels[order.status] }}</span>
           } @else {
             <select
               class="form-control status-select"
@@ -55,9 +55,9 @@
               (change)="onStatusChange(order, $event)"
               [disabled]="saving()"
             >
-              <option value="" disabled>{{ order.status | titlecase }}</option>
+              <option value="" disabled>{{ statusLabels[order.status] }}</option>
               @for (s of allowedNextStatuses(order); track s) {
-                <option [value]="s">{{ s | titlecase }}</option>
+                <option [value]="s">{{ statusLabels[s] }}</option>
               }
               @if (isCancellable(order)) {
                 <option value="cancelled">Cancel Order…</option>
