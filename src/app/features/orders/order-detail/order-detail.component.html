@@ -8,7 +8,7 @@
     </div>
 
     <div class="header-right">
-      <span class="badge badge--{{ o.status }}">{{ o.status | titlecase }}</span>
+      <span class="badge badge--{{ o.status }}">{{ statusLabels[o.status] }}</span>
 
       <!-- Kebab menu -->
       <div class="order-menu">
@@ -48,7 +48,7 @@
                   <span class="material-symbols-rounded">check</span>
                 }
               </div>
-              <span class="step__label">{{ step | titlecase }}</span>
+              <span class="step__label">{{ statusLabels[step] }}</span>
             </div>
           }
         }

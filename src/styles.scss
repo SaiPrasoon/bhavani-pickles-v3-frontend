@@ -340,6 +340,10 @@ p {
     background: rgba(243, 229, 245, 0.12);
     color: #ce93d8;
   }
+  &--ready_to_ship {
+    background: rgba(237, 233, 254, 0.15);
+    color: #a78bfa;
+  }
   &--shipped {
     background: rgba(232, 245, 233, 0.12);
     color: #81c784;
