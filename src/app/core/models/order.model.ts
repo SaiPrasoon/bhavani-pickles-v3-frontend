@@ -53,7 +53,7 @@ export interface Order {
   shippingLabelUrl?: string;
 }
 
-export const CANCELLABLE_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing', 'ready_to_ship'];
+export const CANCELLABLE_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing'];
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
   pending: 'Pending',
