@@ -4,6 +4,23 @@
       <span class="material-symbols-rounded">arrow_back</span>
     </button>
     <h1>Orders</h1>
+    <span class="order-count">{{ total() }}</span>
+  </div>
+  <div class="table-filters">
+    <select
+      class="form-control filter-select"
+      [value]="statusFilter()"
+      (change)="onStatusFilterChange($any($event.target).value)"
+    >
+      <option value="">All Statuses</option>
+      @for (s of statuses; track s) {
+        <option [value]="s">{{ s | titlecase }}</option>
+      }
+    </select>
+    <button class="btn btn--outline btn--sm" (click)="exportCsv()" [disabled]="!orders().length">
+      <span class="material-symbols-rounded">download</span>
+      Export CSV
+    </button>
   </div>
 </section>
 
@@ -49,9 +66,24 @@
           }
         </td>
       </tr>
+    } @empty {
+      <tr>
+        <td colspan="5" class="empty-row">
+          <span class="material-symbols-rounded">inbox</span>
+          No orders found.
+        </td>
+      </tr>
     }
   </tbody>
 </table>
+
+@if (pages() > 1) {
+  <div class="pagination">
+    <button class="btn btn--sm" (click)="prevPage()" [disabled]="page() === 1">← Prev</button>
+    <span>Page {{ page() }} of {{ pages() }}</span>
+    <button class="btn btn--sm" (click)="nextPage()" [disabled]="page() >= pages()">Next →</button>
+  </div>
+}
 
 @if (showCancelModal()) {
   <app-cancel-reason-modal

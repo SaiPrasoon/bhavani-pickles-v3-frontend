@@ -1,18 +1,9 @@
 import { Component, OnInit, input, output, signal, effect, inject } from '@angular/core';
 import { FormBuilder, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { switchMap, of } from 'rxjs';
-import { Product, Category } from '../../../../core/models/product.model';
-import { CategoriesService } from '../../../../core/services/categories.service';
-import { UploadService } from '../../../../core/services/upload.service';
-
-export interface ProductSubmitPayload {
-  name: string;
-  description: string;
-  category: string;
-  variants: { weight: string; price: number; discountedPrice?: number; stock: number }[];
-  images: string[];
-  isActive: boolean;
-}
+import { Product, Category, ProductSubmitPayload } from '@app/core/models/product.model';
+import { CategoriesService } from '@app/core/services/categories.service';
+import { UploadService } from '@app/core/services/upload.service';
 
 @Component({
   selector: 'app-product-form',

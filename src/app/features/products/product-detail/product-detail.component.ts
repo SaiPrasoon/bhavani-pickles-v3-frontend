@@ -1,11 +1,13 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Location } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ProductsService } from '../../../core/services/products.service';
-import { CartService } from '../../../core/services/cart.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { WishlistService } from '../../../core/services/wishlist.service';
-import { Product } from '../../../core/models/product.model';
-import { CartItem } from '../../../core/models/cart.model';
+import { ProductsService } from '@app/core/services/products.service';
+import { CartService } from '@app/core/services/cart.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
+import { SeoService } from '@app/core/services/seo.service';
+import { Product } from '@app/core/models/product.model';
+import { CartItem } from '@app/core/models/cart.model';
 
 @Component({
   selector: 'app-product-detail',
@@ -20,9 +22,12 @@ export class ProductDetailComponent implements OnInit {
   readonly cartService = inject(CartService);
   private toast = inject(ToastService);
   readonly wishlistService = inject(WishlistService);
+  private seo = inject(SeoService);
+  private location = inject(Location);
 
   product = signal<Product | null>(null);
   selectedVariantIdx = signal(0);
+  selectedImageIdx = signal(0);
 
   selectedVariant = computed(() => {
     const p = this.product();
@@ -54,7 +59,10 @@ export class ProductDetailComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id')!;
-    this.productsService.getOne(id).subscribe(p => this.product.set(p));
+    this.productsService.getOne(id).subscribe(p => {
+      this.product.set(p);
+      this.updateSeo(p);
+    });
     if (!this.cartService.cart()) {
       this.cartService.loadCart().subscribe();
     }
@@ -103,5 +111,50 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
+
+  private updateSeo(p: Product): void {
+    const lowestVariant = p.variants.reduce(
+      (min, v) => ((v.discountedPrice ?? v.price) < (min.discountedPrice ?? min.price) ? v : min),
+      p.variants[0],
+    );
+    const price = lowestVariant?.discountedPrice ?? lowestVariant?.price ?? 0;
+    const url = `https://www.bhavanipickles.com/products/${p._id}`;
+
+    this.seo.update({
+      title: p.name,
+      description: p.description?.slice(0, 160) ?? `Buy ${p.name} online from Bhavani Pickles`,
+      ogImage: p.images?.[0],
+      ogType: 'product',
+      canonicalUrl: url,
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: p.name,
+        description: p.description,
+        image: p.images,
+        url,
+        brand: { '@type': 'Brand', name: 'Bhavani Pickles' },
+        offers: {
+          '@type': 'AggregateOffer',
+          priceCurrency: 'INR',
+          lowPrice: price,
+          highPrice: p.variants.reduce((max, v) => Math.max(max, v.price), 0),
+          availability: p.isOutOfStock
+            ? 'https://schema.org/OutOfStock'
+            : 'https://schema.org/InStock',
+          offerCount: p.variants.length,
+        },
+        ...(p.rating > 0
+          ? {
+              aggregateRating: {
+                '@type': 'AggregateRating',
+                ratingValue: p.rating,
+                reviewCount: p.reviewCount,
+              },
+            }
+          : {}),
+      },
+    });
+  }
 }

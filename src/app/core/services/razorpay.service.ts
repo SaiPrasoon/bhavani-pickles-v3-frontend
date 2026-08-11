@@ -1,15 +1,13 @@
-import { Injectable } from '@angular/core';
-import { environment } from '../../../environments/environment';
-import { InitiatePaymentResponse } from './orders.service';
-
-export interface RazorpaySuccessResponse {
-  razorpay_payment_id: string;
-  razorpay_order_id: string;
-  razorpay_signature: string;
-}
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { environment } from '@env/environment';
+import { InitiatePaymentResponse } from '../models/order.model';
+import { RazorpaySuccessResponse } from '../models/razorpay.model';
 
 @Injectable({ providedIn: 'root' })
 export class RazorpayService {
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+
   openCheckout(
     data: InitiatePaymentResponse,
     userName: string,
@@ -17,6 +15,9 @@ export class RazorpayService {
     userPhone: string,
   ): Promise<RazorpaySuccessResponse> {
     return new Promise((resolve, reject) => {
+      if (!this.isBrowser) { reject(new Error('Razorpay not available on server')); return; }
+      let settled = false;
+
       const options = {
         key: environment.razorpayKeyId,
         amount: data.amount,
@@ -31,16 +32,22 @@ export class RazorpayService {
           contact: userPhone,
         },
         theme: { color: '#950220' },
-        handler: (response: RazorpaySuccessResponse) => resolve(response),
+        handler: (response: RazorpaySuccessResponse) => {
+          settled = true;
+          resolve(response);
+        },
         modal: {
-          ondismiss: () => reject(new Error('Payment cancelled')),
+          ondismiss: () => {
+            if (!settled) reject(new Error('Payment cancelled'));
+          },
         },
       };
 
       const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', (response: any) =>
-        reject(new Error(response.error?.description ?? 'Payment failed')),
-      );
+      rzp.on('payment.failed', (response: any) => {
+        settled = true;
+        reject(new Error(response.error?.description ?? 'Payment failed'));
+      });
       rzp.open();
     });
   }

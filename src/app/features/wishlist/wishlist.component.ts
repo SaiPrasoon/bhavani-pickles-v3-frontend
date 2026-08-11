@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { WishlistService } from '../../core/services/wishlist.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
 
 @Component({
   selector: 'app-wishlist',
@@ -11,10 +12,11 @@ import { WishlistService } from '../../core/services/wishlist.service';
 })
 export class WishlistComponent implements OnInit {
   readonly wishlistService = inject(WishlistService);
+  private location = inject(Location);
 
   ngOnInit(): void {
     this.wishlistService.load();
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

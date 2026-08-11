@@ -1,9 +1,10 @@
-import { Component, ElementRef, HostListener, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { CartService } from '../../core/services/cart.service';
-import { WishlistService } from '../../core/services/wishlist.service';
+import { CartService } from '@app/core/services/cart.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
-import { AuthService } from '../../core/services/auth.service';
+import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
   selector: 'app-navbar',
@@ -17,6 +18,7 @@ export class NavbarComponent {
   cartService = inject(CartService);
   wishlistService = inject(WishlistService);
   private elRef = inject(ElementRef);
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   sidebarOpen = signal(false);
   userMenuOpen = signal(false);
@@ -24,7 +26,7 @@ export class NavbarComponent {
 
   @HostListener('window:scroll')
   onScroll(): void {
-    this.scrolled.set(window.scrollY > 10);
+    if (this.isBrowser) this.scrolled.set(window.scrollY > 10);
   }
 
   @HostListener('document:click', ['$event'])

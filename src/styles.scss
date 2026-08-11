@@ -18,6 +18,25 @@
   --c-border: rgba(240, 235, 224, 0.1);
 }
 
+// ─── Skip link (accessibility) ───────────────────────────────────────────────
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 16px;
+  z-index: 10000;
+  padding: 8px 16px;
+  background: var(--c-primary);
+  color: #fff;
+  border-radius: 0 0 6px 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.2s;
+
+  &:focus {
+    top: 0;
+  }
+}
+
 // ─── Reset & Base ────────────────────────────────────────────────────────────
 *,
 *::before,
@@ -161,6 +180,16 @@ p {
     aspect-ratio: 4/3;
     object-fit: cover;
   }
+  &__img-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 10, 5, 0.55);
+    color: var(--c-text-faint);
+    .material-symbols-rounded { font-size: 2.5rem; }
+  }
   &__body {
     padding: 16px;
   }
@@ -222,6 +251,12 @@ p {
   &.ng-invalid.ng-touched {
     border-color: #c62828;
   }
+}
+
+.form-error {
+  font-size: 0.78rem;
+  color: #ef5350;
+  margin-top: 2px;
 }
 
 // ─── Table ───────────────────────────────────────────────────────────────────
@@ -418,6 +453,8 @@ hr {
     opacity: 0.4;
   }
 }
+
+
 
 .empty-grid-state {
   grid-column: 1 / -1;

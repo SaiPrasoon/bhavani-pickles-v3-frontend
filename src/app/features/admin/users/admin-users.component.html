@@ -1,0 +1,62 @@
+<div class="table-header">
+  <div class="table-title">
+    <button class="btn btn--icon back-icon" (click)="goBack()">
+      <span class="material-symbols-rounded">arrow_back</span>
+    </button>
+    <h1>Users</h1>
+    <span class="user-count badge">{{ users().length }}</span>
+  </div>
+</div>
+
+@if (loading()) {
+  <p class="loading-text">Loading users...</p>
+} @else {
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Role</th>
+          <th>Joined</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of users(); track user._id) {
+          <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone || '—' }}</td>
+            <td>
+              <span class="badge" [class.badge--admin]="user.role === 'admin'">
+                {{ user.role }}
+              </span>
+            </td>
+            <td>{{ user.createdAt | date:'mediumDate' }}</td>
+            <td>
+              <div class="actions-cell">
+                @if (user.role !== 'admin') {
+                  <button
+                    class="btn btn--sm btn--danger"
+                    (click)="deactivateUser(user)"
+                  >
+                    Deactivate
+                  </button>
+                }
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="6" class="empty-row">
+              <span class="material-symbols-rounded">group_off</span>
+              No users found.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+}

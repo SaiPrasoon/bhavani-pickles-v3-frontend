@@ -1,19 +1,30 @@
 <section class="home-container">
   <section class="hero">
-    <p>
+    <h1 class="hero__title">Bhavani Pickles</h1>
+    <p class="hero__tagline">Home Made Pickles · Snacks · Sweets</p>
+    <p class="hero__desc">
       We believe great taste starts with simple ingredients. By using only fresh vegetables and
       high-quality oils, we make home-made pickles that are healthy and very tasty.
     </p>
+    <a routerLink="/products" class="btn btn--primary btn--lg hero__cta">
+      Shop Now
+      <span class="material-symbols-rounded">arrow_forward</span>
+    </a>
   </section>
 
   <section class="section">
     <h2>The Collection</h2>
     <div class="category-grid">
+      @if (loadingCategories()) {
+        @for (i of [1, 2, 3, 4]; track i) {
+          <app-skeleton-card class="cat-card" [showImage]="false" />
+        }
+      } @else {
       @for (cat of categories(); track cat._id) {
         <a class="cat-card card" routerLink="/products" [queryParams]="{ category: cat._id }">
           <div class="card__body">
             @if (cat.image) {
-              <img class="card__img" [src]="cat.image" [alt]="cat.name" />
+              <img class="card__img" [src]="cat.image" [alt]="cat.name" loading="lazy" />
             } @else {
               <div class="cat-thumb cat-thumb--empty">
                 <span class="material-symbols-rounded">image</span>
@@ -31,16 +42,22 @@
           <p>No categories available yet.</p>
         </div>
       }
+      }
     </div>
   </section>
 
   <section class="section">
     <h2>Featured Products</h2>
     <div class="product-grid">
+      @if (loadingProducts()) {
+        @for (i of [1, 2, 3, 4]; track i) {
+          <app-skeleton-card />
+        }
+      } @else {
       @for (product of featuredProducts(); track product._id) {
         <div class="card">
           @if (product.images.length) {
-            <img class="card__img" [src]="product.images[0]" [alt]="product.name" />
+            <img class="card__img" [src]="product.images[0]" [alt]="product.name" loading="lazy" />
           } @else {
             <div class="cat-thumb cat-thumb--empty">
               <span class="material-symbols-rounded">image</span>
@@ -61,6 +78,7 @@
             >
           </div>
         </div>
+      }
       }
     </div>
   </section>

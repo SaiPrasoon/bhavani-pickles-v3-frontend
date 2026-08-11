@@ -1,16 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { Product, ProductsResponse } from '../models/product.model';
-
-export interface ProductFilters {
-  category?: string;
-  search?: string;
-  minPrice?: number;
-  maxPrice?: number;
-  page?: number;
-  limit?: number;
-}
+import { environment } from '@env/environment';
+import { Product, ProductsResponse, ProductFilters } from '../models/product.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductsService {
@@ -40,5 +31,17 @@ export class ProductsService {
 
   delete(id: string) {
     return this.http.delete(`${this.base}/${id}`);
+  }
+
+  getBestSellers() {
+    return this.http.get<Product[]>(`${this.base}/best-sellers`);
+  }
+
+  toggleBestSeller(id: string) {
+    return this.http.patch<Product>(`${this.base}/${id}/best-seller`, {});
+  }
+
+  getTags() {
+    return this.http.get<string[]>(`${this.base}/tags`);
   }
 }

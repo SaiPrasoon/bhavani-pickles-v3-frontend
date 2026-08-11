@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { Location } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { CartService } from '../../core/services/cart.service';
-import { CartItem } from '../../core/models/cart.model';
+import { CartService } from '@app/core/services/cart.service';
+import { CartItem } from '@app/core/models/cart.model';
 
 @Component({
   selector: 'app-cart',
@@ -12,6 +13,7 @@ import { CartItem } from '../../core/models/cart.model';
 })
 export class CartComponent implements OnInit {
   cartService = inject(CartService);
+  private location = inject(Location);
 
   ngOnInit(): void {
     this.cartService.loadCart().subscribe();
@@ -33,5 +35,5 @@ export class CartComponent implements OnInit {
     this.cartService.removeItem(item.product._id, item.weight).subscribe();
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

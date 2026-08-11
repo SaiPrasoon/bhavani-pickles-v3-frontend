@@ -29,6 +29,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/shipping/shipping.component').then(m => m.ShippingComponent),
   },
 
+  {
+    path: 'contact',
+    loadComponent: () => import('./features/contact/contact.component').then(m => m.ContactComponent),
+  },
+
   // Products
   {
     path: 'products',
@@ -37,6 +42,10 @@ export const routes: Routes = [
   {
     path: 'products/:id',
     loadComponent: () => import('./features/products/product-detail/product-detail.component').then(m => m.ProductDetailComponent),
+  },
+  {
+    path: 'best-sellers',
+    loadComponent: () => import('./features/products/best-sellers/best-sellers.component').then(m => m.BestSellersComponent),
   },
 
   // Cart & Checkout
@@ -85,6 +94,10 @@ export const routes: Routes = [
         path: 'reset-password',
         loadComponent: () => import('./features/auth/reset-password/reset-password.component').then(m => m.ResetPasswordComponent),
       },
+      {
+        path: 'verify-email',
+        loadComponent: () => import('./features/auth/verify-email/verify-email.component').then(m => m.VerifyEmailComponent),
+      },
       { path: '', redirectTo: 'login', pathMatch: 'full' },
     ],
   },
@@ -114,6 +127,10 @@ export const routes: Routes = [
         path: 'categories',
         loadComponent: () => import('./features/admin/categories/admin-categories.component').then(m => m.AdminCategoriesComponent),
       },
+      {
+        path: 'users',
+        loadComponent: () => import('./features/admin/users/admin-users.component').then(m => m.AdminUsersComponent),
+      },
     ],
   },
 
@@ -129,9 +146,17 @@ export const routes: Routes = [
   },
 
   {
+    path: 'track-order',
+    loadComponent: () => import('./features/track-order/track-order.component').then(m => m.TrackOrderComponent),
+  },
+
+  {
     path: 'wishlist',
     loadComponent: () => import('./features/wishlist/wishlist.component').then(m => m.WishlistComponent),
   },
 
-  { path: '**', redirectTo: 'home' },
+  {
+    path: '**',
+    loadComponent: () => import('./features/not-found/not-found.component').then(m => m.NotFoundComponent),
+  },
 ];

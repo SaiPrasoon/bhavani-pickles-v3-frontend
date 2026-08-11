@@ -19,6 +19,7 @@ export interface User {
   phone?: string;
   addresses: Address[];
   isActive: boolean;
+  isEmailVerified: boolean;
   createdAt: string;
 }
 

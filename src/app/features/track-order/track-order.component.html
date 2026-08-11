@@ -1,0 +1,129 @@
+<div class="page-header">
+  <h1>Track Your Order</h1>
+</div>
+
+<div class="track-container">
+  <!-- Search form -->
+  <div class="track-form-card">
+    <p class="track-desc">Enter your Order ID and the email used during checkout.</p>
+    <form (ngSubmit)="track()" class="track-form">
+      <div class="form-group">
+        <label class="form-label">Order ID</label>
+        <input
+          class="form-control"
+          [(ngModel)]="orderId"
+          name="orderId"
+          placeholder="e.g. 6691a2f..."
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input
+          class="form-control"
+          type="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="you@example.com"
+          required
+        />
+      </div>
+      <button class="btn btn--primary full-width" type="submit" [disabled]="loading() || !orderId.trim() || !email.trim()">
+        @if (loading()) {
+          Searching...
+        } @else {
+          Track Order
+        }
+      </button>
+    </form>
+
+    @if (error()) {
+      <div class="track-error">
+        <span class="material-symbols-rounded">error</span>
+        {{ error() }}
+      </div>
+    }
+  </div>
+
+  <!-- Order details -->
+  @if (order(); as o) {
+    <div class="track-result">
+      <!-- Order header -->
+      <div class="track-header">
+        <div>
+          <h3>Order #{{ o._id.slice(-8).toUpperCase() }}</h3>
+          <p class="track-date">Placed on {{ o.createdAt | date:'mediumDate' }}</p>
+        </div>
+        <span class="badge" [class]="'badge--' + o.status">
+          {{ o.status | titlecase }}
+        </span>
+      </div>
+
+      <!-- Status stepper -->
+      @if (o.status !== 'cancelled') {
+        <div class="stepper">
+          @for (step of progression; track step) {
+            <div class="stepper__step" [attr.data-state]="stepState(step)">
+              <div class="stepper__dot"></div>
+              <span class="stepper__label">{{ step | titlecase }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="cancelled-banner">
+          <span class="material-symbols-rounded">cancel</span>
+          <div>
+            <strong>Order Cancelled</strong>
+            @if (o.cancellationReason) {
+              <p>{{ o.cancellationReason }}</p>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Tracking info -->
+      @if (o.awbCode) {
+        <div class="tracking-info">
+          <span class="material-symbols-rounded">local_shipping</span>
+          <div>
+            <p><strong>{{ o.courierName }}</strong></p>
+            <p>AWB: {{ o.awbCode }}</p>
+          </div>
+          @if (o.trackingUrl) {
+            <a [href]="o.trackingUrl" target="_blank" rel="noopener" class="btn btn--outline btn--sm">
+              Live Tracking
+            </a>
+          }
+        </div>
+      }
+
+      <!-- Items -->
+      <div class="track-items">
+        <h4>Items</h4>
+        @for (item of o.items; track item.product._id) {
+          <div class="track-item">
+            <span>
+              {{ item.name }}
+              @if (item.weight) {
+                <span class="item-weight">{{ item.weight }}</span>
+              }
+              &times; {{ item.quantity }}
+            </span>
+            <span>&#8377;{{ item.price * item.quantity }}</span>
+          </div>
+        }
+        <div class="track-item track-item--total">
+          <strong>Total</strong>
+          <strong>&#8377;{{ o.totalAmount }}</strong>
+        </div>
+      </div>
+
+      <!-- Shipping address -->
+      <div class="track-address">
+        <h4>Shipping Address</h4>
+        <p>{{ o.shippingAddress.street }}</p>
+        <p>{{ o.shippingAddress.city }}, {{ o.shippingAddress.state }} &ndash; {{ o.shippingAddress.pincode }}</p>
+      </div>
+    </div>
+  }
+</div>

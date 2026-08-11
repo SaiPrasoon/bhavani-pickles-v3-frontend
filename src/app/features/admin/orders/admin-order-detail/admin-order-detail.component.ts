@@ -1,11 +1,11 @@
-import { DatePipe, TitleCasePipe } from '@angular/common';
+import { DatePipe, Location, TitleCasePipe } from '@angular/common';
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Order, OrderStatus, CANCELLABLE_STATUSES } from '../../../../core/models/order.model';
-import { OrdersService } from '../../../../core/services/orders.service';
-import { ToastService } from '../../../../core/services/toast.service';
-import { CancelReasonModalComponent } from '../../../../shared/cancel-reason-modal/cancel-reason-modal.component';
+import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { OrdersService } from '@app/core/services/orders.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
 
 // Forward-only progression — cancelled is handled separately
 const STATUS_PROGRESSION: OrderStatus[] = [
@@ -23,9 +23,11 @@ export class AdminOrderDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private ordersService = inject(OrdersService);
   private toast = inject(ToastService);
+  private location = inject(Location);
 
   order = signal<Order | null>(null);
   saving = signal(false);
+  shipping = signal(false);
   showCancelModal = signal(false);
   selectedStatus = signal<OrderStatus | null>(null);
 
@@ -127,7 +129,30 @@ export class AdminOrderDetailComponent implements OnInit {
     this.showCancelModal.set(false);
   }
 
+  shipOrder(): void {
+    const o = this.order();
+    if (!o) return;
+    this.shipping.set(true);
+    this.ordersService.shipOrder(o._id).subscribe({
+      next: () => {
+        this.fetchOrderDetails();
+        this.toast.success('Order shipped via Shiprocket');
+        this.shipping.set(false);
+      },
+      error: (err) => {
+        this.toast.error(err?.error?.message || 'Failed to ship order');
+        this.shipping.set(false);
+      },
+    });
+  }
+
+  downloadInvoice(): void {
+    const o = this.order();
+    if (!o) return;
+    this.ordersService.downloadInvoice(o._id);
+  }
+
   goBack(): void {
-    window.history.back();
+    this.location.back();
   }
 }

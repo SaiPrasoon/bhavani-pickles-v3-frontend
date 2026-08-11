@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
+import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
   selector: 'app-order-status',
@@ -10,6 +11,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 })
 export class OrderStatusComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  readonly authService = inject(AuthService);
 
   type: 'success' | 'failure' = 'success';
   orderId: string | null = null;

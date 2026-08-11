@@ -1,10 +1,11 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { OrdersService } from '../../../core/services/orders.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { Order, OrderStatus, CANCELLABLE_STATUSES } from '../../../core/models/order.model';
-import { CancelReasonModalComponent } from '../../../shared/cancel-reason-modal/cancel-reason-modal.component';
+import { DatePipe, Location, TitleCasePipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { OrdersService } from '@app/core/services/orders.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { Order, OrderStatus, CANCELLABLE_STATUSES } from '@app/core/models/order.model';
+import { CancelReasonModalComponent } from '@app/shared/cancel-reason-modal/cancel-reason-modal.component';
 
 const STATUS_PROGRESSION: OrderStatus[] = [
   'pending', 'confirmed', 'processing', 'shipped', 'delivered',
@@ -13,25 +14,63 @@ const STATUS_PROGRESSION: OrderStatus[] = [
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [RouterLink, DatePipe, TitleCasePipe, CancelReasonModalComponent],
+  imports: [RouterLink, DatePipe, TitleCasePipe, FormsModule, CancelReasonModalComponent],
   templateUrl: './admin-orders.component.html',
   styleUrl: './admin-orders.component.scss',
 })
 export class AdminOrdersComponent implements OnInit {
   private ordersService = inject(OrdersService);
   private toast = inject(ToastService);
+  private location = inject(Location);
 
   orders = signal<Order[]>([]);
   saving = signal(false);
   showCancelModal = signal(false);
   pendingCancelOrder = signal<Order | null>(null);
 
+  // Pagination & filtering
+  total = signal(0);
+  page = signal(1);
+  limit = signal(20);
+  pages = signal(0);
+  statusFilter = signal('');
+
+  readonly statuses: OrderStatus[] = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+
   ngOnInit(): void {
     this.loadOrders();
   }
 
   private loadOrders(): void {
-    this.ordersService.getAll().subscribe(orders => this.orders.set(orders));
+    this.ordersService.getAll({
+      status: this.statusFilter() || undefined,
+      page: this.page(),
+      limit: this.limit(),
+    }).subscribe(res => {
+      this.orders.set(res.items);
+      this.total.set(res.total);
+      this.pages.set(res.pages);
+    });
+  }
+
+  onStatusFilterChange(value: string): void {
+    this.statusFilter.set(value);
+    this.page.set(1);
+    this.loadOrders();
+  }
+
+  prevPage(): void {
+    if (this.page() > 1) {
+      this.page.update(p => p - 1);
+      this.loadOrders();
+    }
+  }
+
+  nextPage(): void {
+    if (this.page() < this.pages()) {
+      this.page.update(p => p + 1);
+      this.loadOrders();
+    }
   }
 
   getUserName(order: Order): string {
@@ -56,7 +95,6 @@ export class AdminOrdersComponent implements OnInit {
   onStatusChange(order: Order, event: Event): void {
     const select = event.target as HTMLSelectElement;
     const newStatus = select.value as OrderStatus;
-    // Reset select visual immediately — actual update comes from API refresh
     select.value = '';
 
     if (!newStatus) return;
@@ -99,5 +137,33 @@ export class AdminOrdersComponent implements OnInit {
     this.pendingCancelOrder.set(null);
   }
 
-  goBack(): void { window.history.back(); }
+  exportCsv(): void {
+    const rows = this.orders();
+    if (!rows.length) return;
+
+    const headers = ['Order ID', 'Customer', 'Email', 'Total', 'Status', 'Payment', 'Date'];
+    const csvRows = rows.map(o => {
+      const user = o.user as any;
+      return [
+        o._id,
+        user?.name || 'N/A',
+        user?.email || 'N/A',
+        o.totalAmount,
+        o.status,
+        o.paymentType || 'N/A',
+        new Date(o.createdAt).toLocaleDateString(),
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(',');
+    });
+
+    const csv = [headers.join(','), ...csvRows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `orders-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  goBack(): void { this.location.back(); }
 }

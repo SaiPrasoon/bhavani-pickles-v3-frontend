@@ -2,7 +2,7 @@
   <div class="sidebar-overlay" (click)="close()"></div>
 }
 
-<aside class="sidebar" [class.sidebar--open]="isOpen()">
+<aside class="sidebar" [class.sidebar--open]="isOpen()" role="navigation" aria-label="Main navigation">
   <!-- User info (logged in) -->
   @if (authService.isLoggedIn()) {
     <div class="sidebar__user">

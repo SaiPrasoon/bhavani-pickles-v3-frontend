@@ -35,11 +35,56 @@ export interface Order {
   status: OrderStatus;
   notes?: string;
   isPaid: boolean;
+  paidAt?: string;
   paymentType?: 'COD' | 'online';
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
   createdAt: string;
   cancellationReason?: string;
   cancelledAt?: string;
   cancelledBy?: 'user' | 'admin';
+  // Shiprocket shipping fields
+  shiprocketOrderId?: number;
+  shiprocketShipmentId?: number;
+  awbCode?: string;
+  courierName?: string;
+  trackingUrl?: string;
+  shippingLabelUrl?: string;
 }
 
 export const CANCELLABLE_STATUSES: OrderStatus[] = ['pending', 'confirmed', 'processing'];
+
+export interface InitiatePaymentResponse {
+  orderId: string;
+  paymentType: 'COD' | 'online';
+  razorpayOrderId?: string;
+  amount?: number;
+  currency?: string;
+}
+
+export interface VerifyPaymentPayload {
+  razorpayPaymentId: string;
+  razorpayOrderId: string;
+  razorpaySignature: string;
+}
+
+export interface GuestOrderItem {
+  productId: string;
+  name: string;
+  weight: string;
+  quantity: number;
+  price: number;
+}
+
+export interface CustomerInfo {
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+}
+
+export interface DashboardStats {
+  totalOrders: number;
+  totalRevenue: number;
+  daily: { date: string; orders: number; revenue: number }[];
+  statusBreakdown: { status: string; count: number }[];
+}

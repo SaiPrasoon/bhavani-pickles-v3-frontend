@@ -66,6 +66,94 @@
           </div>
         </div>
 
+        <!-- Payment Details -->
+        <div class="card">
+          <div class="card__body">
+            <div class="payment-header">
+              <h3>
+                <span class="material-symbols-rounded payment-header__icon">{{ o.paymentType === 'online' ? 'credit_card' : 'payments' }}</span>
+                {{ o.paymentType === 'online' ? 'Online Payment' : 'Cash on Delivery' }}
+              </h3>
+              @if (o.isPaid) {
+                <span class="badge badge--delivered">Paid</span>
+              } @else {
+                <span class="badge badge--pending">{{ o.paymentType === 'COD' ? 'COD' : 'Unpaid' }}</span>
+              }
+            </div>
+            <div class="payment-rows">
+              @if (o.paymentType === 'online' && o.razorpayOrderId) {
+                <div class="payment-row">
+                  <span class="payment-row__label">Razorpay Order ID</span>
+                  <span class="payment-row__value payment-row__mono">{{ o.razorpayOrderId }}</span>
+                </div>
+              }
+              @if (o.paymentType === 'online' && o.razorpayPaymentId) {
+                <div class="payment-row">
+                  <span class="payment-row__label">Razorpay Payment ID</span>
+                  <span class="payment-row__value payment-row__mono">{{ o.razorpayPaymentId }}</span>
+                </div>
+              }
+              @if (o.isPaid && o.paidAt) {
+                <div class="payment-row">
+                  <span class="payment-row__label">Paid On</span>
+                  <span class="payment-row__value">{{ o.paidAt | date:'medium' }}</span>
+                </div>
+              }
+              <div class="payment-row">
+                <span class="payment-row__label">Amount</span>
+                <span class="payment-row__value payment-row__amount">₹{{ o.totalAmount }}</span>
+              </div>
+            </div>
+            <button class="btn btn--outline invoice-btn" (click)="downloadInvoice()">
+              <span class="material-symbols-rounded">download</span>
+              Download Invoice
+            </button>
+          </div>
+        </div>
+
+        <!-- Shipping Info -->
+        @if (o.awbCode || o.courierName) {
+          <div class="card">
+            <div class="card__body">
+              <h3>
+                <span class="material-symbols-rounded">local_shipping</span>
+                Shipping Details
+              </h3>
+              <div class="shipping-rows">
+                @if (o.courierName) {
+                  <div class="payment-row">
+                    <span class="payment-row__label">Courier</span>
+                    <span class="payment-row__value">{{ o.courierName }}</span>
+                  </div>
+                }
+                @if (o.awbCode) {
+                  <div class="payment-row">
+                    <span class="payment-row__label">AWB Number</span>
+                    <span class="payment-row__value payment-row__mono">{{ o.awbCode }}</span>
+                  </div>
+                }
+                @if (o.trackingUrl) {
+                  <div class="payment-row">
+                    <span class="payment-row__label">Tracking</span>
+                    <span class="payment-row__value">
+                      <a [href]="o.trackingUrl" target="_blank" rel="noopener" class="tracking-link">
+                        Track Shipment
+                        <span class="material-symbols-rounded">open_in_new</span>
+                      </a>
+                    </span>
+                  </div>
+                }
+              </div>
+              @if (o.shippingLabelUrl) {
+                <a [href]="o.shippingLabelUrl" target="_blank" rel="noopener" class="btn btn--outline invoice-btn">
+                  <span class="material-symbols-rounded">print</span>
+                  Print Label
+                </a>
+              }
+            </div>
+          </div>
+        }
+
         <!-- Cancellation info -->
         @if (o.status === 'cancelled') {
           <div class="card">
@@ -131,6 +219,17 @@
                 >
                   {{ saving() ? 'Saving…' : 'Update Status' }}
                 </button>
+
+                @if (o.status === 'processing' && !o.awbCode) {
+                  <button
+                    class="btn btn--accent full-width ship-btn"
+                    (click)="shipOrder()"
+                    [disabled]="shipping() || saving()"
+                  >
+                    <span class="material-symbols-rounded">local_shipping</span>
+                    {{ shipping() ? 'Shipping…' : 'Ship via Shiprocket' }}
+                  </button>
+                }
 
                 @if (isCancellable()) {
                   <button

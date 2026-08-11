@@ -1,0 +1,18 @@
+.user-count {
+  font-size: 0.85rem;
+}
+
+.badge--admin {
+  background: rgba(200, 135, 10, 0.18);
+  color: var(--c-amber);
+}
+
+.loading-text {
+  text-align: center;
+  color: var(--c-text-muted);
+  padding: 40px 0;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}

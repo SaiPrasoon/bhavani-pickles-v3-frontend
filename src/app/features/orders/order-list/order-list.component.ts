@@ -1,8 +1,8 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe, TitleCasePipe } from '@angular/common';
-import { OrdersService } from '../../../core/services/orders.service';
-import { Order } from '../../../core/models/order.model';
+import { DatePipe, Location, TitleCasePipe } from '@angular/common';
+import { OrdersService } from '@app/core/services/orders.service';
+import { Order } from '@app/core/models/order.model';
 
 @Component({
   selector: 'app-order-list',
@@ -13,11 +13,12 @@ import { Order } from '../../../core/models/order.model';
 })
 export class OrderListComponent implements OnInit {
   private ordersService = inject(OrdersService);
+  private location = inject(Location);
   orders = signal<Order[]>([]);
 
   ngOnInit(): void {
     this.ordersService.getMyOrders().subscribe(orders => this.orders.set(orders));
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

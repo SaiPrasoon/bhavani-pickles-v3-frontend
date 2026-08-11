@@ -14,6 +14,7 @@
       [value]="search()"
       (input)="onSearchInput($any($event.target).value)"
       placeholder="Search pickles…"
+      aria-label="Search products"
     />
   </div>
   <div class="form-group">
@@ -28,13 +29,50 @@
       }
     </select>
   </div>
+  @if (tags().length) {
+    <div class="form-group">
+      <select
+        class="form-control"
+        [value]="selectedTag()"
+        (change)="onTagChange($any($event.target).value)"
+      >
+        <option value="">All Tags</option>
+        @for (tag of tags(); track tag) {
+          <option [value]="tag">{{ tag }}</option>
+        }
+      </select>
+    </div>
+  }
+  <div class="form-group">
+    <select
+      class="form-control"
+      [value]="sortBy()"
+      (change)="onSortChange($any($event.target).value)"
+    >
+      <option value="">Sort by</option>
+      <option value="price_asc">Price: Low to High</option>
+      <option value="price_desc">Price: High to Low</option>
+      <option value="name_asc">Name: A–Z</option>
+      <option value="name_desc">Name: Z–A</option>
+      <option value="newest">Newest First</option>
+    </select>
+  </div>
 </div>
 
 <div class="product-grid">
+  @if (loading()) {
+    @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
+      <app-skeleton-card />
+    }
+  } @else {
   @for (product of products(); track product._id) {
     <div class="card">
       @if (product.images.length) {
-        <img class="card__img" [src]="product.images[0]" [alt]="product.name" />
+        <img class="card__img" [src]="product.images[0]" [alt]="product.name" loading="lazy" />
+      } @else {
+        <div class="card__img-placeholder">
+          <span class="material-symbols-rounded">image</span>
+        </div>
       }
       <div class="card__body">
         <p class="card__title">{{ product.name }}</p>
@@ -76,6 +114,7 @@
       <p>No products found.</p>
     </div>
   }
+  }
 </div>
 
 @if (total() > limit()) {
@@ -90,7 +129,7 @@
 
 <!-- Variant picker popup -->
 @if (pickerProduct(); as product) {
-  <div class="picker-backdrop" (click)="closePicker()">
+  <div class="picker-backdrop" (click)="closePicker()" role="dialog" aria-modal="true" aria-label="Select variant">
     <div class="picker" (click)="$event.stopPropagation()">
       <div class="picker__header">
         <div>

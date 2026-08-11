@@ -1,19 +1,22 @@
 import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Location } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { ProductsService } from '../../../core/services/products.service';
-import { CategoriesService } from '../../../core/services/categories.service';
-import { CartService } from '../../../core/services/cart.service';
-import { ToastService } from '../../../core/services/toast.service';
-import { WishlistService } from '../../../core/services/wishlist.service';
-import { Product, Category, ProductVariant } from '../../../core/models/product.model';
+import { ProductsService } from '@app/core/services/products.service';
+import { CategoriesService } from '@app/core/services/categories.service';
+import { CartService } from '@app/core/services/cart.service';
+import { ToastService } from '@app/core/services/toast.service';
+import { WishlistService } from '@app/core/services/wishlist.service';
+import { Product, Category, ProductVariant } from '@app/core/models/product.model';
+import { SeoService } from '@app/core/services/seo.service';
+import { SkeletonCardComponent } from '@app/shared/skeletons/skeleton-card.component';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, SkeletonCardComponent],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss',
 })
@@ -24,6 +27,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
   private toast = inject(ToastService);
   private route = inject(ActivatedRoute);
   readonly wishlistService = inject(WishlistService);
+  private seo = inject(SeoService);
+  private location = inject(Location);
 
   products = signal<Product[]>([]);
   categories = signal<Category[]>([]);
@@ -32,6 +37,10 @@ export class ProductListComponent implements OnInit, OnDestroy {
   limit = signal(12);
   search = signal('');
   selectedCategory = signal('');
+  sortBy = signal('');
+  selectedTag = signal('');
+  tags = signal<string[]>([]);
+  loading = signal(true);
 
   private search$ = new Subject<string>();
   private searchSub!: Subscription;
@@ -55,8 +64,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
     ).subscribe(() => { this.page.set(1); this.load(); });
 
+    this.seo.update({
+      title: 'Products',
+      description:
+        'Browse our collection of authentic handmade Telugu pickles — avakaya, gongura, mango, and more. Free shipping on orders above a minimum.',
+      canonicalUrl: 'https://www.bhavanipickles.com/products',
+      keywords: 'buy pickles online, Telugu pickles, avakaya, gongura pickle, mango pickle',
+    });
+
     this.wishlistService.load();
     this.categoriesService.getAll().subscribe(cats => this.categories.set(cats));
+    this.productsService.getTags().subscribe(tags => this.tags.set(tags));
     this.route.queryParams.subscribe(params => {
       if (params['category']) this.selectedCategory.set(params['category']);
       this.load();
@@ -68,14 +86,18 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   load(): void {
+    this.loading.set(true);
     this.productsService.getAll({
       search: this.search(),
       category: this.selectedCategory(),
+      tag: this.selectedTag() || undefined,
+      sort: this.sortBy() || undefined,
       page: this.page(),
       limit: this.limit(),
     }).subscribe(res => {
       this.products.set(res.items);
       this.total.set(res.total);
+      this.loading.set(false);
     });
   }
 
@@ -89,6 +111,17 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.page.set(1);
     this.load();
   }
+  onTagChange(value: string): void {
+    this.selectedTag.set(value);
+    this.page.set(1);
+    this.load();
+  }
+  onSortChange(value: string): void {
+    this.sortBy.set(value);
+    this.page.set(1);
+    this.load();
+  }
+
   prevPage(): void { if (this.page() > 1) { this.page.update(p => p - 1); this.load(); } }
   nextPage(): void { if (this.page() < this.totalPages) { this.page.update(p => p + 1); this.load(); } }
 
@@ -127,5 +160,5 @@ export class ProductListComponent implements OnInit, OnDestroy {
       });
   }
 
-  goBack(): void { window.history.back(); }
+  goBack(): void { this.location.back(); }
 }

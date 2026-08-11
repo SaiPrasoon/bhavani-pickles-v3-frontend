@@ -35,6 +35,35 @@
     </div>
   </div>
 
+  <!-- Order tracking timeline -->
+  <div class="card mb-4">
+    <div class="card__body">
+      <h3 class="timeline-heading">Order Progress</h3>
+      <div class="status-stepper">
+        @for (step of progression; track step) {
+          @if (o.paymentType !== 'COD' || step !== 'pending') {
+            <div class="step step--{{ stepState(step) }}">
+              <div class="step__dot">
+                @if (stepState(step) === 'done') {
+                  <span class="material-symbols-rounded">check</span>
+                }
+              </div>
+              <span class="step__label">{{ step | titlecase }}</span>
+            </div>
+          }
+        }
+        @if (o.status === 'cancelled') {
+          <div class="step step--cancelled">
+            <div class="step__dot">
+              <span class="material-symbols-rounded">close</span>
+            </div>
+            <span class="step__label">Cancelled</span>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
   <div class="order-layout">
     <div class="card">
       <div class="card__body">
@@ -68,6 +97,82 @@
         <p>{{ o.shippingAddress.city }}, {{ o.shippingAddress.state }} – {{ o.shippingAddress.pincode }}</p>
         @if (o.shippingAddress.phone) { <p>{{ o.shippingAddress.phone }}</p> }
         @if (o.notes) { <hr><p><strong>Notes:</strong> {{ o.notes }}</p> }
+      </div>
+    </div>
+
+    <!-- Shipping Info -->
+    @if (o.awbCode || o.courierName) {
+      <div class="card">
+        <div class="card__body">
+          <h3>
+            <span class="material-symbols-rounded">local_shipping</span>
+            Shipping Details
+          </h3>
+          <div class="shipping-rows">
+            @if (o.courierName) {
+              <div class="payment-row">
+                <span class="payment-row__label">Courier</span>
+                <span class="payment-row__value">{{ o.courierName }}</span>
+              </div>
+            }
+            @if (o.awbCode) {
+              <div class="payment-row">
+                <span class="payment-row__label">AWB Number</span>
+                <span class="payment-row__value payment-row__mono">{{ o.awbCode }}</span>
+              </div>
+            }
+            @if (o.trackingUrl) {
+              <div class="payment-row">
+                <span class="payment-row__label">Tracking</span>
+                <span class="payment-row__value">
+                  <a [href]="o.trackingUrl" target="_blank" rel="noopener" class="tracking-link">
+                    Track Shipment
+                    <span class="material-symbols-rounded">open_in_new</span>
+                  </a>
+                </span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Payment Details -->
+    <div class="card">
+      <div class="card__body">
+        <div class="payment-header">
+          <h3>Payment Details</h3>
+          @if (o.isPaid) {
+            <span class="badge badge--delivered">Paid</span>
+          } @else {
+            <span class="badge badge--pending">{{ o.paymentType === 'COD' ? 'COD' : 'Unpaid' }}</span>
+          }
+        </div>
+        <div class="payment-rows">
+          <div class="payment-row">
+            <span class="payment-row__label">Method</span>
+            <span class="payment-row__value">
+              <span class="material-symbols-rounded payment-row__icon">{{ o.paymentType === 'online' ? 'credit_card' : 'payments' }}</span>
+              {{ o.paymentType === 'online' ? 'Online Payment' : 'Cash on Delivery' }}
+            </span>
+          </div>
+          @if (o.isPaid && o.paidAt) {
+            <div class="payment-row">
+              <span class="payment-row__label">Paid On</span>
+              <span class="payment-row__value">{{ o.paidAt | date:'mediumDate' }}</span>
+            </div>
+          }
+          @if (o.paymentType === 'online' && o.razorpayPaymentId) {
+            <div class="payment-row">
+              <span class="payment-row__label">Transaction ID</span>
+              <span class="payment-row__value payment-row__mono">{{ o.razorpayPaymentId }}</span>
+            </div>
+          }
+          <div class="payment-row">
+            <span class="payment-row__label">Amount</span>
+            <span class="payment-row__value payment-row__amount">₹{{ o.totalAmount }}</span>
+          </div>
+        </div>
       </div>
     </div>
 

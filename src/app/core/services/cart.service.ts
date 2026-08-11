@@ -1,8 +1,9 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
 import { tap, switchMap, map, catchError } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
+import { environment } from '@env/environment';
 import { Cart, CartItem } from '../models/cart.model';
 import { AuthService } from './auth.service';
 import { Product } from '../models/product.model';
@@ -13,6 +14,7 @@ const GUEST_CART_KEY = 'bhavani_guest_cart';
 export class CartService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   private readonly base = `${environment.apiUrl}/cart`;
   readonly cart = signal<Cart | null>(null);
@@ -21,6 +23,7 @@ export class CartService {
   // ─── Guest helpers ───────────────────────────────────────────────────────────
 
   private readLocalItems(): CartItem[] {
+    if (!this.isBrowser) return [];
     try {
       const raw = localStorage.getItem(GUEST_CART_KEY);
       return raw ? JSON.parse(raw) : [];
@@ -30,7 +33,7 @@ export class CartService {
   }
 
   private writeLocalItems(items: CartItem[]): Cart {
-    localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
+    if (this.isBrowser) localStorage.setItem(GUEST_CART_KEY, JSON.stringify(items));
     const cart = this.buildLocalCart(items);
     this.cart.set(cart);
     this.itemCount.set(items.length);
@@ -123,7 +126,7 @@ export class CartService {
 
   clearCart(): Observable<unknown> {
     if (!this.authService.isLoggedIn()) {
-      localStorage.removeItem(GUEST_CART_KEY);
+      if (this.isBrowser) localStorage.removeItem(GUEST_CART_KEY);
       this.cart.set(null);
       this.itemCount.set(0);
       return of(null);
@@ -137,7 +140,7 @@ export class CartService {
   }
 
   clearLocal(): void {
-    localStorage.removeItem(GUEST_CART_KEY);
+    if (this.isBrowser) localStorage.removeItem(GUEST_CART_KEY);
     this.cart.set(null);
     this.itemCount.set(0);
   }
@@ -146,7 +149,7 @@ export class CartService {
   mergeGuestCart(): Observable<void> {
     const items = this.readLocalItems();
     if (!items.length) {
-      localStorage.removeItem(GUEST_CART_KEY);
+      if (this.isBrowser) localStorage.removeItem(GUEST_CART_KEY);
       return this.loadCart().pipe(map(() => undefined));
     }
     const requests = items.map(item =>
@@ -160,7 +163,7 @@ export class CartService {
     );
     return forkJoin(requests).pipe(
       switchMap(() => this.loadCart()),
-      tap(() => localStorage.removeItem(GUEST_CART_KEY)),
+      tap(() => { if (this.isBrowser) localStorage.removeItem(GUEST_CART_KEY); }),
       map(() => undefined),
     );
   }

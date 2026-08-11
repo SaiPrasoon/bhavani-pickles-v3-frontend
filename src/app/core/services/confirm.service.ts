@@ -1,13 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
-
-export interface ConfirmConfig {
-  title: string;
-  message: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  danger?: boolean;
-}
+import { ConfirmConfig } from '../models/confirm.model';
 
 @Injectable({ providedIn: 'root' })
 export class ConfirmService {

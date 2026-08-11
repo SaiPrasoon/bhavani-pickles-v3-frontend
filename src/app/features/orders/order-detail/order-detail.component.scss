@@ -52,6 +52,162 @@
   }
 }
 
+// ── Order tracking timeline ──────────────────────────────────────────────────
+.timeline-heading { margin-bottom: 16px; }
+
+.status-stepper {
+  display: flex;
+  gap: 0;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  position: relative;
+
+  // Horizontal connector
+  &:not(:last-child)::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--c-border);
+    margin-left: 4px;
+  }
+
+  @media (max-width: 768px) {
+    flex: unset;
+    padding: 6px 0;
+
+    &:not(:last-child)::after {
+      position: absolute;
+      left: 11px;
+      top: calc(50% + 12px);
+      width: 2px;
+      height: calc(100% - 4px);
+      flex: unset;
+      margin-left: 0;
+    }
+  }
+
+  &__dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--c-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--c-surface);
+    z-index: 1;
+    .material-symbols-rounded { font-size: 0.9rem; }
+  }
+
+  &__label {
+    font-size: 0.8rem;
+    color: var(--c-text-muted);
+    white-space: nowrap;
+  }
+
+  &--done {
+    .step__dot { background: var(--c-success, #22c55e); border-color: var(--c-success, #22c55e); color: #fff; }
+    .step__label { color: var(--c-text); font-weight: 500; }
+    &::after { background: var(--c-success, #22c55e); }
+  }
+
+  &--current {
+    .step__dot { border-color: var(--c-primary, #f97316); border-width: 3px; background: var(--c-surface); }
+    .step__label { color: var(--c-primary, #f97316); font-weight: 600; }
+  }
+
+  &--upcoming {
+    .step__dot { border-color: var(--c-border); background: var(--c-surface); }
+    .step__label { color: var(--c-text-muted); }
+  }
+
+  &--cancelled {
+    .step__dot { background: var(--c-danger, #ef4444); border-color: var(--c-danger, #ef4444); color: #fff; }
+    .step__label { color: var(--c-danger, #ef4444); font-weight: 600; }
+  }
+}
+
+// ── Payment details ──────────────────────────────────────────────────────────
+.payment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  h3 { margin: 0; }
+}
+
+.payment-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+
+  &__label {
+    color: var(--c-text-muted);
+  }
+
+  &__value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--c-text);
+    font-weight: 500;
+  }
+
+  &__icon {
+    font-size: 1.1rem;
+    color: var(--c-text-muted);
+  }
+
+  &__mono {
+    font-family: monospace;
+    font-size: 0.8rem;
+    word-break: break-all;
+  }
+
+  &__amount {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+}
+
+// ── Shipping details ─────────────────────────────────────────────────────────
+.shipping-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tracking-link {
+  color: var(--c-primary, #f97316);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+
+  .material-symbols-rounded { font-size: 0.9rem; }
+
+  &:hover { text-decoration: underline; }
+}
+
 // ── Cancellation info ─────────────────────────────────────────────────────────
 .cancel-info-card {
   grid-column: 1 / -1;
