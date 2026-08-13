@@ -3,6 +3,8 @@ import { inject } from '@angular/core';
 import { catchError, throwError } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 
+const isAuthUrl = (url: string) => url.includes('/auth/');
+
 function extractMessage(err: HttpErrorResponse): string {
   const body = err.error;
 
@@ -13,7 +15,6 @@ function extractMessage(err: HttpErrorResponse): string {
 
   switch (err.status) {
     case 0:   return 'Network error — please check your connection.';
-    case 401: return 'Session expired — please log in again.';
     case 403: return 'You do not have permission to perform this action.';
     case 404: return 'Requested resource not found.';
     case 409: return 'Conflict — this record already exists.';
@@ -30,7 +31,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((err: HttpErrorResponse) => {
-      toast.error(extractMessage(err));
+      // 401s on non-auth URLs are handled by auth interceptor (session expiry)
+      const skip = err.status === 401 && !isAuthUrl(req.url);
+      if (!skip) {
+        toast.error(extractMessage(err));
+      }
       return throwError(() => err);
     }),
   );

@@ -180,9 +180,9 @@
         @if (loading()) {
           Placing Order…
         } @else if (paymentType() === 'online') {
-          Pay ₹{{ cartService.cart()?.totalAmount || 0 }} Online
+          Pay ₹{{ (cartService.cart()?.totalAmount || 0) + shippingFee() }} Online
         } @else {
-          Place Order — ₹{{ cartService.cart()?.totalAmount || 0 }} (COD)
+          Place Order — ₹{{ (cartService.cart()?.totalAmount || 0) + shippingFee() }} (COD)
         }
       </button>
     </form>

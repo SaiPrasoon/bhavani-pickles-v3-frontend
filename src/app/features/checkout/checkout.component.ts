@@ -146,7 +146,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     this.loading.set(true);
     this.ordersService
-      .initiatePayment(shippingAddress, this.paymentType(), customer, notes, guestItems)
+      .initiatePayment(shippingAddress, this.paymentType(), customer, notes, guestItems, this.shippingFee())
       .subscribe({
         next: (data) => {
           if (data.paymentType === 'COD') {
