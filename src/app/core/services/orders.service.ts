@@ -21,6 +21,7 @@ export class OrdersService {
     customer: CustomerInfo,
     notes?: string,
     guestItems?: GuestOrderItem[],
+    shippingCost?: number,
   ) {
     return this.http.post<InitiatePaymentResponse>(`${this.base}/initiate`, {
       shippingAddress,
@@ -29,6 +30,7 @@ export class OrdersService {
       customerEmail: customer.customerEmail,
       customerPhone: customer.customerPhone,
       notes,
+      shippingCost,
       ...(guestItems?.length ? { guestItems } : {}),
     });
   }

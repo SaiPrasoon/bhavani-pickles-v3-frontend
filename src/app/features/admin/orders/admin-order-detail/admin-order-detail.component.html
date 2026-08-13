@@ -52,6 +52,20 @@
                   </tr>
                 }
               </tbody>
+              <tfoot>
+                <tr class="summary-row">
+                  <td colspan="4" class="text-right">Subtotal</td>
+                  <td>₹{{ o.totalAmount - (o.shippingCost ?? 0) }}</td>
+                </tr>
+                <tr class="summary-row">
+                  <td colspan="4" class="text-right">Shipping</td>
+                  <td>{{ (o.shippingCost ?? 0) > 0 ? '₹' + o.shippingCost : 'Free' }}</td>
+                </tr>
+                <tr class="summary-row summary-row--total">
+                  <td colspan="4" class="text-right"><strong>Total</strong></td>
+                  <td><strong>₹{{ o.totalAmount }}</strong></td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>

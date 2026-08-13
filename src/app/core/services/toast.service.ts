@@ -15,4 +15,5 @@ export class ToastService {
   success(text: string): void { this.show(text, 'success'); }
   error(text: string): void { this.show(text, 'error'); }
   info(text: string): void { this.show(text, 'info'); }
+  warn(text: string): void { this.show(text, 'warning', 5000); }
 }
